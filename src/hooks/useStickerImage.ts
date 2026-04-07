@@ -18,6 +18,7 @@ export function useStickerImage(
 ) {
   const getInitialUrl = (value?: string | null) => {
     if (!value) return null;
+    if (value.startsWith("/")) return value;
     if (category !== "player" && category !== "coach") return null;
     if (value.startsWith("/api/image-proxy")) return value;
     if (/^https?:\/\//i.test(value)) {
