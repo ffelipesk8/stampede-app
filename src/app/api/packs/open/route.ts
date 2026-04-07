@@ -142,10 +142,10 @@ export async function POST(req: NextRequest) {
 
 // ── Weighted random draw ──────────────────────────────────────────────────────
 function drawFromPack(
-  contents: { sticker: { id: string; name: string; rarity: Rarity; team: string; imageUrl: string }; weight: number }[],
+  contents: { sticker: { id: string; name: string; rarity: Rarity; team: string; imageUrl: string; category: string }; weight: number }[],
   count: number,
   guaranteedMin: Rarity | null
-): { id: string; name: string; rarity: Rarity; team: string; imageUrl: string }[] {
+): { id: string; name: string; rarity: Rarity; team: string; imageUrl: string; category: string }[] {
   const totalWeight = contents.reduce((sum, c) => sum + c.weight, 0);
   const drawn: (typeof contents)[0]["sticker"][] = [];
 

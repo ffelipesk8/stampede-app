@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
 import { Search, LayoutGrid, LayoutList } from "lucide-react";
-import { usePlayerPhoto } from "@/hooks/usePlayerPhoto";
+import { useStickerImage } from "@/hooks/useStickerImage";
 import { ShareButton } from "@/components/shared/ShareModal";
 
 type Rarity = "COMMON" | "UNCOMMON" | "RARE" | "EPIC" | "LEGENDARY";
@@ -232,8 +232,9 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
 function StickerSlot({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => void }) {
   const color = rarityColor(sticker.rarity);
   const fallback = sticker.customImageUrl ?? sticker.imageUrl;
-  const { photoUrl, showPhoto, setLoaded, setError } = usePlayerPhoto(
+  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.owned ? sticker.playerName ?? sticker.name : "",
+    sticker.category,
     sticker.owned ? fallback : null
   );
   const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32", "#252540"];
@@ -306,8 +307,9 @@ function StickerSlot({ sticker, onClick }: { sticker: AlbumSticker; onClick: () 
 // ── Sticker list row ───────────────────────────────────────────────────────────
 function StickerListRow({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => void }) {
   const color = rarityColor(sticker.rarity);
-  const { photoUrl, showPhoto, setLoaded, setError } = usePlayerPhoto(
+  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.owned ? sticker.playerName ?? sticker.name : "",
+    sticker.category,
     sticker.owned ? (sticker.customImageUrl ?? sticker.imageUrl) : null
   );
   const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32", "#252540"];
@@ -352,8 +354,9 @@ function StickerListRow({ sticker, onClick }: { sticker: AlbumSticker; onClick: 
 // ── Sticker detail modal ───────────────────────────────────────────────────────
 function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: () => void }) {
   const color = rarityColor(sticker.rarity);
-  const { photoUrl, showPhoto, setLoaded, setError } = usePlayerPhoto(
+  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.playerName ?? sticker.name,
+    sticker.category,
     sticker.customImageUrl ?? sticker.imageUrl
   );
   const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32", "#252540"];

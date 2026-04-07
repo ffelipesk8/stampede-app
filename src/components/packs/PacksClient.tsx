@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap } from "lucide-react";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
-import { usePlayerPhoto } from "@/hooks/usePlayerPhoto";
+import { useStickerImage } from "@/hooks/useStickerImage";
 import { ShareButton } from "@/components/shared/ShareModal";
 
 // ── Shared team data ───────────────────────────────────────────────────────────
@@ -29,13 +29,17 @@ const TEAM_COLORS: Record<string, [string, string]> = {
 
 // ── Mini card shown in store grid ──────────────────────────────────────────────
 function StickerCard({ sticker, delay = 0 }: {
-  sticker: { id: string; name: string; rarity: string; team: string; imageUrl: string };
+  sticker: { id: string; name: string; rarity: string; team: string; imageUrl: string; category?: string };
   delay?: number;
 }) {
   const c = rarityColor(sticker.rarity as never);
   const initials = sticker.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
   const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32","#252540"];
-  const { photoUrl, showPhoto, setLoaded, setError } = usePlayerPhoto(sticker.name, sticker.imageUrl);
+  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
+    sticker.name,
+    sticker.category ?? "player",
+    sticker.imageUrl
+  );
 
   return (
     <motion.div
@@ -85,7 +89,7 @@ function FifaCard({
   revealed,
   onReveal,
 }: {
-  sticker: { id: string; name: string; rarity: string; team: string; imageUrl: string };
+  sticker: { id: string; name: string; rarity: string; team: string; imageUrl: string; category?: string };
   index: number;
   revealed: boolean;
   onReveal: () => void;
@@ -93,7 +97,11 @@ function FifaCard({
   const c = rarityColor(sticker.rarity as never);
   const initials = sticker.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
   const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32","#252540"];
-  const { photoUrl, showPhoto, setLoaded, setError } = usePlayerPhoto(sticker.name, sticker.imageUrl);
+  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
+    sticker.name,
+    sticker.category ?? "player",
+    sticker.imageUrl
+  );
   const isLegendary = sticker.rarity === "LEGENDARY";
   const isEpic = sticker.rarity === "EPIC";
 
@@ -313,7 +321,7 @@ const PACK_VISUALS: Record<string, { gradient: string; glow: string; label: stri
 export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
   const [openingPack, setOpeningPack]  = useState<Pack | null>(null);
   const [openResult, setOpenResult]    = useState<{
-    stickers: Array<{ id: string; name: string; rarity: Rarity; team: string; imageUrl: string }>;
+    stickers: Array<{ id: string; name: string; rarity: Rarity; team: string; imageUrl: string; category?: string }>;
     xpEarned: number;
     newXp: number;
     levelUp: boolean;
