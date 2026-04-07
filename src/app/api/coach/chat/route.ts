@@ -5,7 +5,20 @@ import { redis, REDIS_KEYS } from "@/lib/redis";
 import OpenAI from "openai";
 import { z } from "zod";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let openai: OpenAI | null = null;
+
+function getOpenAI() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing OPENAI_API_KEY env variable");
+  }
+
+  if (!openai) {
+    openai = new OpenAI({ apiKey });
+  }
+
+  return openai;
+}
 
 const schema = z.object({
   message:          z.string().min(1).max(500),
@@ -15,7 +28,7 @@ const schema = z.object({
 const FREE_MSG_LIMIT = 5;
 
 export async function POST(req: NextRequest) {
-  const { userId: clerkId } = auth();
+  const { userId: clerkId } = await auth();
   if (!clerkId) return new Response("Unauthorized", { status: 401 });
 
   const body = await req.json();
@@ -72,7 +85,7 @@ export async function POST(req: NextRequest) {
   const systemPrompt = buildCoachPrompt(user, stickersCount, missions);
 
   // ── Call OpenAI with streaming ─────────────────────────
-  const stream = await openai.chat.completions.create({
+  const stream = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     max_tokens: 300,
     temperature: 0.7,
