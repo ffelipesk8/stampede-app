@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function CoachPage() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
   const user = await db.user.findUnique({
@@ -18,6 +18,7 @@ export default async function CoachPage() {
       missions: {
         where: { status: "ACTIVE" },
         take: 3,
+        include: { mission: true },
       },
     },
   });
@@ -51,7 +52,7 @@ export default async function CoachPage() {
     xp: user.xp,
     isPro: user.isPro,
     streakDays: user.streakDays,
-    activeMissions: user.missions.map((m) => m.missionKey),
+    activeMissions: user.missions.map((m) => m.mission.title),
     conversationId: recentConversation?.id ?? null,
   };
 

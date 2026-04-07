@@ -10,7 +10,7 @@ interface TutorialStep {
   description: string;
   icon: string;
   action: string;
-  highlight?: string;
+  highlight?: string | null;
 }
 
 const TUTORIAL_STEPS: TutorialStep[] = [
