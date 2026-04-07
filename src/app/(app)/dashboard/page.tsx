@@ -88,7 +88,7 @@ export default async function DashboardPage() {
           ].map(({ href, label, emoji, color }) => (
             <Link
               key={href}
-              href={href}
+              href={href as never}
               className={`bg-card1 border rounded-xl p-4 flex items-center gap-3 transition-all ${color}`}
             >
               <span className="text-2xl">{emoji}</span>
