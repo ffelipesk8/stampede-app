@@ -7,7 +7,7 @@ function proxied(url: string) {
 
 // ── Stadiums ──────────────────────────────────────────────────────────────────
 const STADIUM_IMAGES: Record<string, string> = {
-  "MetLife Stadium":        "/images/stickers/stadiums/metlife-stadium.svg",
+  "MetLife Stadium":        "/images/stickers/stadiums/metlife-stadium.jpg",
   "AT&T Stadium":           "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/ATT_Stadium_-_Aerial_Photo.jpg/640px-ATT_Stadium_-_Aerial_Photo.jpg",
   "SoFi Stadium":           "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/SoFi_Stadium_aerial_view.jpg/640px-SoFi_Stadium_aerial_view.jpg",
   "Hard Rock Stadium":      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Hard_Rock_Stadium_2019.jpg/640px-Hard_Rock_Stadium_2019.jpg",
@@ -15,7 +15,7 @@ const STADIUM_IMAGES: Record<string, string> = {
   "Arrowhead Stadium":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Arrowhead_Stadium_aerial.jpg/640px-Arrowhead_Stadium_aerial.jpg",
   "Gillette Stadium":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Gillette_Stadium_2019.jpg/640px-Gillette_Stadium_2019.jpg",
   "Lincoln Financial Field":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Lincoln_Financial_Field.jpg/640px-Lincoln_Financial_Field.jpg",
-  "Estadio Azteca":         "/images/stickers/stadiums/azteca-stadium.svg",
+  "Estadio Azteca":         "/images/stickers/stadiums/azteca-stadium.jpg",
   "Estadio BBVA":           "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Estadio_BBVA_%28cropped%29.jpg/640px-Estadio_BBVA_%28cropped%29.jpg",
   "BC Place":               "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/BCPlace2011.jpg/640px-BCPlace2011.jpg",
   "BMO Field":              "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/BMO_Field_panoramic_%28cropped%29.jpg/640px-BMO_Field_panoramic_%28cropped%29.jpg",
@@ -25,7 +25,7 @@ const STADIUM_IMAGES: Record<string, string> = {
   "Allianz Arena":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/AllianzArenaAugust2006.jpg/640px-AllianzArenaAugust2006.jpg",
   "Maracanã":               "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Maracan%C3%A3_Rio_de_Janeiro_-_Brazil.jpg/640px-Maracan%C3%A3_Rio_de_Janeiro_-_Brazil.jpg",
   "Luzhniki Stadium":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Luzhniki_Stadium_2018.jpg/640px-Luzhniki_Stadium_2018.jpg",
-  "Azteca Stadium":         "/images/stickers/stadiums/azteca-stadium.svg",
+  "Azteca Stadium":         "/images/stickers/stadiums/azteca-stadium.jpg",
 };
 
 // ── Host Cities ───────────────────────────────────────────────────────────────
