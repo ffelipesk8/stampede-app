@@ -16,12 +16,21 @@ export function useStickerImage(
   category: StickerCategory = "player",
   fallback?: string | null
 ) {
-  const [photoUrl, setPhotoUrl] = useState<string | null>(fallback || null);
+  const getInitialUrl = (value?: string | null) => {
+    if (!value) return null;
+    if (value.startsWith("/api/image-proxy")) return value;
+    if (/^https?:\/\//i.test(value)) {
+      return `/api/image-proxy?url=${encodeURIComponent(value)}`;
+    }
+    return value;
+  };
+
+  const [photoUrl, setPhotoUrl] = useState<string | null>(getInitialUrl(fallback));
   const [loaded, setLoaded]     = useState(false);
   const [error, setError]       = useState(false);
 
   useEffect(() => {
-    setPhotoUrl(fallback || null);
+    setPhotoUrl(getInitialUrl(fallback));
     setLoaded(false);
     setError(false);
   }, [name, category, fallback]);
