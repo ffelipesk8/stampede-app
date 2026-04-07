@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function proxied(url: string) {
+  return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+}
+
 // ── Stadiums ──────────────────────────────────────────────────────────────────
 const STADIUM_IMAGES: Record<string, string> = {
   "MetLife Stadium":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/MetLife_Stadium_-_Aerial_photo.jpg/640px-MetLife_Stadium_-_Aerial_photo.jpg",
@@ -20,11 +24,13 @@ const STADIUM_IMAGES: Record<string, string> = {
   "Allianz Arena":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/AllianzArenaAugust2006.jpg/640px-AllianzArenaAugust2006.jpg",
   "Maracanã":               "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Maracan%C3%A3_Rio_de_Janeiro_-_Brazil.jpg/640px-Maracan%C3%A3_Rio_de_Janeiro_-_Brazil.jpg",
   "Luzhniki Stadium":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Luzhniki_Stadium_2018.jpg/640px-Luzhniki_Stadium_2018.jpg",
+  "Azteca Stadium":         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Estadio_Azteca_-_Mexico_City_2016.jpg/640px-Estadio_Azteca_-_Mexico_City_2016.jpg",
 };
 
 // ── Host Cities ───────────────────────────────────────────────────────────────
 const CITY_IMAGES: Record<string, string> = {
   "New York":       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg/640px-Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg",
+  "New York City":  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg/640px-Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg",
   "Los Angeles":    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/20190616014452%21Echo_Park_Lake%2C_Los_Angeles.jpg/640px-20190616014452%21Echo_Park_Lake%2C_Los_Angeles.jpg",
   "Dallas":         "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Dallas_skyline_2018.jpg/640px-Dallas_skyline_2018.jpg",
   "Miami":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Miami_collage_20101023.jpg/640px-Miami_collage_20101023.jpg",
@@ -34,6 +40,8 @@ const CITY_IMAGES: Record<string, string> = {
   "Philadelphia":   "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Philadelphia_skyline_from_south_street_bridge_july_2016_HDR.jpg/640px-Philadelphia_skyline_from_south_street_bridge_july_2016_HDR.jpg",
   "Seattle":        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seattle_Kerry_Park_Skyline.jpg/640px-Seattle_Kerry_Park_Skyline.jpg",
   "Mexico City":    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mexico_City_Aerial_view_2016.jpg/640px-Mexico_City_Aerial_view_2016.jpg",
+  "Ciudad de México":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mexico_City_Aerial_view_2016.jpg/640px-Mexico_City_Aerial_view_2016.jpg",
+  "Ciudad de Mexico":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mexico_City_Aerial_view_2016.jpg/640px-Mexico_City_Aerial_view_2016.jpg",
   "Guadalajara":    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Guadalajara_Jalisco.jpg/640px-Guadalajara_Jalisco.jpg",
   "Monterrey":      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Monterrey_skyline_2019.jpg/640px-Monterrey_skyline_2019.jpg",
   "Vancouver":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Vancouver_Canada_Skyline.jpg/640px-Vancouver_Canada_Skyline.jpg",
@@ -88,15 +96,15 @@ async function wikiLookup(searchTerms: string[]): Promise<string | null> {
       const slug = term.replace(/ /g, "_");
       const res  = await fetch(
         `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(slug)}`,
-        {
+      {
           headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
           signal: AbortSignal.timeout(2500),
-        }
+      }
       );
       if (res.ok) {
         const data = await res.json();
         const url  = data.thumbnail?.source;
-        if (url) return url;
+        if (url) return proxied(url);
       }
     } catch { /* timeout — try next */ }
   }
@@ -111,21 +119,21 @@ export async function GET(req: NextRequest) {
 
   // ── Stadiums ──
   if (category === "stadium" || category === "venue") {
-    if (STADIUM_IMAGES[name]) return NextResponse.json({ url: STADIUM_IMAGES[name] });
+    if (STADIUM_IMAGES[name]) return NextResponse.json({ url: proxied(STADIUM_IMAGES[name]) });
     const url = await wikiLookup([name, `${name} stadium`, `${name} football stadium`]);
     return NextResponse.json({ url });
   }
 
   // ── Cities ──
   if (category === "city" || category === "host_city") {
-    if (CITY_IMAGES[name]) return NextResponse.json({ url: CITY_IMAGES[name] });
+    if (CITY_IMAGES[name]) return NextResponse.json({ url: proxied(CITY_IMAGES[name]) });
     const url = await wikiLookup([name, `${name} city`]);
     return NextResponse.json({ url });
   }
 
   // ── Coaches / DT ──
   if (category === "coach" || category === "manager" || category === "dt") {
-    if (COACH_IMAGES[name]) return NextResponse.json({ url: COACH_IMAGES[name] });
+    if (COACH_IMAGES[name]) return NextResponse.json({ url: proxied(COACH_IMAGES[name]) });
     const url = await wikiLookup([
       name,
       `${name} football manager`,
@@ -136,7 +144,7 @@ export async function GET(req: NextRequest) {
 
   // ── Team Crests ──
   if (category === "crest" || category === "team" || category === "badge") {
-    if (CREST_IMAGES[name]) return NextResponse.json({ url: CREST_IMAGES[name] });
+    if (CREST_IMAGES[name]) return NextResponse.json({ url: proxied(CREST_IMAGES[name]) });
     const url = await wikiLookup([
       `${name} national football team`,
       `${name} football federation`,

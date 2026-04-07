@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function proxied(url: string) {
+  return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+}
+
 // ── 120+ jugadores con URL directa verificada ─────────────────────────────────
 const PHOTO_OVERRIDES: Record<string, string> = {
   // ── Argentina ─────────────────────────────────────────────────────────────
@@ -324,7 +328,7 @@ export async function GET(req: NextRequest) {
 
   // 1. Hardcoded overrides — instant
   if (PHOTO_OVERRIDES[name]) {
-    return NextResponse.json({ url: PHOTO_OVERRIDES[name] });
+    return NextResponse.json({ url: proxied(PHOTO_OVERRIDES[name]) });
   }
 
   // 2. Race all 5 free sources in parallel
@@ -336,5 +340,5 @@ export async function GET(req: NextRequest) {
     () => fromCommonsSearch(name),
   );
 
-  return NextResponse.json({ url: url ?? null });
+  return NextResponse.json({ url: url ? proxied(url) : null });
 }
