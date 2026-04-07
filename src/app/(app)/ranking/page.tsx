@@ -1,0 +1,67 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import RankingClient from "@/components/ranking/RankingClient";
+
+export const metadata = {
+  title: "Global Ranking — STAMPEDE",
+  description: "See where you stand among World Cup fans worldwide",
+};
+
+export default async function RankingPage() {
+  const { userId } = auth();
+  if (!userId) redirect("/sign-in");
+
+  const user = await db.user.findUnique({
+    where: { clerkId: userId },
+    select: {
+      id: true,
+      username: true,
+      avatarUrl: true,
+      level: true,
+      xp: true,
+      favoriteTeam: true,
+      countryCode: true,
+    },
+  });
+
+  if (!user) redirect("/sign-in");
+
+  // Fetch top 100 globally server-side for SSR
+  const topUsers = await db.user.findMany({
+    orderBy: { xp: "desc" },
+    take: 100,
+    select: {
+      id: true,
+      username: true,
+      avatarUrl: true,
+      level: true,
+      xp: true,
+      favoriteTeam: true,
+      countryCode: true,
+      _count: { select: { stickers: true } },
+    },
+  });
+
+  const enriched = topUsers.map((u, i) => ({
+    rank: i + 1,
+    id: u.id,
+    username: u.username,
+    avatarUrl: u.avatarUrl,
+    level: u.level,
+    xp: u.xp,
+    favoriteTeam: u.favoriteTeam,
+    countryCode: u.countryCode,
+    stickerCount: u._count.stickers,
+    isMe: u.id === user.id,
+  }));
+
+  const myRank = enriched.find((u) => u.isMe)?.rank ?? null;
+
+  return (
+    <RankingClient
+      initialLeaderboard={enriched}
+      currentUser={{ ...user, myRank }}
+    />
+  );
+}

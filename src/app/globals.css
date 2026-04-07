@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-barlow:        'Barlow Condensed', sans-serif;
+    --font-space-grotesk: 'Space Grotesk', sans-serif;
+    --font-inter:         'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: #07070F;
+    color: #F2F2FF;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #141425; }
+  ::-webkit-scrollbar-thumb { background: #252540; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #FF5E00; }
+}
+
+@layer components {
+  /* Brand gradient text */
+  .text-fire {
+    background: linear-gradient(135deg, #E8003D 0%, #FF5E00 50%, #FFB800 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass card */
+  .glass-card {
+    background: rgba(20, 20, 37, 0.8);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+  }
+
+  /* Rarity borders */
+  .rarity-common    { border-color: #9090B8; }
+  .rarity-uncommon  { border-color: #4A6FFF; }
+  .rarity-rare      { border-color: #00D97E; }
+  .rarity-epic      { border-color: #FFB800; }
+  .rarity-legendary { border-color: #E8003D; box-shadow: 0 0 12px #E8003D40; }
+
+  /* Fire accent bar */
+  .fire-bar {
+    background: linear-gradient(180deg, #E8003D 0%, #FF5E00 50%, #FFB800 100%);
+  }
+
+  /* XP bar fill */
+  .xp-bar-fill {
+    background: linear-gradient(90deg, #E8003D 0%, #FF5E00 100%);
+  }
+}

@@ -1,0 +1,369 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { getFanTitle } from "@/lib/xp";
+
+interface LeaderboardEntry {
+  rank: number;
+  id: string;
+  username: string;
+  avatarUrl: string | null;
+  level: number;
+  xp: number;
+  favoriteTeam: string | null;
+  countryCode: string | null;
+  stickerCount: number;
+  isMe: boolean;
+}
+
+interface CurrentUser {
+  id: string;
+  username: string;
+  level: number;
+  xp: number;
+  myRank: number | null;
+}
+
+interface RankingClientProps {
+  initialLeaderboard: LeaderboardEntry[];
+  currentUser: CurrentUser;
+}
+
+const TEAM_FLAGS: Record<string, string> = {
+  USA: "🇺🇸", MEX: "🇲🇽", CAN: "🇨🇦", ARG: "🇦🇷", BRA: "🇧🇷",
+  FRA: "🇫🇷", ENG: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", ESP: "🇪🇸", GER: "🇩🇪", POR: "🇵🇹",
+  NED: "🇳🇱", BEL: "🇧🇪", ITA: "🇮🇹", CRO: "🇭🇷", DEN: "🇩🇰",
+  URU: "🇺🇾", COL: "🇨🇴", ECU: "🇪🇨", MAR: "🇲🇦", SEN: "🇸🇳",
+  NGA: "🇳🇬", EGY: "🇪🇬", JPN: "🇯🇵", KOR: "🇰🇷", AUS: "🇦🇺",
+  IRN: "🇮🇷", SAU: "🇸🇦", QAT: "🇶🇦", GHA: "🇬🇭", SUI: "🇨🇭",
+  AUT: "🇦🇹", NZL: "🇳🇿",
+};
+
+const RANK_BADGES: Record<number, { emoji: string; color: string; label: string }> = {
+  1: { emoji: "🥇", color: "#FFB800", label: "Gold" },
+  2: { emoji: "🥈", color: "#94A3B8", label: "Silver" },
+  3: { emoji: "🥉", color: "#CD7F32", label: "Bronze" },
+};
+
+type Tab = "global" | "country" | "friends";
+
+export default function RankingClient({
+  initialLeaderboard,
+  currentUser,
+}: RankingClientProps) {
+  const [tab, setTab] = useState<Tab>("global");
+  const [search, setSearch] = useState("");
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  const filtered = initialLeaderboard.filter(
+    (u) =>
+      !search ||
+      u.username.toLowerCase().includes(search.toLowerCase()) ||
+      u.favoriteTeam?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const top3 = initialLeaderboard.slice(0, 3);
+  const rest = filtered.slice(tab === "global" ? 3 : 0);
+
+  const scrollToMe = () => {
+    setSearch("");
+    setHighlightedId(currentUser.id);
+    setTimeout(() => {
+      const el = document.getElementById(`row-${currentUser.id}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => setHighlightedId(null), 2000);
+    }, 100);
+  };
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Header */}
+      <div className="flex-shrink-0 px-6 py-4 border-b border-white/10">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-black text-white">Global Ranking 🏆</h1>
+            <p className="text-white/40 text-sm">Top fans worldwide by XP</p>
+          </div>
+          {currentUser.myRank && (
+            <button
+              onClick={scrollToMe}
+              className="flex flex-col items-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors"
+            >
+              <span className="text-[#FFB800] text-xs font-bold uppercase tracking-wider">
+                Your rank
+              </span>
+              <span className="text-white font-black text-xl">
+                #{currentUser.myRank}
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 bg-white/5 rounded-xl p-1 mb-4">
+          {(["global", "country", "friends"] as Tab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold capitalize transition-all ${
+                tab === t
+                  ? "bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white"
+                  : "text-white/40 hover:text-white/70"
+              }`}
+            >
+              {t === "country" ? "My Country" : t === "friends" ? "Friends" : t}
+            </button>
+          ))}
+        </div>
+
+        {/* Search */}
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">🔍</span>
+          <input
+            type="text"
+            placeholder="Search fan or team…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FF5E00]/50 transition-colors"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto px-6 py-4">
+        {/* Podium (Top 3) — only when not searching and on global tab */}
+        {!search && tab === "global" && top3.length >= 3 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-end justify-center gap-3 mb-8 pt-4"
+          >
+            {/* 2nd place */}
+            <PodiumCard entry={top3[1]} position={2} currentUserId={currentUser.id} />
+            {/* 1st place */}
+            <PodiumCard entry={top3[0]} position={1} currentUserId={currentUser.id} />
+            {/* 3rd place */}
+            <PodiumCard entry={top3[2]} position={3} currentUserId={currentUser.id} />
+          </motion.div>
+        )}
+
+        {/* Country / Friends tab placeholder */}
+        {(tab === "country" || tab === "friends") && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-5xl mb-4">{tab === "country" ? "🌍" : "👥"}</div>
+            <h3 className="text-white font-black text-xl mb-2">
+              {tab === "country" ? "Country ranking" : "Friend leaderboard"}
+            </h3>
+            <p className="text-white/40 text-sm max-w-xs">
+              {tab === "country"
+                ? "Coming soon — compete against fans from your country!"
+                : "Add friends to see how you compare. Coming in Beta!"}
+            </p>
+          </div>
+        )}
+
+        {/* Regular list */}
+        {tab === "global" && (
+          <div className="space-y-2">
+            {(search ? filtered : rest).map((entry) => (
+              <motion.div
+                key={entry.id}
+                id={`row-${entry.id}`}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  backgroundColor:
+                    highlightedId === entry.id
+                      ? "rgba(255,94,0,0.15)"
+                      : "transparent",
+                }}
+                transition={{ duration: 0.3 }}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 border transition-colors ${
+                  entry.isMe
+                    ? "border-[#FF5E00]/40 bg-[#FF5E00]/10"
+                    : "border-white/5 hover:border-white/15 hover:bg-white/3"
+                }`}
+              >
+                {/* Rank */}
+                <div className="w-8 text-center flex-shrink-0">
+                  {RANK_BADGES[entry.rank] ? (
+                    <span className="text-lg">{RANK_BADGES[entry.rank].emoji}</span>
+                  ) : (
+                    <span
+                      className={`text-sm font-bold ${
+                        entry.isMe ? "text-[#FF5E00]" : "text-white/40"
+                      }`}
+                    >
+                      {entry.rank}
+                    </span>
+                  )}
+                </div>
+
+                {/* Avatar */}
+                <div
+                  className={`w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center font-black text-sm ${
+                    entry.isMe
+                      ? "bg-gradient-to-br from-[#E8003D] to-[#FF5E00] text-white"
+                      : "bg-white/10 text-white/60"
+                  }`}
+                >
+                  {entry.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={entry.avatarUrl}
+                      alt={entry.username}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    entry.username.slice(0, 2).toUpperCase()
+                  )}
+                </div>
+
+                {/* User info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`font-bold text-sm truncate ${
+                        entry.isMe ? "text-[#FF5E00]" : "text-white"
+                      }`}
+                    >
+                      {entry.username}
+                    </span>
+                    {entry.isMe && (
+                      <span className="text-[10px] bg-[#FF5E00]/20 text-[#FF5E00] rounded-full px-1.5 py-0.5 font-bold flex-shrink-0">
+                        YOU
+                      </span>
+                    )}
+                    {entry.favoriteTeam && (
+                      <span className="flex-shrink-0 text-sm">
+                        {TEAM_FLAGS[entry.favoriteTeam] ?? "⚽"}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-white/40 text-xs truncate">
+                    {getFanTitle(entry.level)} · Lv.{entry.level} · {entry.stickerCount} stickers
+                  </p>
+                </div>
+
+                {/* XP */}
+                <div className="text-right flex-shrink-0">
+                  <p className="text-white font-bold text-sm">
+                    {entry.xp.toLocaleString()}
+                  </p>
+                  <p className="text-white/30 text-xs">XP</p>
+                </div>
+              </motion.div>
+            ))}
+
+            {filtered.length === 0 && search && (
+              <div className="text-center py-12">
+                <p className="text-white/30 text-sm">No fans found for &quot;{search}&quot;</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* My position sticky bar (if outside top 100) */}
+      {currentUser.myRank && currentUser.myRank > 100 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex-shrink-0 px-6 py-3 border-t border-white/10 bg-[#07070F]"
+        >
+          <div className="flex items-center gap-3 bg-[#FF5E00]/10 border border-[#FF5E00]/30 rounded-xl px-4 py-3">
+            <span className="text-[#FF5E00] font-black text-lg">#{currentUser.myRank}</span>
+            <div className="flex-1">
+              <p className="text-white font-bold text-sm">{currentUser.username}</p>
+              <p className="text-white/40 text-xs">{currentUser.xp.toLocaleString()} XP · Lv.{currentUser.level}</p>
+            </div>
+            <button
+              onClick={() => setSearch(currentUser.username)}
+              className="text-[#FF5E00] text-xs font-bold hover:opacity-80"
+            >
+              Find me →
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function PodiumCard({
+  entry,
+  position,
+  currentUserId,
+}: {
+  entry: LeaderboardEntry;
+  position: number;
+  currentUserId: string;
+}) {
+  const badge = RANK_BADGES[position];
+  const heights = { 1: "h-28", 2: "h-20", 3: "h-16" };
+  const isMe = entry.id === currentUserId;
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      {/* Avatar */}
+      <div
+        className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-base border-2 ${
+          isMe
+            ? "border-[#FF5E00] bg-gradient-to-br from-[#E8003D] to-[#FF5E00] text-white"
+            : position === 1
+            ? "border-[#FFB800] bg-[#FFB800]/20 text-[#FFB800]"
+            : "border-white/20 bg-white/10 text-white"
+        }`}
+        style={{ order: position === 1 ? -1 : 0 }}
+      >
+        {entry.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={entry.avatarUrl}
+            alt={entry.username}
+            className="w-full h-full rounded-full object-cover"
+          />
+        ) : (
+          entry.username.slice(0, 2).toUpperCase()
+        )}
+      </div>
+
+      <div className="text-center">
+        <p
+          className={`font-bold text-xs truncate max-w-20 ${
+            isMe ? "text-[#FF5E00]" : "text-white"
+          }`}
+        >
+          {entry.username}
+        </p>
+        <p className="text-white/40 text-[10px]">{entry.xp.toLocaleString()} XP</p>
+      </div>
+
+      {/* Podium block */}
+      <div
+        className={`w-20 ${heights[position as keyof typeof heights]} rounded-t-xl flex items-center justify-center text-2xl`}
+        style={{
+          background:
+            position === 1
+              ? "linear-gradient(to top, rgba(255,184,0,0.3), rgba(255,184,0,0.1))"
+              : position === 2
+              ? "linear-gradient(to top, rgba(148,163,184,0.3), rgba(148,163,184,0.1))"
+              : "linear-gradient(to top, rgba(205,127,50,0.3), rgba(205,127,50,0.1))",
+          borderTop: `2px solid ${badge.color}40`,
+        }}
+      >
+        <span>{badge.emoji}</span>
+      </div>
+    </div>
+  );
+}

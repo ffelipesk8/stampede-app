@@ -1,0 +1,507 @@
+// ════════════════════════════════════════════════════
+// STAMPEDE — Prisma Schema
+// World Cup 2026 Fan Platform
+// ════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── ENUMS ────────────────────────────────────────────
+
+enum Rarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum PackType {
+  FREE_DAILY
+  WELCOME
+  COMMON
+  PREMIUM
+  GOLD
+  LEGENDARY
+  TEAM_SPECIAL
+  MATCH_DAY
+  DROP_LIMITED
+}
+
+enum StickerSource {
+  PACK
+  TRADE
+  REWARD
+  WELCOME
+  CUSTOM_UPLOAD
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  CANCELLED
+  EXPIRED
+}
+
+enum EventType {
+  MATCH_DAY
+  WATCH_PARTY
+  FAN_MEETUP
+  TRAVEL_GROUP
+  AFTER_PARTY
+}
+
+enum MissionType {
+  DAILY
+  WEEKLY
+  MILESTONE
+  WORLD_CUP
+}
+
+enum MissionStatus {
+  ACTIVE
+  COMPLETED
+  EXPIRED
+  LOCKED
+}
+
+enum BadgeRarity {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  LEGENDARY
+}
+
+// ── USERS ────────────────────────────────────────────
+
+model User {
+  id               String    @id @default(cuid())
+  clerkId          String    @unique @map("clerk_id")
+  username         String    @unique
+  email            String    @unique
+  avatarUrl        String?   @map("avatar_url")
+  countryCode      String?   @map("country_code")   // ISO 3166-1 alpha-2
+  favoriteTeam     String?   @map("favorite_team")  // ISO country code
+  
+  // Progression
+  xp               Int       @default(0)
+  level            Int       @default(1)
+  streakDays       Int       @default(0) @map("streak_days")
+  lastActiveAt     DateTime  @default(now()) @map("last_active_at")
+  
+  // In-app currency
+  coins            Int       @default(500)            // welcome bonus: 500 coins
+
+  // Subscription
+  isPro            Boolean   @default(false) @map("is_pro")
+  proExpiresAt     DateTime? @map("pro_expires_at")
+  stripeCustomerId String?   @unique @map("stripe_customer_id")
+  stripeSubId      String?   @unique @map("stripe_sub_id")
+  
+  // Onboarding
+  onboardingStep   Int       @default(0) @map("onboarding_step")
+  onboardingDoneAt DateTime? @map("onboarding_done_at")
+  
+  // Referral
+  referralCode     String    @unique @map("referral_code")
+  referredById     String?   @map("referred_by_id")
+  referredBy       User?     @relation("Referrals", fields: [referredById], references: [id])
+  referrals        User[]    @relation("Referrals")
+  
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  stickers         UserSticker[]
+  packsLog         PackLog[]
+  marketListings   MarketplaceListing[]
+  marketPurchases  MarketplacePurchase[]
+  events           FanEvent[]
+  eventAttendees   EventAttendee[]
+  missions         UserMission[]
+  badges           UserBadge[]
+  coachConvos      CoachConversation[]
+  feedPosts        FeedPost[]
+  feedLikes        FeedLike[]
+  
+  @@index([xp(sort: Desc)])
+  @@index([countryCode])
+  @@map("users")
+}
+
+// ── STICKERS ─────────────────────────────────────────
+
+model Sticker {
+  id          String   @id @default(cuid())
+  number      Int      @unique           // album sticker number (1–800+)
+  slug        String   @unique          // e.g. "messi-arg-2026"
+  name        String
+  playerName  String?  @map("player_name")
+  team        String                    // ISO country code
+  teamFlag    String   @default("⚽") @map("team_flag")  // flag emoji
+  position    String   @default("?")    // GK | CB | CM | ST | COACH | CREST
+  category    String   @default("player") // "player" | "crest" | "coach" | "moment"
+  rarity      Rarity
+  imageUrl    String   @default("") @map("image_url")
+
+  // Limited edition
+  totalSupply Int?     @map("total_supply")   // null = unlimited
+  mintedCount Int      @default(0) @map("minted_count")
+
+  // Metadata
+  season      String   @default("WC2026")
+  description String?
+  xpValue     Int      @default(10) @map("xp_value")
+
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  userStickers     UserSticker[]
+  marketListings   MarketplaceListing[]
+  packContents     PackContent[]
+  
+  @@index([team])
+  @@index([rarity])
+  @@map("stickers")
+}
+
+model UserSticker {
+  id             String        @id @default(cuid())
+  userId         String        @map("user_id")
+  stickerId      String        @map("sticker_id")
+  quantity       Int           @default(1)
+  
+  // Custom UGC override
+  isCustom       Boolean       @default(false) @map("is_custom")
+  customImageUrl String?       @map("custom_image_url")
+  
+  source         StickerSource @default(PACK)
+  acquiredAt     DateTime      @default(now()) @map("acquired_at")
+  
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sticker        Sticker       @relation(fields: [stickerId], references: [id])
+  
+  @@unique([userId, stickerId])
+  @@index([userId])
+  @@index([stickerId])
+  @@map("user_stickers")
+}
+
+// ── PACKS ─────────────────────────────────────────────
+
+model Pack {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  name          String
+  description   String?
+  type          PackType
+  rarity        Rarity    @default(COMMON)
+  
+  // Contents config (JSON for flexibility)
+  cardCount     Int       @default(5) @map("card_count")
+  guaranteedMin Rarity?   @map("guaranteed_min")  // minimum rarity guaranteed
+  
+  // Pricing
+  priceUsd      Decimal?  @map("price_usd")        // null = free
+  priceCoins    Int?      @map("price_coins")       // in-app coin price
+  stripePriceId String?   @map("stripe_price_id")
+  
+  // Limited drops
+  maxSupply     Int?      @map("max_supply")
+  soldCount     Int       @default(0) @map("sold_count")
+  availableFrom DateTime? @map("available_from")
+  availableUntil DateTime? @map("available_until")
+  
+  imageUrl      String?   @map("image_url")
+  isActive      Boolean   @default(true) @map("is_active")
+  xpBonus       Int       @default(0) @map("xp_bonus")
+  
+  createdAt     DateTime  @default(now()) @map("created_at")
+  
+  contents      PackContent[]
+  logs          PackLog[]
+  
+  @@map("packs")
+}
+
+model PackContent {
+  id        String  @id @default(cuid())
+  packId    String  @map("pack_id")
+  stickerId String  @map("sticker_id")
+  weight    Int     @default(100)  // relative probability weight
+  
+  pack      Pack    @relation(fields: [packId], references: [id], onDelete: Cascade)
+  sticker   Sticker @relation(fields: [stickerId], references: [id])
+  
+  @@map("pack_contents")
+}
+
+model PackLog {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  packId      String   @map("pack_id")
+  stickersWon Json     @map("stickers_won")  // array of sticker IDs + rarities
+  xpEarned    Int      @default(0) @map("xp_earned")
+  openedAt    DateTime @default(now()) @map("opened_at")
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack        Pack     @relation(fields: [packId], references: [id])
+  
+  @@index([userId])
+  @@map("packs_log")
+}
+
+// ── MARKETPLACE ──────────────────────────────────────
+
+model MarketplaceListing {
+  id          String        @id @default(cuid())
+  sellerId    String        @map("seller_id")
+  stickerId   String        @map("sticker_id")
+  
+  priceCoins  Int           @map("price_coins")  // in-app currency
+  quantity    Int           @default(1)
+  status      ListingStatus @default(ACTIVE)
+  
+  // Official Drops (seller = system)
+  isDrop      Boolean       @default(false) @map("is_drop")
+  dropEndsAt  DateTime?     @map("drop_ends_at")
+  
+  createdAt   DateTime      @default(now()) @map("created_at")
+  expiresAt   DateTime?     @map("expires_at")   // auto-expire P2P listings
+  
+  seller      User          @relation(fields: [sellerId], references: [id])
+  sticker     Sticker       @relation(fields: [stickerId], references: [id])
+  purchase    MarketplacePurchase?
+  
+  @@index([stickerId, status])
+  @@index([sellerId])
+  @@map("marketplace_listings")
+}
+
+model MarketplacePurchase {
+  id          String             @id @default(cuid())
+  listingId   String             @unique @map("listing_id")
+  buyerId     String             @map("buyer_id")
+  
+  priceCoins  Int                @map("price_coins")
+  feePct      Decimal            @default(0.05) @map("fee_pct")
+  feeCoins    Int                @map("fee_coins")
+  netCoins    Int                @map("net_coins")
+  
+  purchasedAt DateTime           @default(now()) @map("purchased_at")
+  
+  listing     MarketplaceListing @relation(fields: [listingId], references: [id])
+  buyer       User               @relation(fields: [buyerId], references: [id])
+  
+  @@map("marketplace_purchases")
+}
+
+// ── FAN EVENTS ────────────────────────────────────────
+
+model FanEvent {
+  id           String    @id @default(cuid())
+  creatorId    String    @map("creator_id")
+  
+  title        String
+  description  String?
+  type         EventType @default(FAN_MEETUP)
+  matchCode    String?   @map("match_code")  // e.g. "MEX-POL-GRP-2026"
+  
+  city         String
+  country      String
+  latitude     Decimal?
+  longitude    Decimal?
+  venueName    String?   @map("venue_name")
+  venueAddress String?   @map("venue_address")
+  
+  startsAt     DateTime  @map("starts_at")
+  endsAt       DateTime? @map("ends_at")
+  maxAttendees Int?      @map("max_attendees")
+  
+  isPublic     Boolean   @default(true) @map("is_public")
+  isVerified   Boolean   @default(false) @map("is_verified")  // official STAMPEDE event
+  
+  imageUrl     String?   @map("image_url")
+  
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  
+  creator      User          @relation(fields: [creatorId], references: [id])
+  attendees    EventAttendee[]
+  
+  @@index([city])
+  @@index([matchCode])
+  @@index([startsAt])
+  @@map("fan_events")
+}
+
+model EventAttendee {
+  id       String   @id @default(cuid())
+  eventId  String   @map("event_id")
+  userId   String   @map("user_id")
+  joinedAt DateTime @default(now()) @map("joined_at")
+  
+  event    FanEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([eventId, userId])
+  @@map("event_attendees")
+}
+
+// ── MISSIONS ──────────────────────────────────────────
+
+model Mission {
+  id           String      @id @default(cuid())
+  slug         String      @unique
+  title        String
+  description  String
+  type         MissionType
+  
+  xpReward     Int         @map("xp_reward")
+  packRewardId String?     @map("pack_reward_id")  // bonus pack on completion
+  badgeRewardId String?    @map("badge_reward_id")
+  
+  // Completion criteria (flexible JSON)
+  criteria     Json        // { action: "open_packs", count: 3 }
+  
+  // Scheduling
+  isRecurring  Boolean     @default(false) @map("is_recurring")
+  resetPeriod  String?     @map("reset_period")  // "daily" | "weekly"
+  
+  isActive     Boolean     @default(true) @map("is_active")
+  sortOrder    Int         @default(0) @map("sort_order")
+  
+  createdAt    DateTime    @default(now()) @map("created_at")
+  
+  userMissions UserMission[]
+  
+  @@map("missions")
+}
+
+model UserMission {
+  id          String        @id @default(cuid())
+  userId      String        @map("user_id")
+  missionId   String        @map("mission_id")
+  status      MissionStatus @default(ACTIVE)
+  
+  progress    Int           @default(0)
+  target      Int           @default(1)
+  
+  startedAt   DateTime      @default(now()) @map("started_at")
+  completedAt DateTime?     @map("completed_at")
+  expiresAt   DateTime?     @map("expires_at")
+  
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission     Mission       @relation(fields: [missionId], references: [id])
+  
+  @@unique([userId, missionId, startedAt])
+  @@index([userId, status])
+  @@map("user_missions")
+}
+
+// ── BADGES ────────────────────────────────────────────
+
+model Badge {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  description String
+  icon        String      @default("🏅")  // emoji icon
+  imageUrl    String      @default("") @map("image_url")
+  rarity      BadgeRarity @default(BRONZE)
+  
+  // Unlock condition
+  criteria    Json        // { type: "album_complete", team: "ARG" }
+  
+  isActive    Boolean     @default(true) @map("is_active")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  
+  userBadges  UserBadge[]
+  
+  @@map("badges")
+}
+
+model UserBadge {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  badgeId    String   @map("badge_id")
+  earnedAt   DateTime @default(now()) @map("earned_at")
+  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge      Badge    @relation(fields: [badgeId], references: [id])
+  
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
+
+// ── AI COACH ─────────────────────────────────────────
+
+model CoachConversation {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  CoachMessage[]
+  
+  @@index([userId, updatedAt(sort: Desc)])
+  @@map("coach_conversations")
+}
+
+model CoachMessage {
+  id             String   @id @default(cuid())
+  conversationId String   @map("conversation_id")
+  role           String   // "user" | "assistant"
+  content        String
+  tokensUsed     Int?     @map("tokens_used")
+  intentTag      String?  @map("intent_tag")
+  createdAt      DateTime @default(now()) @map("created_at")
+  
+  conversation   CoachConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@index([conversationId, createdAt(sort: Desc)])
+  @@map("coach_messages")
+}
+
+// ── SOCIAL FEED ──────────────────────────────────────
+
+model FeedPost {
+  id          String     @id @default(cuid())
+  userId      String     @map("user_id")
+  content     String?
+  imageUrl    String?    @map("image_url")
+  stickerId   String?    @map("sticker_id")  // shared sticker reveal
+  
+  likesCount  Int        @default(0) @map("likes_count")
+  isPublic    Boolean    @default(true) @map("is_public")
+  
+  createdAt   DateTime   @default(now()) @map("created_at")
+  
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes       FeedLike[]
+  
+  @@index([createdAt(sort: Desc)])
+  @@index([userId])
+  @@map("feed_posts")
+}
+
+model FeedLike {
+  id        String   @id @default(cuid())
+  postId    String   @map("post_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  post      FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([postId, userId])
+  @@map("feed_likes")
+}
