@@ -4,6 +4,47 @@ function proxied(url: string) {
   return `/api/image-proxy?url=${encodeURIComponent(url)}`;
 }
 
+function normalizeName(name: string): string {
+  const trimmed = name.trim();
+
+  if (/[ÃÂâ]/.test(trimmed)) {
+    try {
+      return Buffer.from(trimmed, "latin1").toString("utf8");
+    } catch {
+      return trimmed;
+    }
+  }
+
+  return trimmed;
+}
+
+async function validateImage(url: string | null | undefined): Promise<string | null> {
+  if (!url) return null;
+
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+      signal: AbortSignal.timeout(2500),
+    });
+
+    if (res.ok) return url;
+  } catch {
+    // Fallback to GET below.
+  }
+
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+      signal: AbortSignal.timeout(2500),
+    });
+
+    return res.ok ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 // ── 120+ jugadores con URL directa verificada ─────────────────────────────────
 const PHOTO_OVERRIDES: Record<string, string> = {
   // ── Argentina ─────────────────────────────────────────────────────────────
@@ -323,16 +364,13 @@ async function raceAll(...fns: (() => Promise<string | null>)[]): Promise<string
 
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function GET(req: NextRequest) {
-  const name = req.nextUrl.searchParams.get("name")?.trim();
-  if (!name) return NextResponse.json({ url: null });
+  const rawName = req.nextUrl.searchParams.get("name")?.trim();
+  if (!rawName) return NextResponse.json({ url: null });
+  const name = normalizeName(rawName);
 
-  // 1. Hardcoded overrides — instant
-  if (PHOTO_OVERRIDES[name]) {
-    return NextResponse.json({ url: proxied(PHOTO_OVERRIDES[name]) });
-  }
-
-  // 2. Race all 5 free sources in parallel
+  // Validate the override before trusting it; some legacy Wikimedia thumbs are dead.
   const url = await raceAll(
+    () => validateImage(PHOTO_OVERRIDES[name]),
     () => fromWikiRest(name),
     () => fromWikiPageImages(name),
     () => fromWikidata(name),
