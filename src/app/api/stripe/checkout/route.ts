@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
-import { stripe, STRIPE_PLANS, type StripePlan } from "@/lib/stripe";
+import { getStripe, STRIPE_PLANS, type StripePlan } from "@/lib/stripe";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -9,7 +9,7 @@ const checkoutSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const { userId: clerkId } = auth();
+  const { userId: clerkId } = await auth();
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
@@ -20,6 +20,9 @@ export async function POST(req: NextRequest) {
 
   const { plan } = parsed.data;
   const planConfig = STRIPE_PLANS[plan as StripePlan];
+  if (!planConfig.priceId) {
+    return NextResponse.json({ error: "Stripe plan is not configured" }, { status: 500 });
+  }
 
   const user = await db.user.findUnique({ where: { clerkId } });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -29,6 +32,7 @@ export async function POST(req: NextRequest) {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const stripe = getStripe();
 
   // Create or reuse Stripe customer
   let customerId = user.stripeCustomerId;
