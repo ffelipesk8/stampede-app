@@ -49,7 +49,7 @@ export function useStickerImage(
     fetch(endpoint)
       .then(r => r.json())
       .then(d => {
-        if (!cancelled && d.url) {
+        if (!cancelled && d.url && d.url !== photoUrl) {
           setPhotoUrl(d.url);
           setError(false);
         }
