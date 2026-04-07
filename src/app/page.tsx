@@ -425,8 +425,7 @@ function FeatureCard({ icon, title, desc, color, glow }: {
 }) {
   return (
     <div className="group p-6 rounded-2xl border border-white/6 hover:border-white/15 transition-all duration-300 hover:scale-[1.02]"
-         style={{ background: "rgba(255,255,255,0.025)", boxShadow: `0 0 0 1px ${glow}00` }}
-         onMouseEnter={() => {}}>
+         style={{ background: "rgba(255,255,255,0.025)", boxShadow: `0 0 0 1px ${glow}00` }}>
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-white/8"
            style={{ background: `${color}18` }}>
         {icon}
