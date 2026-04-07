@@ -1,0 +1,68 @@
+[
+  {
+    "key": "city:new york city",
+    "category": "city",
+    "name": "New York City",
+    "imagePath": "/images/stickers/cities/new-york-city.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/New%20York%20City,%20Skyline.jpg",
+    "sourceLabel": "Wikimedia Commons",
+    "license": "Check file page on Wikimedia Commons",
+    "attribution": "See Wikimedia Commons source page",
+    "status": "ready"
+  },
+  {
+    "key": "city:mexico city",
+    "category": "city",
+    "name": "Mexico City",
+    "imagePath": "/images/stickers/cities/mexico-city.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMexico_City_Skyline.jpg",
+    "sourceLabel": "Wikimedia Commons",
+    "license": "Check file page on Wikimedia Commons",
+    "attribution": "See Wikimedia Commons source page",
+    "status": "ready"
+  },
+  {
+    "key": "city:ciudad de mexico",
+    "category": "city",
+    "name": "Ciudad de Mexico",
+    "imagePath": "/images/stickers/cities/mexico-city.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMexico_City_Skyline.jpg",
+    "sourceLabel": "Wikimedia Commons",
+    "license": "Check file page on Wikimedia Commons",
+    "attribution": "See Wikimedia Commons source page",
+    "status": "ready"
+  },
+  {
+    "key": "stadium:metlife stadium",
+    "category": "stadium",
+    "name": "MetLife Stadium",
+    "imagePath": "/images/stickers/stadiums/metlife-stadium.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Metlife%20stadium%20(Aerial%20view).jpg",
+    "sourceLabel": "Wikimedia Commons",
+    "license": "Check file page on Wikimedia Commons",
+    "attribution": "See Wikimedia Commons source page",
+    "status": "ready"
+  },
+  {
+    "key": "stadium:azteca stadium",
+    "category": "stadium",
+    "name": "Azteca Stadium",
+    "imagePath": "/images/stickers/stadiums/azteca-stadium.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Estadio%20Azteca.JPG",
+    "sourceLabel": "Wikimedia Commons",
+    "license": "Check file page on Wikimedia Commons",
+    "attribution": "See Wikimedia Commons source page",
+    "status": "ready"
+  },
+  {
+    "key": "stadium:estadio azteca",
+    "category": "stadium",
+    "name": "Estadio Azteca",
+    "imagePath": "/images/stickers/stadiums/azteca-stadium.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Estadio%20Azteca.JPG",
+    "sourceLabel": "Wikimedia Commons",
+    "license": "Check file page on Wikimedia Commons",
+    "attribution": "See Wikimedia Commons source page",
+    "status": "ready"
+  }
+]

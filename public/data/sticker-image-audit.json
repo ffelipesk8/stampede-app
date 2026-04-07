@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-04-07T06:25:37.825Z",
+  "database": {
+    "connected": false,
+    "error": "\nInvalid `prisma.sticker.findMany()` invocation:\n\n\nError opening a TLS connection: No hay credenciales disponibles en el paquete de seguridad (os error -2146893042)"
+  },
+  "totals": {
+    "stickers": 0,
+    "catalogEntries": 6,
+    "readyLocal": 0,
+    "remoteOnly": 0,
+    "missing": 0,
+    "localFiles": 6
+  },
+  "categories": {},
+  "samples": {
+    "remoteOnly": [],
+    "missing": []
+  }
+}
