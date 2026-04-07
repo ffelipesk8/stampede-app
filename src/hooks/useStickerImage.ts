@@ -21,6 +21,12 @@ export function useStickerImage(
   const [error, setError]       = useState(false);
 
   useEffect(() => {
+    setPhotoUrl(fallback || null);
+    setLoaded(false);
+    setError(false);
+  }, [name, category, fallback]);
+
+  useEffect(() => {
     if (photoUrl && !error) return;
     let cancelled = false;
 
@@ -32,10 +38,15 @@ export function useStickerImage(
 
     fetch(endpoint)
       .then(r => r.json())
-      .then(d => { if (!cancelled && d.url) setPhotoUrl(d.url); })
+      .then(d => {
+        if (!cancelled && d.url) {
+          setPhotoUrl(d.url);
+          setError(false);
+        }
+      })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [name, category]);
+  }, [name, category, photoUrl, error]);
 
   return {
     photoUrl,
