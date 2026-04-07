@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">MetLife Stadium</title>
+  <desc id="desc">Stylized local placeholder image for MetLife Stadium.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#13203c"/>
+      <stop offset="60%" stop-color="#34134f"/>
+      <stop offset="100%" stop-color="#6e2bb7"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#65d66e"/>
+      <stop offset="100%" stop-color="#2e7f37"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect x="60" y="160" width="680" height="420" rx="36" fill="#1c2643" stroke="#9f7aea" stroke-width="16"/>
+  <rect x="115" y="210" width="570" height="110" rx="20" fill="#414c72"/>
+  <rect x="115" y="348" width="570" height="110" rx="20" fill="#57658e"/>
+  <rect x="115" y="486" width="570" height="54" rx="12" fill="#69789f"/>
+  <rect x="185" y="598" width="430" height="222" rx="18" fill="url(#field)" stroke="#e2e8f0" stroke-width="10"/>
+  <line x1="400" y1="598" x2="400" y2="820" stroke="#e2e8f0" stroke-width="8"/>
+  <circle cx="400" cy="709" r="48" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+  <text x="400" y="892" text-anchor="middle" font-family="Arial, sans-serif" font-size="66" font-weight="700" fill="#ffffff">MetLife Stadium</text>
+  <text x="400" y="946" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#d6bcfa">Local stable asset</text>
+</svg>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useStickerImage } from "@/hooks/useStickerImage";
 
 export function LandingStickerPreview({
@@ -24,7 +25,16 @@ export function LandingStickerPreview({
   cat: string;
 }) {
   const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(name, cat, img || null);
+  const isStaticVenue = cat === "city" || cat === "stadium";
+  const staticUrl = useMemo(() => (isStaticVenue && img.startsWith("/") ? img : null), [img, isStaticVenue]);
+  const [staticFailed, setStaticFailed] = useState(false);
+  const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
+    name,
+    cat,
+    isStaticVenue ? null : img || null
+  );
+  const imageUrl = staticUrl && !staticFailed ? staticUrl : photoUrl;
+  const canShowImage = !!imageUrl && !(staticUrl && staticFailed) && (staticUrl ? true : showPhoto);
 
   return (
     <div
@@ -36,14 +46,20 @@ export function LandingStickerPreview({
         style={{ background: `linear-gradient(160deg, ${bg1} 0%, ${bg2} 100%)` }}
       >
         <div className="absolute top-0 left-0 right-0 h-1.5 z-10" style={{ background: color }} />
-        {showPhoto ? (
+        {canShowImage ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={photoUrl!}
+            src={imageUrl!}
             alt={name}
             className="w-full h-full object-cover object-top"
             onLoad={() => setLoaded(true)}
-            onError={() => setError(true)}
+            onError={() => {
+              if (staticUrl) {
+                setStaticFailed(true);
+                return;
+              }
+              setError(true);
+            }}
           />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">

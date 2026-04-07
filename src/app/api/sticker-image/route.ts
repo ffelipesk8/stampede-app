@@ -7,7 +7,7 @@ function proxied(url: string) {
 
 // ── Stadiums ──────────────────────────────────────────────────────────────────
 const STADIUM_IMAGES: Record<string, string> = {
-  "MetLife Stadium":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/MetLife_Stadium_-_Aerial_photo.jpg/640px-MetLife_Stadium_-_Aerial_photo.jpg",
+  "MetLife Stadium":        "/images/stickers/stadiums/metlife-stadium.svg",
   "AT&T Stadium":           "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/ATT_Stadium_-_Aerial_Photo.jpg/640px-ATT_Stadium_-_Aerial_Photo.jpg",
   "SoFi Stadium":           "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/SoFi_Stadium_aerial_view.jpg/640px-SoFi_Stadium_aerial_view.jpg",
   "Hard Rock Stadium":      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Hard_Rock_Stadium_2019.jpg/640px-Hard_Rock_Stadium_2019.jpg",
@@ -15,7 +15,7 @@ const STADIUM_IMAGES: Record<string, string> = {
   "Arrowhead Stadium":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Arrowhead_Stadium_aerial.jpg/640px-Arrowhead_Stadium_aerial.jpg",
   "Gillette Stadium":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Gillette_Stadium_2019.jpg/640px-Gillette_Stadium_2019.jpg",
   "Lincoln Financial Field":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Lincoln_Financial_Field.jpg/640px-Lincoln_Financial_Field.jpg",
-  "Estadio Azteca":         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Estadio_Azteca_-_Mexico_City_2016.jpg/640px-Estadio_Azteca_-_Mexico_City_2016.jpg",
+  "Estadio Azteca":         "/images/stickers/stadiums/azteca-stadium.svg",
   "Estadio BBVA":           "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Estadio_BBVA_%28cropped%29.jpg/640px-Estadio_BBVA_%28cropped%29.jpg",
   "BC Place":               "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/BCPlace2011.jpg/640px-BCPlace2011.jpg",
   "BMO Field":              "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/BMO_Field_panoramic_%28cropped%29.jpg/640px-BMO_Field_panoramic_%28cropped%29.jpg",
@@ -25,13 +25,13 @@ const STADIUM_IMAGES: Record<string, string> = {
   "Allianz Arena":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/AllianzArenaAugust2006.jpg/640px-AllianzArenaAugust2006.jpg",
   "Maracanã":               "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Maracan%C3%A3_Rio_de_Janeiro_-_Brazil.jpg/640px-Maracan%C3%A3_Rio_de_Janeiro_-_Brazil.jpg",
   "Luzhniki Stadium":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Luzhniki_Stadium_2018.jpg/640px-Luzhniki_Stadium_2018.jpg",
-  "Azteca Stadium":         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Estadio_Azteca_-_Mexico_City_2016.jpg/640px-Estadio_Azteca_-_Mexico_City_2016.jpg",
+  "Azteca Stadium":         "/images/stickers/stadiums/azteca-stadium.svg",
 };
 
 // ── Host Cities ───────────────────────────────────────────────────────────────
 const CITY_IMAGES: Record<string, string> = {
-  "New York":       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg/640px-Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg",
-  "New York City":  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg/640px-Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg",
+  "New York":       "/images/stickers/cities/new-york-city.jpg",
+  "New York City":  "/images/stickers/cities/new-york-city.jpg",
   "Los Angeles":    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/20190616014452%21Echo_Park_Lake%2C_Los_Angeles.jpg/640px-20190616014452%21Echo_Park_Lake%2C_Los_Angeles.jpg",
   "Dallas":         "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Dallas_skyline_2018.jpg/640px-Dallas_skyline_2018.jpg",
   "Miami":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Miami_collage_20101023.jpg/640px-Miami_collage_20101023.jpg",
@@ -40,9 +40,9 @@ const CITY_IMAGES: Record<string, string> = {
   "Boston":         "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Boston_skyline_-_Massachusetts_-_USA.jpg/640px-Boston_skyline_-_Massachusetts_-_USA.jpg",
   "Philadelphia":   "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Philadelphia_skyline_from_south_street_bridge_july_2016_HDR.jpg/640px-Philadelphia_skyline_from_south_street_bridge_july_2016_HDR.jpg",
   "Seattle":        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seattle_Kerry_Park_Skyline.jpg/640px-Seattle_Kerry_Park_Skyline.jpg",
-  "Mexico City":    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mexico_City_Aerial_view_2016.jpg/640px-Mexico_City_Aerial_view_2016.jpg",
-  "Ciudad de México":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mexico_City_Aerial_view_2016.jpg/640px-Mexico_City_Aerial_view_2016.jpg",
-  "Ciudad de Mexico":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mexico_City_Aerial_view_2016.jpg/640px-Mexico_City_Aerial_view_2016.jpg",
+  "Mexico City":    "/images/stickers/cities/mexico-city.jpg",
+  "Ciudad de México":"/images/stickers/cities/mexico-city.jpg",
+  "Ciudad de Mexico":"/images/stickers/cities/mexico-city.jpg",
   "Guadalajara":    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Guadalajara_Jalisco.jpg/640px-Guadalajara_Jalisco.jpg",
   "Monterrey":      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Monterrey_skyline_2019.jpg/640px-Monterrey_skyline_2019.jpg",
   "Vancouver":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Vancouver_Canada_Skyline.jpg/640px-Vancouver_Canada_Skyline.jpg",
@@ -129,7 +129,8 @@ export async function GET(req: NextRequest) {
   // ── Stadiums ──
   if (category === "stadium" || category === "venue") {
     if (NORMALIZED_STADIUM_IMAGES[normalizedName]) {
-      return NextResponse.json({ url: proxied(NORMALIZED_STADIUM_IMAGES[normalizedName]) });
+      const image = NORMALIZED_STADIUM_IMAGES[normalizedName];
+      return NextResponse.json({ url: image.startsWith("/") ? image : proxied(image) });
     }
     const url = await wikiLookup([name, `${name} stadium`, `${name} football stadium`]);
     return NextResponse.json({ url });
@@ -138,7 +139,8 @@ export async function GET(req: NextRequest) {
   // ── Cities ──
   if (category === "city" || category === "host_city") {
     if (NORMALIZED_CITY_IMAGES[normalizedName]) {
-      return NextResponse.json({ url: proxied(NORMALIZED_CITY_IMAGES[normalizedName]) });
+      const image = NORMALIZED_CITY_IMAGES[normalizedName];
+      return NextResponse.json({ url: image.startsWith("/") ? image : proxied(image) });
     }
     const url = await wikiLookup([name, `${name} city`]);
     return NextResponse.json({ url });

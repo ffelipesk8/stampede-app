@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Azteca Stadium</title>
+  <desc id="desc">Stylized local placeholder image for Azteca Stadium.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b3a2d"/>
+      <stop offset="50%" stop-color="#8c1024"/>
+      <stop offset="100%" stop-color="#d24f17"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#79f17d"/>
+      <stop offset="100%" stop-color="#1f8b32"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <ellipse cx="400" cy="410" rx="310" ry="225" fill="#3f1b23" stroke="#34d399" stroke-width="16"/>
+  <ellipse cx="400" cy="410" rx="235" ry="162" fill="#5c2832"/>
+  <ellipse cx="400" cy="410" rx="172" ry="112" fill="url(#field)" stroke="#f8fafc" stroke-width="10"/>
+  <line x1="400" y1="298" x2="400" y2="522" stroke="#f8fafc" stroke-width="8"/>
+  <circle cx="400" cy="410" r="42" fill="none" stroke="#f8fafc" stroke-width="8"/>
+  <rect x="150" y="625" width="500" height="72" rx="20" fill="#14532d" opacity="0.8"/>
+  <rect x="122" y="715" width="556" height="62" rx="18" fill="#7f1d1d" opacity="0.75"/>
+  <text x="400" y="880" text-anchor="middle" font-family="Arial, sans-serif" font-size="68" font-weight="700" fill="#ffffff">Azteca Stadium</text>
+  <text x="400" y="936" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#bbf7d0">Local stable asset</text>
+</svg>
