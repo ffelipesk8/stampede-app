@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { decodeMojibake, normalizeEntityName, normalizedLookup } from "@/lib/sticker-names";
 
 function proxied(url: string) {
   return `/api/image-proxy?url=${encodeURIComponent(url)}`;
@@ -89,6 +90,11 @@ const CREST_IMAGES: Record<string, string> = {
   "Italy":        "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Football_pictogram.svg/200px-Football_pictogram.svg.png",
 };
 
+const NORMALIZED_STADIUM_IMAGES = normalizedLookup(STADIUM_IMAGES);
+const NORMALIZED_CITY_IMAGES = normalizedLookup(CITY_IMAGES);
+const NORMALIZED_COACH_IMAGES = normalizedLookup(COACH_IMAGES);
+const NORMALIZED_CREST_IMAGES = normalizedLookup(CREST_IMAGES);
+
 // ── Wikipedia lookup for unknown entities ─────────────────────────────────────
 async function wikiLookup(searchTerms: string[]): Promise<string | null> {
   for (const term of searchTerms) {
@@ -112,28 +118,37 @@ async function wikiLookup(searchTerms: string[]): Promise<string | null> {
 }
 
 export async function GET(req: NextRequest) {
-  const name     = req.nextUrl.searchParams.get("name")?.trim();
+  const rawName  = req.nextUrl.searchParams.get("name")?.trim();
   const category = req.nextUrl.searchParams.get("category")?.toLowerCase().trim() ?? "player";
 
-  if (!name) return NextResponse.json({ url: null });
+  if (!rawName) return NextResponse.json({ url: null });
+
+  const name = decodeMojibake(rawName);
+  const normalizedName = normalizeEntityName(name);
 
   // ── Stadiums ──
   if (category === "stadium" || category === "venue") {
-    if (STADIUM_IMAGES[name]) return NextResponse.json({ url: proxied(STADIUM_IMAGES[name]) });
+    if (NORMALIZED_STADIUM_IMAGES[normalizedName]) {
+      return NextResponse.json({ url: proxied(NORMALIZED_STADIUM_IMAGES[normalizedName]) });
+    }
     const url = await wikiLookup([name, `${name} stadium`, `${name} football stadium`]);
     return NextResponse.json({ url });
   }
 
   // ── Cities ──
   if (category === "city" || category === "host_city") {
-    if (CITY_IMAGES[name]) return NextResponse.json({ url: proxied(CITY_IMAGES[name]) });
+    if (NORMALIZED_CITY_IMAGES[normalizedName]) {
+      return NextResponse.json({ url: proxied(NORMALIZED_CITY_IMAGES[normalizedName]) });
+    }
     const url = await wikiLookup([name, `${name} city`]);
     return NextResponse.json({ url });
   }
 
   // ── Coaches / DT ──
   if (category === "coach" || category === "manager" || category === "dt") {
-    if (COACH_IMAGES[name]) return NextResponse.json({ url: proxied(COACH_IMAGES[name]) });
+    if (NORMALIZED_COACH_IMAGES[normalizedName]) {
+      return NextResponse.json({ url: proxied(NORMALIZED_COACH_IMAGES[normalizedName]) });
+    }
     const url = await wikiLookup([
       name,
       `${name} football manager`,
@@ -144,7 +159,9 @@ export async function GET(req: NextRequest) {
 
   // ── Team Crests ──
   if (category === "crest" || category === "team" || category === "badge") {
-    if (CREST_IMAGES[name]) return NextResponse.json({ url: proxied(CREST_IMAGES[name]) });
+    if (NORMALIZED_CREST_IMAGES[normalizedName]) {
+      return NextResponse.json({ url: proxied(NORMALIZED_CREST_IMAGES[normalizedName]) });
+    }
     const url = await wikiLookup([
       `${name} national football team`,
       `${name} football federation`,

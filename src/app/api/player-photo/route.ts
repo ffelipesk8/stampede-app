@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { decodeMojibake, normalizeEntityName, normalizedLookup } from "@/lib/sticker-names";
 
 function proxied(url: string) {
   return `/api/image-proxy?url=${encodeURIComponent(url)}`;
@@ -204,6 +205,8 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "André Ayew":           "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Andre_Ayew_2022_%28cropped%29.jpg/440px-Andre_Ayew_2022_%28cropped%29.jpg",
 };
 
+const NORMALIZED_PHOTO_OVERRIDES = normalizedLookup(PHOTO_OVERRIDES);
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 /** Build multiple Wikipedia slug variants for a player name */
@@ -366,11 +369,12 @@ async function raceAll(...fns: (() => Promise<string | null>)[]): Promise<string
 export async function GET(req: NextRequest) {
   const rawName = req.nextUrl.searchParams.get("name")?.trim();
   if (!rawName) return NextResponse.json({ url: null });
-  const name = normalizeName(rawName);
+  const name = decodeMojibake(rawName);
+  const normalizedName = normalizeEntityName(name);
 
   // Validate the override before trusting it; some legacy Wikimedia thumbs are dead.
   const url = await raceAll(
-    () => validateImage(PHOTO_OVERRIDES[name]),
+    () => validateImage(NORMALIZED_PHOTO_OVERRIDES[normalizedName]),
     () => fromWikiRest(name),
     () => fromWikiPageImages(name),
     () => fromWikidata(name),
