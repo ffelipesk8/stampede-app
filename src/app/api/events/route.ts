@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
+import { getOrCreateUserByClerkId } from "@/lib/auth";
 import { z } from "zod";
 
 // GET /api/events?city=Dallas&match=MEX&lat=32.7&lon=-96.7
@@ -48,15 +49,14 @@ const createSchema = z.object({
 
 // POST /api/events — create event
 export async function POST(req: NextRequest) {
-  const { userId: clerkId } = auth();
+  const { userId: clerkId } = await auth();
   if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const user = await db.user.findUnique({ where: { clerkId } });
-  if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const user = await getOrCreateUserByClerkId(clerkId);
 
   const event = await db.fanEvent.create({
     data: { ...parsed.data, creatorId: user.id, startsAt: new Date(parsed.data.startsAt) },

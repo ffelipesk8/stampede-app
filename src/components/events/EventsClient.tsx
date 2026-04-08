@@ -34,6 +34,7 @@ interface EventsClientProps {
   myEvents: FanEvent[];
   userId: string;
   favoriteTeam: string | null;
+  countryCode: string | null;
 }
 
 const EVENT_TYPE_CONFIG: Record<EventType, { label: string; emoji: string; color: string }> = {
@@ -49,7 +50,7 @@ const TEAM_FLAGS: Record<string, string> = {
   MEX: "🇲🇽", USA: "🇺🇸", POR: "🇵🇹", NLD: "🇳🇱",
 };
 
-export function EventsClient({ events, myEvents, userId, favoriteTeam }: EventsClientProps) {
+export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCode }: EventsClientProps) {
   const [activeTab, setActiveTab] = useState<"discover" | "my">("discover");
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<EventType | "ALL">("ALL");
@@ -199,7 +200,13 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam }: EventsC
 
       {/* ── Create event modal ── */}
       <AnimatePresence>
-        {showCreate && <CreateEventModal onClose={() => setShowCreate(false)} favoriteTeam={favoriteTeam} />}
+        {showCreate && (
+          <CreateEventModal
+            onClose={() => setShowCreate(false)}
+            favoriteTeam={favoriteTeam}
+            countryCode={countryCode}
+          />
+        )}
         {selectedEvent && (
           <EventDetailModal
             event={selectedEvent}
@@ -384,18 +391,89 @@ function EventDetailModal({ event, isAttending, onAttend, onClose }: {
 }
 
 // ── Create Event Modal ────────────────────────────────────────────────────────
-function CreateEventModal({ onClose, favoriteTeam }: { onClose: () => void; favoriteTeam: string | null }) {
+const COUNTRY_OPTIONS = [
+  { code: "ARG", label: "Argentina" },
+  { code: "BRA", label: "Brazil" },
+  { code: "COL", label: "Colombia" },
+  { code: "ESP", label: "Spain" },
+  { code: "FRA", label: "France" },
+  { code: "MEX", label: "Mexico" },
+  { code: "USA", label: "United States" },
+];
+
+const EVENT_TEMPLATES: Record<EventType, { title: string; venue: string; description: string }> = {
+  MATCH_DAY: {
+    title: "Match day fan meetup",
+    venue: "Official fan zone",
+    description: "We meet before kickoff, wear team colors and enjoy the full match-day vibe together.",
+  },
+  WATCH_PARTY: {
+    title: "Watch party with fans",
+    venue: "Sports bar or home watch party",
+    description: "Big screen, chants, predictions and a relaxed place to watch the match together.",
+  },
+  FAN_MEETUP: {
+    title: "Local fan meetup",
+    venue: "Central meeting point",
+    description: "Casual meetup to connect with other fans, swap stories and plan future match days.",
+  },
+  TRAVEL_GROUP: {
+    title: "Travel group for the match",
+    venue: "Airport or transport hub",
+    description: "Coordinate logistics, transport and hotel details with other fans going to the same game.",
+  },
+  AFTER_PARTY: {
+    title: "Post-match celebration",
+    venue: "Night venue or bar",
+    description: "Celebrate after the game with music, highlights and other supporters from the event.",
+  },
+};
+
+function CreateEventModal({
+  onClose,
+  favoriteTeam,
+  countryCode,
+}: {
+  onClose: () => void;
+  favoriteTeam: string | null;
+  countryCode: string | null;
+}) {
+  const defaultCountry = countryCode ?? favoriteTeam ?? "COL";
+  const defaultDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  defaultDate.setMinutes(0, 0, 0);
+  defaultDate.setHours(19);
+
   const [form, setForm] = useState({
-    title: "", description: "", type: "FAN_MEETUP" as EventType,
-    city: "", country: favoriteTeam ?? "USA", venueName: "",
-    startsAt: "", matchCode: "", maxAttendees: "",
+    title: "",
+    description: "",
+    type: "FAN_MEETUP" as EventType,
+    city: "",
+    country: defaultCountry,
+    venueName: "",
+    venueAddress: "",
+    startsAt: defaultDate.toISOString().slice(0, 16),
+    matchCode: "",
+    maxAttendees: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const applyTemplate = (type: EventType) => {
+    const template = EVENT_TEMPLATES[type];
+    setForm((current) => ({
+      ...current,
+      type,
+      title: current.title || template.title,
+      venueName: current.venueName || template.venue,
+      description: current.description || template.description,
+    }));
+  };
 
   const submit = async () => {
     setLoading(true);
     setError("");
+    setSuccess("");
     try {
       const res = await fetch("/api/events", {
         method: "POST",
@@ -408,9 +486,12 @@ function CreateEventModal({ onClose, favoriteTeam }: { onClose: () => void; favo
       });
       if (!res.ok) {
         const d = await res.json();
-        throw new Error(JSON.stringify(d.error));
+        throw new Error("We could not create the event. Please check title, city, country and date.");
       }
-      onClose();
+      setSuccess("Event created. Refreshing the page...");
+      setTimeout(() => {
+        window.location.reload();
+      }, 900);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -451,13 +532,29 @@ function CreateEventModal({ onClose, favoriteTeam }: { onClose: () => void; favo
         </div>
 
         <div className="space-y-4">
-          {field("Event Title *", "title", "text", "e.g. Mexico fans gathering before kickoff")}
+          <div>
+            <label className="text-t3 text-xs font-semibold block mb-2">Quick start</label>
+            <div className="flex flex-wrap gap-2">
+              {(Object.entries(EVENT_TYPE_CONFIG) as [EventType, typeof EVENT_TYPE_CONFIG[EventType]][]).map(([type, conf]) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => applyTemplate(type)}
+                  className="px-3 py-2 rounded-lg text-xs font-bold border border-border bg-card2 text-t1 hover:border-orange transition-colors"
+                >
+                  {conf.emoji} {conf.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {field("Event Title *", "title", "text", "e.g. Colombia fans meetup before kickoff")}
 
           <div>
             <label className="text-t3 text-xs font-semibold block mb-1">Event Type *</label>
             <select
               value={form.type}
-              onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as EventType }))}
+              onChange={(e) => applyTemplate(e.target.value as EventType)}
               className="w-full bg-card2 border border-border rounded-lg px-3 py-2.5 text-sm text-t1 focus:outline-none focus:border-orange"
             >
               {Object.entries(EVENT_TYPE_CONFIG).map(([t, c]) => (
@@ -467,19 +564,33 @@ function CreateEventModal({ onClose, favoriteTeam }: { onClose: () => void; favo
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {field("City *", "city", "text", "Dallas")}
-            {field("Country Code *", "country", "text", "USA")}
+            {field("City *", "city", "text", "Bogota")}
+            <div>
+              <label className="text-t3 text-xs font-semibold block mb-1">Country *</label>
+              <select
+                value={form.country}
+                onChange={(e) => setForm((f) => ({ ...f, country: e.target.value }))}
+                className="w-full bg-card2 border border-border rounded-lg px-3 py-2.5 text-sm text-t1 focus:outline-none focus:border-orange"
+              >
+                {COUNTRY_OPTIONS.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {field("Venue Name", "venueName", "text", "AT&T Stadium Fan Zone")}
+          {field("Venue Name", "venueName", "text", "Bar, fan zone, airport or meeting point")}
+          {field("Address or Reference", "venueAddress", "text", "Optional but helpful for new fans")}
           {field("Date & Time *", "startsAt", "datetime-local")}
-          {field("Match Code", "matchCode", "text", "MEX-POL-GRP-2026")}
+          {field("Match Code", "matchCode", "text", "Optional: MEX-POL-GRP-2026")}
           {field("Max Attendees", "maxAttendees", "number", "Leave blank for unlimited")}
 
           <div>
             <label className="text-t3 text-xs font-semibold block mb-1">Description</label>
             <textarea
-              placeholder="Tell fans what to expect..."
+              placeholder="Tell fans what to expect, what to bring, and how to find the group..."
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={3}
@@ -487,7 +598,12 @@ function CreateEventModal({ onClose, favoriteTeam }: { onClose: () => void; favo
             />
           </div>
 
+          <div className="rounded-xl border border-border bg-card2/50 p-3 text-xs text-t2">
+            Tip: for a new event, the fastest format is city + venue + date + one clear sentence about the plan.
+          </div>
+
           {error && <p className="text-red text-sm">{error}</p>}
+          {success && <p className="text-green text-sm">{success}</p>}
 
           <div className="flex gap-3 pt-2">
             <button
@@ -506,4 +622,3 @@ function CreateEventModal({ onClose, favoriteTeam }: { onClose: () => void; favo
     </motion.div>
   );
 }
-

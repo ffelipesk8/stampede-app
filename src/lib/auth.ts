@@ -10,8 +10,12 @@ export async function getAuthUser() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
+  return getOrCreateUserByClerkId(userId);
+}
+
+export async function getOrCreateUserByClerkId(clerkId: string) {
   const user = await db.user.findUnique({
-    where: { clerkId: userId },
+    where: { clerkId },
   });
 
   if (!user) {
