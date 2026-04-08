@@ -3,8 +3,13 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getFanTitle } from "@/lib/xp";
 import Link from "next/link";
+import { PaymentStatusBanner } from "@/components/upgrade/PaymentStatusBanner";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: { payment?: string; plan?: string };
+}) {
   const { userId: clerkId } = await auth();
   if (!clerkId) redirect("/sign-in");
 
@@ -27,6 +32,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
+      <PaymentStatusBanner
+        initialIsPro={user.isPro}
+        payment={searchParams?.payment}
+        plan={searchParams?.plan}
+      />
 
       {/* Welcome header */}
       <div>

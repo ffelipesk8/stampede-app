@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     reference,
     amountCents: planConfig.amountCentsCOP,
     currency: "COP",
-    redirectUrl: `${appUrl}/dashboard?payment=pending`,
+    redirectUrl: `${appUrl}/dashboard?payment=processing&plan=${plan}`,
     customerEmail: user.email,
   });
 
