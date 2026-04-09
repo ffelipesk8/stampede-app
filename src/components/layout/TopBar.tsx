@@ -52,7 +52,7 @@ export function TopBar({ xp, coins = 0, notificationCount = 0 }: TopBarProps) {
         </span>
       </div>
 
-      {/* ── Language Switcher ─────────────────────────────────────────────────── */}
+      {/* -- Language Switcher --------------------------------------------------- */}
       <div className="relative" ref={dropdownRef}>
         {/* Trigger button — always visible, prominent */}
         <button

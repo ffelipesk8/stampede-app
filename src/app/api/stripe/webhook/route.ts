@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   try {
     switch (event.type) {
 
-      // ── Subscription created or renewed ─────────────────
+      // -- Subscription created or renewed -----------------
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
-      // ── Subscription cancelled / past due ────────────────
+      // -- Subscription cancelled / past due ----------------
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
-      // ── Checkout completed (one-time confirmation) ───────
+      // -- Checkout completed (one-time confirmation) -------
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.mode === "subscription") {
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
-      // ── Invoice payment failed ───────────────────────────
+      // -- Invoice payment failed ---------------------------
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
         const customerId = invoice.customer as string;

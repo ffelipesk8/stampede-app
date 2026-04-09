@@ -2,7 +2,7 @@
 
 /**
  * PremiumCardShell
- * ────────────────────────────────────────────────────
+ * ----------------------------------------------------
  * Wrapper that adds PS5-quality visual effects to any sticker card:
  *  • 3-D tilt (perspective + rotateX/Y via mouse tracking)
  *  • Moving shine highlight
@@ -170,7 +170,7 @@ export function PremiumCardShell({
       >
         {children}
 
-        {/* ── Shine highlight ── */}
+        {/* -- Shine highlight -- */}
         {!disabled && hovered && (
           <div
             className="absolute inset-0 pointer-events-none z-30"
@@ -182,7 +182,7 @@ export function PremiumCardShell({
           />
         )}
 
-        {/* ── Foil / holographic overlay ── */}
+        {/* -- Foil / holographic overlay -- */}
         {foilOpacity > 0 && (
           <div
             className="absolute inset-0 pointer-events-none z-20"
@@ -198,7 +198,7 @@ export function PremiumCardShell({
           />
         )}
 
-        {/* ── Edge rainbow refraction (EPIC+) ── */}
+        {/* -- Edge rainbow refraction (EPIC+) -- */}
         {isEpicPlus && (
           <div
             className="absolute inset-0 pointer-events-none z-10"
@@ -210,7 +210,7 @@ export function PremiumCardShell({
           />
         )}
 
-        {/* ── Legendary sparkle particles ── */}
+        {/* -- Legendary sparkle particles -- */}
         {isLegendary && hovered && (
           <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden" style={{ borderRadius: "inherit" }}>
             {SPARKLES.map((s, i) => (

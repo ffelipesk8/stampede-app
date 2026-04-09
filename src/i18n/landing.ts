@@ -1,7 +1,7 @@
-// ════════════════════════════════════════════════════
+// ====================================================
 // STAMPEDE — Landing Page Translations
 // 12 Languages: EN ES PT FR DE AR ZH RU JA IT KO HI
-// ════════════════════════════════════════════════════
+// ====================================================
 
 export type LangCode = "en" | "es" | "pt" | "fr" | "de" | "ar" | "zh" | "ru" | "ja" | "it" | "ko" | "hi";
 
@@ -67,7 +67,7 @@ export interface LandingStrings {
 
 export const T: Record<LangCode, LandingStrings> = {
 
-  // ── ENGLISH ───────────────────────────────────────────────────────────────
+  // -- ENGLISH ---------------------------------------------------------------
   en: {
     nav: { signIn: "Sign In", joinFree: "Join Free →" },
     heroBadge: "FIFA World Cup 2026 · USA · Canada · México",
@@ -126,7 +126,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Scroll",
   },
 
-  // ── ESPAÑOL ───────────────────────────────────────────────────────────────
+  // -- ESPAÑOL ---------------------------------------------------------------
   es: {
     nav: { signIn: "Iniciar sesión", joinFree: "Únete gratis →" },
     heroBadge: "Copa Mundial FIFA 2026 · USA · Canadá · México",
@@ -185,7 +185,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Deslizar",
   },
 
-  // ── PORTUGUÊS ─────────────────────────────────────────────────────────────
+  // -- PORTUGUÊS -------------------------------------------------------------
   pt: {
     nav: { signIn: "Entrar", joinFree: "Entrar grátis →" },
     heroBadge: "Copa do Mundo FIFA 2026 · USA · Canadá · México",
@@ -244,7 +244,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Rolar",
   },
 
-  // ── FRANÇAIS ──────────────────────────────────────────────────────────────
+  // -- FRANÇAIS --------------------------------------------------------------
   fr: {
     nav: { signIn: "Se connecter", joinFree: "Rejoindre gratis →" },
     heroBadge: "Coupe du Monde FIFA 2026 · USA · Canada · Mexique",
@@ -303,7 +303,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Défiler",
   },
 
-  // ── DEUTSCH ───────────────────────────────────────────────────────────────
+  // -- DEUTSCH ---------------------------------------------------------------
   de: {
     nav: { signIn: "Anmelden", joinFree: "Kostenlos beitreten →" },
     heroBadge: "FIFA Weltmeisterschaft 2026 · USA · Kanada · Mexiko",
@@ -362,7 +362,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Scrollen",
   },
 
-  // ── ITALIANO ──────────────────────────────────────────────────────────────
+  // -- ITALIANO --------------------------------------------------------------
   it: {
     nav: { signIn: "Accedi", joinFree: "Unisciti gratis →" },
     heroBadge: "Coppa del Mondo FIFA 2026 · USA · Canada · Messico",
@@ -421,7 +421,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Scorri",
   },
 
-  // ── العربية ───────────────────────────────────────────────────────────────
+  // -- العربية ---------------------------------------------------------------
   ar: {
     nav: { signIn: "تسجيل الدخول", joinFree: "← انضم مجاناً" },
     heroBadge: "كأس العالم FIFA 2026 · الولايات المتحدة · كندا · المكسيك",
@@ -480,7 +480,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "تمرير",
   },
 
-  // ── 中文 ──────────────────────────────────────────────────────────────────
+  // -- 中文 ------------------------------------------------------------------
   zh: {
     nav: { signIn: "登录", joinFree: "免费加入 →" },
     heroBadge: "2026 FIFA 世界杯 · 美国 · 加拿大 · 墨西哥",
@@ -539,7 +539,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "滚动",
   },
 
-  // ── РУССКИЙ ───────────────────────────────────────────────────────────────
+  // -- РУССКИЙ ---------------------------------------------------------------
   ru: {
     nav: { signIn: "Войти", joinFree: "Присоединиться бесплатно →" },
     heroBadge: "Чемпионат мира FIFA 2026 · США · Канада · Мексика",
@@ -598,7 +598,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "Прокрутка",
   },
 
-  // ── 日本語 ─────────────────────────────────────────────────────────────────
+  // -- 日本語 -----------------------------------------------------------------
   ja: {
     nav: { signIn: "ログイン", joinFree: "無料で参加 →" },
     heroBadge: "FIFA ワールドカップ 2026 · アメリカ · カナダ · メキシコ",
@@ -657,7 +657,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "スクロール",
   },
 
-  // ── 한국어 ─────────────────────────────────────────────────────────────────
+  // -- 한국어 -----------------------------------------------------------------
   ko: {
     nav: { signIn: "로그인", joinFree: "무료 가입 →" },
     heroBadge: "FIFA 월드컵 2026 · 미국 · 캐나다 · 멕시코",
@@ -716,7 +716,7 @@ export const T: Record<LangCode, LandingStrings> = {
     scroll: "스크롤",
   },
 
-  // ── हिन्दी ─────────────────────────────────────────────────────────────────
+  // -- हिन्दी -----------------------------------------------------------------
   hi: {
     nav: { signIn: "साइन इन", joinFree: "मुफ़्त जुड़ें →" },
     heroBadge: "FIFA विश्व कप 2026 · USA · कनाडा · मेक्सिको",

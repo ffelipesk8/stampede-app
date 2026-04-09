@@ -1,4 +1,4 @@
-// ─── STAMPEDE · Translation Strings ──────────────────────────────────────────
+// --- STAMPEDE · Translation Strings ------------------------------------------
 // Languages: EN · ES · PT · FR · DE · AR
 // Add new keys here first, then fill all languages.
 
@@ -14,7 +14,7 @@ export const LOCALES: { code: Locale; label: string; nativeLabel: string; flag: 
 ];
 
 export type TranslationKey =
-  // ── Navigation ──────────────────────────────────────────────────────────────
+  // -- Navigation --------------------------------------------------------------
   | "nav.dashboard"
   | "nav.album"
   | "nav.packs"
@@ -25,7 +25,7 @@ export type TranslationKey =
   | "nav.profile"
   | "nav.upgrade"
   | "nav.upgradeDesc"
-  // ── Common ──────────────────────────────────────────────────────────────────
+  // -- Common ------------------------------------------------------------------
   | "common.open"
   | "common.close"
   | "common.cancel"
@@ -44,7 +44,7 @@ export type TranslationKey =
   | "common.xp"
   | "common.coins"
   | "common.language"
-  // ── Dashboard ───────────────────────────────────────────────────────────────
+  // -- Dashboard ---------------------------------------------------------------
   | "dashboard.welcome"
   | "dashboard.totalXp"
   | "dashboard.level"
@@ -54,7 +54,7 @@ export type TranslationKey =
   | "dashboard.recentActivity"
   | "dashboard.topPlayers"
   | "dashboard.startOpen"
-  // ── Pack Store ──────────────────────────────────────────────────────────────
+  // -- Pack Store --------------------------------------------------------------
   | "packs.title"
   | "packs.subtitle"
   | "packs.freeDailyPack"
@@ -75,7 +75,7 @@ export type TranslationKey =
   | "packs.resetsDaily"
   | "packs.soldOut"
   | "packs.left"
-  // ── Album ───────────────────────────────────────────────────────────────────
+  // -- Album -------------------------------------------------------------------
   | "album.title"
   | "album.progress"
   | "album.complete"
@@ -89,32 +89,32 @@ export type TranslationKey =
   | "album.listOnMarket"
   | "album.notOwned"
   | "album.inCollection"
-  // ── Ranking ─────────────────────────────────────────────────────────────────
+  // -- Ranking -----------------------------------------------------------------
   | "ranking.title"
   | "ranking.subtitle"
   | "ranking.thisWeek"
   | "ranking.allTime"
   | "ranking.yourRank"
-  // ── Events ──────────────────────────────────────────────────────────────────
+  // -- Events ------------------------------------------------------------------
   | "events.title"
   | "events.subtitle"
   | "events.upcoming"
   | "events.live"
   | "events.past"
-  // ── Marketplace ─────────────────────────────────────────────────────────────
+  // -- Marketplace -------------------------------------------------------------
   | "market.title"
   | "market.subtitle"
   | "market.buy"
   | "market.sell"
   | "market.drops"
   | "market.myListings"
-  // ── Profile ─────────────────────────────────────────────────────────────────
+  // -- Profile -----------------------------------------------------------------
   | "profile.title"
   | "profile.editProfile"
   | "profile.stats"
   | "profile.achievements"
   | "profile.collection"
-  // ── Rarity labels ───────────────────────────────────────────────────────────
+  // -- Rarity labels -----------------------------------------------------------
   | "rarity.common"
   | "rarity.uncommon"
   | "rarity.rare"
@@ -772,10 +772,10 @@ const ar: Translations = {
   "rarity.legendary": "أسطوري",
 };
 
-// ── Main dictionary ────────────────────────────────────────────────────────────
+// -- Main dictionary ------------------------------------------------------------
 export const TRANSLATIONS: Record<Locale, Translations> = { en, es, pt, fr, de, ar };
 
-// ── t() helper — used by components ───────────────────────────────────────────
+// -- t() helper — used by components -------------------------------------------
 export function t(locale: Locale, key: TranslationKey, vars?: Record<string, string | number>): string {
   const str = TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS.en[key] ?? key;
   if (!vars) return str;

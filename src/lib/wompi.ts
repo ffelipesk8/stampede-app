@@ -1,10 +1,12 @@
-// ════════════════════════════════════════════════════
-// STAMPEDE — Wompi Payment Integration
+// STAMPEDE -- Wompi Payment Integration
 // Colombian payment gateway for World Cup 2026
-// ════════════════════════════════════════════════════
 
 import crypto from "crypto";
 import { PRO_PLANS, type ProPlan } from "@/lib/pro-pricing";
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
 
 export const WOMPI_SANDBOX_URL  = "https://sandbox.wompi.co/v1";
 export const WOMPI_PROD_URL     = "https://production.wompi.co/v1";
@@ -14,29 +16,58 @@ export function getWompiBaseUrl() {
   return process.env.NODE_ENV === "production" ? WOMPI_PROD_URL : WOMPI_SANDBOX_URL;
 }
 
-// ── Plans (in COP cents) ─────────────────────────────
-// 29,900 COP/month | 249,900 COP/year
+// ---------------------------------------------------------------------------
+// Plans (in COP cents)  -- 29,900 COP/month | 249,900 COP/year
+// ---------------------------------------------------------------------------
+
 export const WOMPI_PLANS = PRO_PLANS;
 export type WompiPlan = ProPlan;
 
-// ── Reference encoding ───────────────────────────────
+// ---------------------------------------------------------------------------
+// Event types  (declared BEFORE functions that reference them)
+// ---------------------------------------------------------------------------
+
+export interface WompiTransactionEvent {
+  event: "transaction.updated";
+  data: {
+    transaction: {
+      id: string;
+      reference: string;
+      status: "APPROVED" | "DECLINED" | "ERROR" | "VOIDED" | "PENDING";
+      amount_in_cents: number;
+      currency: string;
+      customer_email: string;
+      payment_method_type: string;
+    };
+  };
+  sent_at: string;
+  timestamp: number;
+  signature: { properties: string[]; checksum: string };
+}
+
+// ---------------------------------------------------------------------------
+// Reference encoding
 // Format: STAMP-{plan}-{userId}-{timestamp}
-// cuid() IDs are lowercase alphanumeric — safe to use - as separator
+// cuid() IDs are lowercase alphanumeric -- safe to use - as separator
+// ---------------------------------------------------------------------------
 
 export function buildReference(userId: string, plan: WompiPlan): string {
   const ts = Date.now();
   return `STAMP-${plan}-${userId}-${ts}`;
 }
 
-export function parseReference(ref: string): { plan: WompiPlan | null; userId: string | null } {
-  // Expects: STAMP-{monthly|yearly}-{cuid}-{ts}
+export function parseReference(
+  ref: string
+): { plan: WompiPlan | null; userId: string | null } {
   const match = ref.match(/^STAMP-(monthly|yearly)-([a-z0-9]+)-\d+$/);
   if (!match) return { plan: null, userId: null };
   return { plan: match[1] as WompiPlan, userId: match[2] };
 }
 
-// ── Integrity signature ──────────────────────────────
+// ---------------------------------------------------------------------------
+// Integrity signature
 // SHA256( reference + amountCents + currency + integritySecret )
+// ---------------------------------------------------------------------------
 
 export function buildIntegritySignature(
   reference: string,
@@ -48,7 +79,9 @@ export function buildIntegritySignature(
   return crypto.createHash("sha256").update(raw, "utf8").digest("hex");
 }
 
-// ── Checkout URL builder ─────────────────────────────
+// ---------------------------------------------------------------------------
+// Checkout URL builder
+// ---------------------------------------------------------------------------
 
 export function buildCheckoutUrl(params: {
   publicKey: string;
@@ -59,18 +92,25 @@ export function buildCheckoutUrl(params: {
   redirectUrl: string;
   customerEmail?: string;
 }): string {
-  const { publicKey, integritySecret, reference, amountCents,
-          currency = "COP", redirectUrl, customerEmail } = params;
+  const {
+    publicKey,
+    integritySecret,
+    reference,
+    amountCents,
+    currency = "COP",
+    redirectUrl,
+    customerEmail,
+  } = params;
 
   const sig = buildIntegritySignature(reference, amountCents, currency, integritySecret);
 
   const url = new URL(WOMPI_CHECKOUT_URL);
-  url.searchParams.set("public-key",           publicKey);
-  url.searchParams.set("currency",             currency);
-  url.searchParams.set("amount-in-cents",      amountCents.toString());
-  url.searchParams.set("reference",            reference);
-  url.searchParams.set("redirect-url",         redirectUrl);
-  url.searchParams.set("signature:integrity",  sig);
+  url.searchParams.set("public-key",          publicKey);
+  url.searchParams.set("currency",            currency);
+  url.searchParams.set("amount-in-cents",     amountCents.toString());
+  url.searchParams.set("reference",           reference);
+  url.searchParams.set("redirect-url",        redirectUrl);
+  url.searchParams.set("signature:integrity", sig);
   if (customerEmail) {
     url.searchParams.set("customer-data:email", customerEmail);
   }
@@ -78,12 +118,19 @@ export function buildCheckoutUrl(params: {
   return url.toString();
 }
 
-// ── Webhook signature verification ───────────────────
+// ---------------------------------------------------------------------------
+// Webhook signature verification
 // Wompi signs the event JSON with HMAC-SHA256 using the events secret
+// ---------------------------------------------------------------------------
 
-function getValueByPath(source: unknown, dottedPath: string) {
+function getValueByPath(source: unknown, dottedPath: string): unknown {
   return dottedPath.split(".").reduce<unknown>((current, part) => {
-    if (current && typeof current === "object" && part in (current as Record<string, unknown>)) {
+    if (
+      current !== null &&
+      current !== undefined &&
+      typeof current === "object" &&
+      part in (current as Record<string, unknown>)
+    ) {
       return (current as Record<string, unknown>)[part];
     }
     return undefined;
@@ -100,18 +147,12 @@ export function verifyWompiEvent(
       .map((property) => String(getValueByPath(event.data, property) ?? ""))
       .join("");
     const payload = `${concatenated}${event.timestamp}${eventsSecret}`;
-    const expected = crypto.createHash("sha256").update(payload, "utf8").digest("hex");
+    const expected = crypto
+      .createHash("sha256")
+      .update(payload, "utf8")
+      .digest("hex");
     return expected.toLowerCase() === signature.toLowerCase();
-  } catch {
+  } catch (_err) {
     return false;
   }
 }
-
-// ── Wompi event types ────────────────────────────────
-
-export interface WompiTransactionEvent {
-  event:      "transaction.updated";
-  data: {
-    transaction: {
-      id:              string;
-      reference:       st

@@ -80,7 +80,7 @@ export function LandingPage() {
       dir={dir}
     >
 
-      {/* ── NAV ─────────────────────────────────────────────────────────────── */}
+      {/* -- NAV --------------------------------------------------------------- */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 md:px-12"
         style={{ background: "rgba(7,7,15,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
@@ -111,7 +111,7 @@ export function LandingPage() {
         </div>
       </nav>
 
-      {/* ── HERO ────────────────────────────────────────────────────────────── */}
+      {/* -- HERO -------------------------------------------------------------- */}
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-16 overflow-hidden">
 
         {/* Ambient blobs */}
@@ -202,7 +202,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── STICKER PREVIEW STRIP ───────────────────────────────────────────── */}
+      {/* -- STICKER PREVIEW STRIP --------------------------------------------- */}
       <section className="py-16 overflow-hidden" style={{ background: "rgba(255,255,255,0.02)" }}>
         <div className="text-center mb-10 px-6">
           <span className="text-xs font-black tracking-widest uppercase" style={{ color: "#FF5E00" }}>{t.stickerTag}</span>
@@ -225,7 +225,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── FEATURES GRID ───────────────────────────────────────────────────── */}
+      {/* -- FEATURES GRID ----------------------------------------------------- */}
       <section id="features" className="max-w-6xl mx-auto px-6 py-24">
         <div className="text-center mb-16">
           <span className="text-xs font-black tracking-widest uppercase" style={{ color: "#E8003D" }}>{t.featuresTag}</span>
@@ -251,7 +251,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ────────────────────────────────────────────────────── */}
+      {/* -- HOW IT WORKS ------------------------------------------------------ */}
       <section className="py-24 px-6" style={{ background: "rgba(255,255,255,0.015)" }}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
@@ -280,7 +280,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── RARITY SHOWCASE ─────────────────────────────────────────────────── */}
+      {/* -- RARITY SHOWCASE --------------------------------------------------- */}
       <section className="py-24 px-6 max-w-5xl mx-auto">
         <div className="text-center mb-12">
           <span className="text-xs font-black tracking-widest uppercase" style={{ color: "#A855F7" }}>{t.rarityTag}</span>
@@ -305,7 +305,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── SOCIAL PROOF ────────────────────────────────────────────────────── */}
+      {/* -- SOCIAL PROOF ------------------------------------------------------ */}
       <section className="py-20 px-6" style={{ background: "rgba(255,255,255,0.015)" }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="font-condensed text-3xl md:text-4xl font-black text-white text-center mb-12">
@@ -353,7 +353,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── FINAL CTA ───────────────────────────────────────────────────────── */}
+      {/* -- FINAL CTA --------------------------------------------------------- */}
       <section className="py-32 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute rounded-full blur-[100px] opacity-20 w-96 h-96 -top-20 left-1/2 -translate-x-1/2"
@@ -382,7 +382,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────────────────────── */}
+      {/* -- FOOTER ------------------------------------------------------------ */}
       <footer className="border-t border-white/5 px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="font-condensed text-xl font-black tracking-widest">
           <span style={{ color: "#E8003D" }}>S</span>

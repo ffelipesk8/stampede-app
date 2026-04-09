@@ -42,4 +42,5 @@ export async function POST(req: NextRequest) {
     customerEmail: user.email,
   });
 
-  return NextResponse.json({ url: checkoutUr
+  return NextResponse.json({ url: checkoutUrl, reference });
+}

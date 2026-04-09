@@ -85,7 +85,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
   return (
     <div className="max-w-5xl mx-auto space-y-6">
 
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-condensed text-4xl font-black text-t1 tracking-wide">Fan Events Hub</h1>
@@ -100,7 +100,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
         </button>
       </div>
 
-      {/* ── Stats ── */}
+      {/* -- Stats -- */}
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: "Events Happening", value: events.length, color: "text-red" },
@@ -114,7 +114,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
         ))}
       </div>
 
-      {/* ── Tabs ── */}
+      {/* -- Tabs -- */}
       <div className="flex items-center gap-4">
         <div className="flex bg-card1 border border-border rounded-xl p-1 gap-1">
           {(["discover", "my"] as const).map((tab) => (
@@ -149,7 +149,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
         </div>
       </div>
 
-      {/* ── Type filter chips ── */}
+      {/* -- Type filter chips -- */}
       <div className="flex gap-2 flex-wrap">
         <button
           onClick={() => setFilterType("ALL")}
@@ -175,7 +175,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
         ))}
       </div>
 
-      {/* ── Events list ── */}
+      {/* -- Events list -- */}
       <div className="space-y-4">
         {filtered.length === 0 ? (
           <div className="text-center py-16 text-t3">
@@ -198,7 +198,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
         )}
       </div>
 
-      {/* ── Create event modal ── */}
+      {/* -- Create event modal -- */}
       <AnimatePresence>
         {showCreate && (
           <CreateEventModal
@@ -220,7 +220,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
   );
 }
 
-// ── Event Card ────────────────────────────────────────────────────────────────
+// -- Event Card ----------------------------------------------------------------
 function EventCard({ event, isAttending, onAttend, onClick }: {
   event: FanEvent;
   isAttending: boolean;
@@ -292,7 +292,7 @@ function EventCard({ event, isAttending, onAttend, onClick }: {
   );
 }
 
-// ── Event Detail Modal ────────────────────────────────────────────────────────
+// -- Event Detail Modal --------------------------------------------------------
 function EventDetailModal({ event, isAttending, onAttend, onClose }: {
   event: FanEvent;
   isAttending: boolean;
@@ -390,7 +390,7 @@ function EventDetailModal({ event, isAttending, onAttend, onClose }: {
   );
 }
 
-// ── Create Event Modal ────────────────────────────────────────────────────────
+// -- Create Event Modal --------------------------------------------------------
 const COUNTRY_OPTIONS = [
   { code: "ARG", label: "Argentina" },
   { code: "BRA", label: "Brazil" },

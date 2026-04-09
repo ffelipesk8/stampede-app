@@ -9,7 +9,7 @@ import { ShareButton } from "@/components/shared/ShareModal";
 import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
 
-// ── Shared team data ───────────────────────────────────────────────────────────
+// -- Shared team data -----------------------------------------------------------
 const TEAM_FLAGS: Record<string, string> = {
   ARG:"🇦🇷", BRA:"🇧🇷", FRA:"🇫🇷", ESP:"🇪🇸", DEU:"🇩🇪", ENG:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",
   MEX:"🇲🇽", USA:"🇺🇸", POR:"🇵🇹", NLD:"🇳🇱", ITA:"🇮🇹", BEL:"🇧🇪",
@@ -29,7 +29,7 @@ const TEAM_COLORS: Record<string, [string, string]> = {
   JPN:["#FFFFFF","#BC002D"], KOR:["#FFFFFF","#CD2E3A"], AUS:["#00843D","#FFCD00"],
 };
 
-// ── Mini card shown in store grid ──────────────────────────────────────────────
+// -- Mini card shown in store grid ----------------------------------------------
 function StickerCard({ sticker, delay = 0 }: {
   sticker: { id: string; name: string; rarity: string; team: string; imageUrl: string; category?: string };
   delay?: number;
@@ -56,7 +56,7 @@ function StickerCard({ sticker, delay = 0 }: {
         glowColor={c}
         style={{ borderRadius: "0.75rem" }}
       >
-        {/* ── Outer frame shell ── */}
+        {/* -- Outer frame shell -- */}
         <div className="rounded-xl overflow-hidden p-[2.5px]" style={frame.shell}>
           <div className="rounded-[11px] overflow-hidden bg-[#090914]">
             {/* Image area */}
@@ -94,7 +94,7 @@ function StickerCard({ sticker, delay = 0 }: {
   );
 }
 
-// ── FIFA-style flip card for reveal ───────────────────────────────────────────
+// -- FIFA-style flip card for reveal -------------------------------------------
 function FifaCard({
   sticker,
   index,
@@ -144,7 +144,7 @@ function FifaCard({
         onClick={() => !revealed && onReveal()}
         className={cn("relative cursor-pointer", !revealed && "hover:scale-105")}
       >
-        {/* ── CARD BACK ── */}
+        {/* -- CARD BACK -- */}
         <div
           className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#2a2a4a]"
           style={{ backfaceVisibility: "hidden" }}
@@ -178,7 +178,7 @@ function FifaCard({
           )}
         </div>
 
-        {/* ── CARD FRONT ── */}
+        {/* -- CARD FRONT -- */}
         <div
           className="absolute inset-0 rounded-2xl overflow-hidden"
           style={{
@@ -280,7 +280,7 @@ function FifaCard({
   );
 }
 
-// ── Floating particle ──────────────────────────────────────────────────────────
+// -- Floating particle ----------------------------------------------------------
 function Particle({ color, delay, x }: { color: string; delay: number; x: number }) {
   return (
     <motion.div
@@ -293,7 +293,7 @@ function Particle({ color, delay, x }: { color: string; delay: number; x: number
   );
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// -- Types ---------------------------------------------------------------------
 type Rarity = "COMMON" | "UNCOMMON" | "RARE" | "EPIC" | "LEGENDARY";
 type PackType = "FREE_DAILY" | "COMMON" | "PREMIUM" | "GOLD" | "LEGENDARY" | "TEAM_SPECIAL" | "MATCH_DAY" | "DROP_LIMITED" | "WELCOME";
 
@@ -341,7 +341,7 @@ const PACK_VISUALS: Record<string, { gradient: string; glow: string; label: stri
   LEGENDARY:  { gradient: "from-red/30 to-card1",  glow: "#FFB800", label: "LEGENDARY", emoji: "🔥" },
 };
 
-// ── Main component ─────────────────────────────────────────────────────────────
+// -- Main component -------------------------------------------------------------
 export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
   const [openingPack, setOpeningPack]  = useState<Pack | null>(null);
   const [openResult, setOpenResult]    = useState<{
@@ -445,13 +445,13 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
 
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <div>
         <h1 className="font-condensed text-4xl font-black text-t1 tracking-wide">Pack Store</h1>
         <p className="text-t2 text-sm mt-1">Open packs · Collect stickers · Level up</p>
       </div>
 
-      {/* ── Free daily pack ── */}
+      {/* -- Free daily pack -- */}
       {freePack && (
         <div className="bg-gradient-to-r from-orange/10 to-gold/10 border border-orange/30 rounded-2xl p-5 flex items-center gap-5">
           <div className="w-16 h-20 bg-gradient-to-b from-orange/30 to-card2 rounded-xl border-2 border-orange/50 flex items-center justify-center text-3xl shrink-0">
@@ -477,7 +477,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
         </div>
       )}
 
-      {/* ── Store packs grid ── */}
+      {/* -- Store packs grid -- */}
       <div>
         <h2 className="font-display font-bold text-t1 text-lg mb-4">Pack Store</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -529,7 +529,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
         </div>
       </div>
 
-      {/* ── Recent opens ── */}
+      {/* -- Recent opens -- */}
       {recentOpens.length > 0 && (
         <div>
           <h2 className="font-display font-bold text-t1 text-lg mb-4">Recent Opens</h2>
@@ -553,9 +553,9 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════ */}
-      {/* ──────────────── FIFA 26-STYLE PACK OPENING MODAL ─────────────────── */}
-      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* ====================================================================== */}
+      {/* ---------------- FIFA 26-STYLE PACK OPENING MODAL ------------------- */}
+      {/* ====================================================================== */}
       <AnimatePresence>
         {openingPack && vis && (
           <motion.div
@@ -565,7 +565,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
             className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
             style={{ background: "radial-gradient(ellipse at center, #0d0d22 0%, #050509 100%)" }}
           >
-            {/* ── Full-screen white flash on explosion ── */}
+            {/* -- Full-screen white flash on explosion -- */}
             <AnimatePresence>
               {flashOn && (
                 <motion.div
@@ -578,7 +578,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
               )}
             </AnimatePresence>
 
-            {/* ── PRE-REVEAL: charging / idle ── */}
+            {/* -- PRE-REVEAL: charging / idle -- */}
             {(phase === "idle" || phase === "charging" || phase === "explode") && (
               <div className="flex flex-col items-center gap-6 relative">
 
@@ -694,7 +694,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
               </div>
             )}
 
-            {/* ── REVEAL PHASE ── */}
+            {/* -- REVEAL PHASE -- */}
             {(phase === "reveal" || phase === "done") && openResult && (
               <div className="w-full max-w-2xl px-4 flex flex-col items-center gap-6">
 

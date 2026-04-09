@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { X, Link2, Check, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// -- Types ---------------------------------------------------------------------
 export interface ShareData {
   title: string;       // e.g. "Lionel Messi — LEGENDARY"
   text: string;        // e.g. "I just pulled a LEGENDARY Messi sticker on STAMPEDE! 🔥"
@@ -19,7 +19,7 @@ interface ShareModalProps {
   data: ShareData;
 }
 
-// ── Social network definitions ────────────────────────────────────────────────
+// -- Social network definitions ------------------------------------------------
 interface SocialNetwork {
   id: string;
   name: string;
@@ -135,7 +135,7 @@ const NETWORKS: SocialNetwork[] = [
   },
 ];
 
-// ── SVG icons as inline components ───────────────────────────────────────────
+// -- SVG icons as inline components -------------------------------------------
 function NetworkIcon({ id, color }: { id: string; color: string }) {
   const s = { width: 20, height: 20 };
   switch (id) {
@@ -213,7 +213,7 @@ function NetworkIcon({ id, color }: { id: string; color: string }) {
   }
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// -- Main Component ------------------------------------------------------------
 export function ShareModal({ isOpen, onClose, data }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   const [instaCopied, setInstaCopied] = useState(false);
@@ -379,7 +379,7 @@ export function ShareModal({ isOpen, onClose, data }: ShareModalProps) {
   );
 }
 
-// ── Trigger button helper ─────────────────────────────────────────────────────
+// -- Trigger button helper -----------------------------------------------------
 interface ShareButtonProps {
   data: ShareData;
   className?: string;

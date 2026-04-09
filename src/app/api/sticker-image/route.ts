@@ -5,7 +5,7 @@ function proxied(url: string) {
   return `/api/image-proxy?url=${encodeURIComponent(url)}`;
 }
 
-// ── Stadiums ──────────────────────────────────────────────────────────────────
+// -- Stadiums ------------------------------------------------------------------
 const STADIUM_IMAGES: Record<string, string> = {
   "MetLife Stadium":        "/images/stickers/stadiums/metlife-stadium.jpg",
   "AT&T Stadium":           "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/ATT_Stadium_-_Aerial_Photo.jpg/640px-ATT_Stadium_-_Aerial_Photo.jpg",
@@ -28,7 +28,7 @@ const STADIUM_IMAGES: Record<string, string> = {
   "Azteca Stadium":         "/images/stickers/stadiums/azteca-stadium.jpg",
 };
 
-// ── Host Cities ───────────────────────────────────────────────────────────────
+// -- Host Cities ---------------------------------------------------------------
 const CITY_IMAGES: Record<string, string> = {
   "New York":       "/images/stickers/cities/new-york-city.jpg",
   "New York City":  "/images/stickers/cities/new-york-city.jpg",
@@ -49,7 +49,7 @@ const CITY_IMAGES: Record<string, string> = {
   "Toronto":        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Toronto_-_ON_-_Bloor_St_at_Bay_%28crop%29.jpg/640px-Toronto_-_ON_-_Bloor_St_at_Bay_%28crop%29.jpg",
 };
 
-// ── Coaches / DTs ─────────────────────────────────────────────────────────────
+// -- Coaches / DTs -------------------------------------------------------------
 const COACH_IMAGES: Record<string, string> = {
   "Lionel Scaloni":   "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Lionel_Scaloni_2022_%28cropped%29.jpg/440px-Lionel_Scaloni_2022_%28cropped%29.jpg",
   "Dorival Júnior":   "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Dorival_Junior_2023.jpg/440px-Dorival_Junior_2023.jpg",
@@ -66,7 +66,7 @@ const COACH_IMAGES: Record<string, string> = {
   "Paulo Bento":      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Paulo_Bento_2022_%28cropped%29.jpg/440px-Paulo_Bento_2022_%28cropped%29.jpg",
 };
 
-// ── Team Crests ───────────────────────────────────────────────────────────────
+// -- Team Crests ---------------------------------------------------------------
 const CREST_IMAGES: Record<string, string> = {
   "Argentina":    "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Argentina_football_team_badge.png/200px-Argentina_football_team_badge.png",
   "Brazil":       "https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Brazil_football_team_crest.svg/200px-Brazil_football_team_crest.svg.png",
@@ -95,7 +95,7 @@ const NORMALIZED_CITY_IMAGES = normalizedLookup(CITY_IMAGES);
 const NORMALIZED_COACH_IMAGES = normalizedLookup(COACH_IMAGES);
 const NORMALIZED_CREST_IMAGES = normalizedLookup(CREST_IMAGES);
 
-// ── Wikipedia lookup for unknown entities ─────────────────────────────────────
+// -- Wikipedia lookup for unknown entities -------------------------------------
 async function wikiLookup(searchTerms: string[]): Promise<string | null> {
   for (const term of searchTerms) {
     try {
@@ -126,7 +126,7 @@ export async function GET(req: NextRequest) {
   const name = decodeMojibake(rawName);
   const normalizedName = normalizeEntityName(name);
 
-  // ── Stadiums ──
+  // -- Stadiums --
   if (category === "stadium" || category === "venue") {
     if (NORMALIZED_STADIUM_IMAGES[normalizedName]) {
       const image = NORMALIZED_STADIUM_IMAGES[normalizedName];
@@ -136,7 +136,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ url });
   }
 
-  // ── Cities ──
+  // -- Cities --
   if (category === "city" || category === "host_city") {
     if (NORMALIZED_CITY_IMAGES[normalizedName]) {
       const image = NORMALIZED_CITY_IMAGES[normalizedName];
@@ -146,7 +146,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ url });
   }
 
-  // ── Coaches / DT ──
+  // -- Coaches / DT --
   if (category === "coach" || category === "manager" || category === "dt") {
     if (NORMALIZED_COACH_IMAGES[normalizedName]) {
       return NextResponse.json({ url: proxied(NORMALIZED_COACH_IMAGES[normalizedName]) });
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ url });
   }
 
-  // ── Team Crests ──
+  // -- Team Crests --
   if (category === "crest" || category === "team" || category === "badge") {
     if (NORMALIZED_CREST_IMAGES[normalizedName]) {
       return NextResponse.json({ url: proxied(NORMALIZED_CREST_IMAGES[normalizedName]) });
@@ -171,13 +171,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ url });
   }
 
-  // ── Moments / Special stickers (Wikipedia article thumbnail) ──
+  // -- Moments / Special stickers (Wikipedia article thumbnail) --
   if (category === "moment" || category === "special") {
     const url = await wikiLookup([name, `${name} FIFA World Cup`]);
     return NextResponse.json({ url });
   }
 
-  // ── Default fallback: try Wikipedia directly ──
+  // -- Default fallback: try Wikipedia directly --
   const url = await wikiLookup([name]);
   return NextResponse.json({ url });
 }

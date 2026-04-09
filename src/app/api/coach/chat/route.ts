@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   const user = await db.user.findUnique({ where: { clerkId } });
   if (!user) return new Response("User not found", { status: 404 });
 
-  // ── Rate limit for free users ──────────────────────────
+  // -- Rate limit for free users --------------------------
   if (!user.isPro) {
     const key = REDIS_KEYS.coachDaily(user.id);
     const count = await redis.incr(key);
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Get or create conversation ─────────────────────────
+  // -- Get or create conversation -------------------------
   let convo = conversationId
     ? await db.coachConversation.findUnique({ where: { id: conversationId, userId: user.id } })
     : null;
@@ -65,14 +65,14 @@ export async function POST(req: NextRequest) {
     convo = await db.coachConversation.create({ data: { userId: user.id } });
   }
 
-  // ── Fetch last 6 messages for context ─────────────────
+  // -- Fetch last 6 messages for context -----------------
   const history = await db.coachMessage.findMany({
     where: { conversationId: convo.id },
     orderBy: { createdAt: "asc" },
     take: 6,
   });
 
-  // ── Fetch user context for system prompt ──────────────
+  // -- Fetch user context for system prompt --------------
   const [missions, stickersCount] = await Promise.all([
     db.userMission.findMany({
       where: { userId: user.id, status: "ACTIVE" },
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 
   const systemPrompt = buildCoachPrompt(user, stickersCount, missions);
 
-  // ── Call OpenAI with streaming ─────────────────────────
+  // -- Call OpenAI with streaming -------------------------
   const stream = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     max_tokens: 300,
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
     ],
   });
 
-  // ── Save user message ──────────────────────────────────
+  // -- Save user message ----------------------------------
   await db.coachMessage.create({
     data: {
       conversationId: convo.id,
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // ── Return SSE stream ──────────────────────────────────
+  // -- Return SSE stream ----------------------------------
   let fullResponse = "";
 
   const readable = new ReadableStream({

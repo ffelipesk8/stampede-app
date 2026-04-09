@@ -35,11 +35,11 @@ export function LandingStickerPreview({
       className="flex-shrink-0 w-28"
       style={{ borderRadius: "1rem" } as React.CSSProperties}
     >
-      {/* ── Outer frame shell ──────────────────────────────────────────────── */}
+      {/* -- Outer frame shell ------------------------------------------------ */}
       <div className="rounded-2xl overflow-hidden p-[2.5px]" style={frame.shell}>
         <div className="rounded-[13px] overflow-hidden bg-[#090914]">
 
-          {/* ── Image area ────────────────────────────────────────────────── */}
+          {/* -- Image area -------------------------------------------------- */}
           <div className="h-36 relative overflow-hidden" style={frame.imagePanel}>
 
             {/* Flag stripe bar — top */}
@@ -89,7 +89,7 @@ export function LandingStickerPreview({
             )}
           </div>
 
-          {/* ── Card footer ───────────────────────────────────────────────── */}
+          {/* -- Card footer ------------------------------------------------- */}
           <div className="px-2 py-1.5" style={{ background: "linear-gradient(180deg, #0d0d1a 0%, #080810 100%)" }}>
             <p className="text-[10px] font-bold text-white truncate leading-tight">{name}</p>
             <p className="text-[9px] font-black mt-0.5" style={{ color }}>

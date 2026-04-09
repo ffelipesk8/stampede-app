@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
   if (!pack) return NextResponse.json({ error: "Pack not found or inactive" }, { status: 404 });
 
-  // ── Welcome pack: can only open once ──────────────────
+  // -- Welcome pack: can only open once ------------------
   if (pack.type === "WELCOME") {
     const alreadyOpened = await db.packLog.findFirst({
       where: { userId: user.id, packId },
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Free daily pack: rate limit via DB (Redis es opcional) ────────────
+  // -- Free daily pack: rate limit via DB (Redis es opcional) ------------
   if (pack.type === "FREE_DAILY") {
     const today = new Date().toISOString().split("T")[0];
 
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Draw stickers ──────────────────────────────────────
+  // -- Draw stickers --------------------------------------
   let contents = pack.contents;
 
   // Si el pack no tiene contenido configurado, usa todos los stickers de la DB
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     pack.guaranteedMin as Rarity | null
   );
 
-  // ── Welcome pack: guarantee team sticker ──────────────
+  // -- Welcome pack: guarantee team sticker --------------
   let finalStickers = drawnStickers;
   if (pack.type === "WELCOME" && user.favoriteTeam) {
     const teamSticker = contents.find(
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Upsert to user_stickers ────────────────────────────
+  // -- Upsert to user_stickers ----------------------------
   await db.$transaction(
     finalStickers.map((sticker) =>
       db.userSticker.upsert({
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
     )
   );
 
-  // ── Log the pack open ──────────────────────────────────
+  // -- Log the pack open ----------------------------------
   await db.packLog.create({
     data: {
       userId: user.id,
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // ── Award XP ───────────────────────────────────────────
+  // -- Award XP -------------------------------------------
   const xpResult = await awardXp(user.id, "PACK_OPEN");
   if (pack.xpBonus > 0) {
     await db.user.update({
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // ── Invalidate album cache ─────────────────────────────
+  // -- Invalidate album cache -----------------------------
   try { await redis.del(REDIS_KEYS.albumProgress(user.id)); } catch { /* Redis opcional */ }
 
   return NextResponse.json({
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
   });
 }
 
-// ── Weighted random draw ──────────────────────────────────────────────────────
+// -- Weighted random draw ------------------------------------------------------
 function drawFromPack(
   contents: { sticker: { id: string; name: string; rarity: Rarity; team: string; imageUrl: string; category: string }; weight: number }[],
   count: number,

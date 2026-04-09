@@ -5,7 +5,7 @@ import { Locale, TranslationKey, t as translate, LOCALES } from "@/lib/i18n/tran
 
 const STORAGE_KEY = "stampede_locale";
 
-// ── Detect browser language on first visit ────────────────────────────────────
+// -- Detect browser language on first visit ------------------------------------
 function detectBrowserLocale(): Locale {
   if (typeof window === "undefined") return "en";
   const lang = navigator.language?.toLowerCase() ?? "";
@@ -24,7 +24,7 @@ function loadLocale(): Locale {
   return detectBrowserLocale();
 }
 
-// ── Context ───────────────────────────────────────────────────────────────────
+// -- Context -------------------------------------------------------------------
 interface LanguageContextValue {
   locale: Locale;
   setLocale: (l: Locale) => void;
@@ -86,7 +86,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// ── Hook ──────────────────────────────────────────────────────────────────────
+// -- Hook ----------------------------------------------------------------------
 export function useLanguage() {
   return useContext(LanguageContext);
 }

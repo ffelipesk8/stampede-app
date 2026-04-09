@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-// ─── Colour helpers ──────────────────────────────────────────────────────────
+// --- Colour helpers ----------------------------------------------------------
 
 function normalizeHex(hex: string): string {
   const c = hex.replace("#", "");
@@ -27,7 +27,7 @@ function mix(hexA: string, hexB: string, w = 0.5): string {
   ].map(v => v.toString(16).padStart(2,"0")).join("")}`;
 }
 
-// ─── Country flag palettes: [primary, secondary, tertiary?] ─────────────────
+// --- Country flag palettes: [primary, secondary, tertiary?] -----------------
 // 80 % of the frame uses primary + secondary; tertiary is used sparingly
 
 const FLAG_PALETTES: Record<string, [string, string, string?]> = {
@@ -68,7 +68,7 @@ const FLAG_PALETTES: Record<string, [string, string, string?]> = {
   USA: ["#3C3B6E", "#B22234", "#FFFFFF"],           // navy — red — white
 };
 
-// ─── Category accent colours (20 % of frame) ────────────────────────────────
+// --- Category accent colours (20 % of frame) --------------------------------
 
 const CATEGORY_ACCENTS: Record<string, string> = {
   player:  "#FFFFFF",
@@ -83,7 +83,7 @@ const CATEGORY_ACCENTS: Record<string, string> = {
 
 const DEFAULT_PALETTE: [string, string] = ["#1C1C32", "#252540"];
 
-// ─── Public API ──────────────────────────────────────────────────────────────
+// --- Public API --------------------------------------------------------------
 
 export function getTeamPalette(team: string): [string, string, string?] {
   return FLAG_PALETTES[team] ?? DEFAULT_PALETTE;
@@ -105,7 +105,7 @@ export function getStickerFrameStyles(team: string, rarityColor: string, categor
   const bgB = mix(s, "#05070F", 0.38);
   const bgC = t ? mix(t, "#030508", 0.3) : bgA;
 
-  // ── Shell (outer gradient border, 80/20 split) ──────────────────────────
+  // -- Shell (outer gradient border, 80/20 split) --------------------------
   //   Using conic-gradient: first 80% cycles through flag colours,
   //   last 20% shows accent (category) colour — bottom-right corner.
   const shell: CSSProperties = {
@@ -127,7 +127,7 @@ export function getStickerFrameStyles(team: string, rarityColor: string, categor
     ].join(", "),
   };
 
-  // ── Image panel background ───────────────────────────────────────────────
+  // -- Image panel background -----------------------------------------------
   const imagePanel: CSSProperties = {
     background: [
       `radial-gradient(ellipse 80% 60% at 20% 10%, ${rgba(p, 0.30)} 0%, transparent 55%)`,
@@ -136,7 +136,7 @@ export function getStickerFrameStyles(team: string, rarityColor: string, categor
     ].join(", "),
   };
 
-  // ── Flag stripe bar — top of image panel ────────────────────────────────
+  // -- Flag stripe bar — top of image panel --------------------------------
   //   Repeats the 3 flag colours across the full width (80/20 rule inside bar)
   const flagBar: CSSProperties = {
     background: t
@@ -145,19 +145,19 @@ export function getStickerFrameStyles(team: string, rarityColor: string, categor
     height: 5,
   };
 
-  // ── Footer strip ────────────────────────────────────────────────────────
+  // -- Footer strip --------------------------------------------------------
   const footer: CSSProperties = {
     background: `linear-gradient(90deg, ${rgba(p, 0.92)} 0%, ${rgba(s, 0.85)} 70%, ${rgba(accent, 0.95)} 100%)`,
   };
 
-  // ── Category chip ───────────────────────────────────────────────────────
+  // -- Category chip -------------------------------------------------------
   const chip: CSSProperties = {
     background: `linear-gradient(135deg, ${accent} 0%, ${mix(accent, "#FFFFFF", 0.22)} 100%)`,
     color: "#05070F",
     boxShadow: `0 0 0 1px ${rgba("#FFFFFF", 0.18)}`,
   };
 
-  // ── Initials ring (no-photo fallback) ───────────────────────────────────
+  // -- Initials ring (no-photo fallback) -----------------------------------
   const ring: CSSProperties = {
     borderColor: rgba(accent, 0.75),
     background:  rgba("#000000", 0.4),

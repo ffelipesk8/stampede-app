@@ -46,9 +46,9 @@ async function validateImage(url: string | null | undefined): Promise<string | n
   }
 }
 
-// ── 120+ jugadores con URL directa verificada ─────────────────────────────────
+// -- 120+ jugadores con URL directa verificada ---------------------------------
 const PHOTO_OVERRIDES: Record<string, string> = {
-  // ── Argentina ─────────────────────────────────────────────────────────────
+  // -- Argentina -------------------------------------------------------------
   "Lionel Messi":         "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/440px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg",
   "Ángel Di María":       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Angel_Di_Maria_2018.jpg/440px-Angel_Di_Maria_2018.jpg",
   "Lautaro Martínez":     "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/20190605_FIFA_U-20_World_Cup_Poland_vs_Argentina_Patrik_Holo_MG_0882.jpg/440px-20190605_FIFA_U-20_World_Cup_Poland_vs_Argentina_Patrik_Holo_MG_0882.jpg",
@@ -58,7 +58,7 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "Emiliano Martínez":    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Emiliano_Martinez_2022_%28cropped%29.jpg/440px-Emiliano_Martinez_2022_%28cropped%29.jpg",
   "Nicolás Otamendi":     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Nicolas_Otamendi_2022_%28cropped%29.jpg/440px-Nicolas_Otamendi_2022_%28cropped%29.jpg",
   "Marcos Acuña":         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Marcos_Acuna_2019.jpg/440px-Marcos_Acuna_2019.jpg",
-  // ── Brazil ────────────────────────────────────────────────────────────────
+  // -- Brazil ----------------------------------------------------------------
   "Vinícius Jr":          "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Vinicius_Junior_vs._Borussia_Dortmund_2024_%28cropped%29.jpg/440px-Vinicius_Junior_vs._Borussia_Dortmund_2024_%28cropped%29.jpg",
   "Neymar Jr":            "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Neymar_-_2018_FIFA_World_Cup.jpg/440px-Neymar_-_2018_FIFA_World_Cup.jpg",
   "Rodrygo":              "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/20231106_Rodrygo_vs_Rayo_Vallecano_%28cropped%29.jpg/440px-20231106_Rodrygo_vs_Rayo_Vallecano_%28cropped%29.jpg",
@@ -69,7 +69,7 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "Thiago Silva":         "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Thiago_Silva_2019_%28cropped%29.jpg/440px-Thiago_Silva_2019_%28cropped%29.jpg",
   "Endrick":              "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Endrick_2024_%28cropped%29.jpg/440px-Endrick_2024_%28cropped%29.jpg",
   "Lucas Paquetá":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Lucas_Paqueta_2022_%28cropped%29.jpg/440px-Lucas_Paqueta_2022_%28cropped%29.jpg",
-  // ── France ────────────────────────────────────────────────────────────────
+  // -- France ----------------------------------------------------------------
   "Kylian Mbappé":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/2019-07-17_SG_Dynamo_Dresden_vs._Paris_Saint-Germain_by_Sandro_Halank%E2%80%93110_%28cropped%29.jpg/440px-2019-07-17_SG_Dynamo_Dresden_vs._Paris_Saint-Germain_by_Sandro_Halank%E2%80%93110_%28cropped%29.jpg",
   "Antoine Griezmann":    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Antoine_Griezmann_2018.jpg/440px-Antoine_Griezmann_2018.jpg",
   "Ousmane Dembélé":      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Ousmane_Dembele_at_the_2018_FIFA_World_Cup.jpg/440px-Ousmane_Dembele_at_the_2018_FIFA_World_Cup.jpg",
@@ -79,7 +79,7 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "Marcus Thuram":        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Marcus_Thuram_2022_%28cropped%29.jpg/440px-Marcus_Thuram_2022_%28cropped%29.jpg",
   "Mike Maignan":         "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Mike_Maignan_2022_%28cropped%29.jpg/440px-Mike_Maignan_2022_%28cropped%29.jpg",
   "William Saliba":       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/William_Saliba_2022_%28cropped%29.jpg/440px-William_Saliba_2022_%28cropped%29.jpg",
-  // ── Spain ─────────────────────────────────────────────────────────────────
+  // -- Spain -----------------------------------------------------------------
   "Pedri":                "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/20220308_Pedri_vs._Osasuna_%28cropped%29.jpg/440px-20220308_Pedri_vs._Osasuna_%28cropped%29.jpg",
   "Lamine Yamal":         "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/UEFA_Euro_2024_-_Spain_vs_Croatia_-_20240615_-_Lamine_Yamal.jpg/440px-UEFA_Euro_2024_-_Spain_vs_Croatia_-_20240615_-_Lamine_Yamal.jpg",
   "Rodri":                "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/20221105_Rodri_vs._Sevilla_%28cropped%29.jpg/440px-20221105_Rodri_vs._Sevilla_%28cropped%29.jpg",
@@ -89,7 +89,7 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "Nico Williams":        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/UEFA_Euro_2024_-_Spain_vs_Croatia_-_20240615_-_Nico_Williams.jpg/440px-UEFA_Euro_2024_-_Spain_vs_Croatia_-_20240615_-_Nico_Williams.jpg",
   "Unai Simón":           "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Unai_Simon_2022_%28cropped%29.jpg/440px-Unai_Simon_2022_%28cropped%29.jpg",
   "Dani Carvajal":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Dani_Carvajal_2018_%28cropped%29.jpg/440px-Dani_Carvajal_2018_%28cropped%29.jpg",
-  // ── England ───────────────────────────────────────────────────────────────
+  // -- England ---------------------------------------------------------------
   "Jude Bellingham":      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Jude_Bellingham_2022_%28cropped%29.jpg/440px-Jude_Bellingham_2022_%28cropped%29.jpg",
   "Harry Kane":           "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Harry_Kane_2019-10-16.jpg/440px-Harry_Kane_2019-10-16.jpg",
   "Phil Foden":           "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Phil_Foden_2022_%28cropped%29.jpg/440px-Phil_Foden_2022_%28cropped%29.jpg",
@@ -99,7 +99,7 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "Jordan Pickford":      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Jordan_Pickford_2022_%28cropped%29.jpg/440px-Jordan_Pickford_2022_%28cropped%29.jpg",
   "Declan Rice":          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Declan_Rice_2022_%28cropped%29.jpg/440px-Declan_Rice_2022_%28cropped%29.jpg",
   "Trent Alexander-Arnold":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Trent_Alexander-Arnold_2022_%28cropped%29.jpg/440px-Trent_Alexander-Arnold_2022_%28cropped%29.jpg",
-  // ── Portugal ──────────────────────────────────────────────────────────────
+  // -- Portugal --------------------------------------------------------------
   "Cristiano Ronaldo":    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cristiano_Ronaldo_2018.jpg/440px-Cristiano_Ronaldo_2018.jpg",
   "Bruno Fernandes":      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Bruno_Fernandes_2022_%28cropped%29.jpg/440px-Bruno_Fernandes_2022_%28cropped%29.jpg",
   "Rafael Leão":          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Rafael_Le%C3%A3o_at_the_2022_FIFA_World_Cup_%28cropped%29.jpg/440px-Rafael_Le%C3%A3o_at_the_2022_FIFA_World_Cup_%28cropped%29.jpg",
@@ -107,7 +107,7 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "João Cancelo":         "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Joao_Cancelo_2022_%28cropped%29.jpg/440px-Joao_Cancelo_2022_%28cropped%29.jpg",
   "Bernardo Silva":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Bernardo_Silva_2022_%28cropped%29.jpg/440px-Bernardo_Silva_2022_%28cropped%29.jpg",
   "Diogo Jota":           "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Diogo_Jota_2022_%28cropped%29.jpg/440px-Diogo_Jota_2022_%28cropped%29.jpg",
-  // ── Germany ───────────────────────────────────────────────────────────────
+  // -- Germany ---------------------------------------------------------------
   "Jamal Musiala":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Jamal_Musiala_2022_%28cropped%29.jpg/440px-Jamal_Musiala_2022_%28cropped%29.jpg",
   "Florian Wirtz":        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/UEFA_Euro_2024_-_Germany_vs_Hungary_-_20240619_-_Florian_Wirtz_%28cropped%29.jpg/440px-UEFA_Euro_2024_-_Germany_vs_Hungary_-_20240619_-_Florian_Wirtz_%28cropped%29.jpg",
   "Kai Havertz":          "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Kai_Havertz_2022_%28cropped%29.jpg/440px-Kai_Havertz_2022_%28cropped%29.jpg",
@@ -115,99 +115,99 @@ const PHOTO_OVERRIDES: Record<string, string> = {
   "Serge Gnabry":         "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Serge_Gnabry_2022_%28cropped%29.jpg/440px-Serge_Gnabry_2022_%28cropped%29.jpg",
   "Joshua Kimmich":       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Joshua_Kimmich_2022_%28cropped%29.jpg/440px-Joshua_Kimmich_2022_%28cropped%29.jpg",
   "Leroy Sané":           "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Leroy_Sane_2019_%28cropped%29.jpg/440px-Leroy_Sane_2019_%28cropped%29.jpg",
-  // ── Netherlands ───────────────────────────────────────────────────────────
+  // -- Netherlands -----------------------------------------------------------
   "Virgil van Dijk":      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Virgil_van_Dijk_2022_%28cropped%29.jpg/440px-Virgil_van_Dijk_2022_%28cropped%29.jpg",
   "Memphis Depay":        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Memphis_Depay_2022_%28cropped%29.jpg/440px-Memphis_Depay_2022_%28cropped%29.jpg",
   "Frenkie de Jong":      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Frenkie_de_Jong_2022_%28cropped%29.jpg/440px-Frenkie_de_Jong_2022_%28cropped%29.jpg",
   "Cody Gakpo":           "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cody_Gakpo_2022_%28cropped%29.jpg/440px-Cody_Gakpo_2022_%28cropped%29.jpg",
   "Xavi Simons":          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Xavi_Simons_2023_%28cropped%29.jpg/440px-Xavi_Simons_2023_%28cropped%29.jpg",
   "Donyell Malen":        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Donyell_Malen_2022_%28cropped%29.jpg/440px-Donyell_Malen_2022_%28cropped%29.jpg",
-  // ── Belgium ───────────────────────────────────────────────────────────────
+  // -- Belgium ---------------------------------------------------------------
   "Kevin De Bruyne":      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Kevin_De_Bruyne_2018.jpg/440px-Kevin_De_Bruyne_2018.jpg",
   "Romelu Lukaku":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Romelu_Lukaku_2022_%28cropped%29.jpg/440px-Romelu_Lukaku_2022_%28cropped%29.jpg",
   "Thibaut Courtois":     "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Thibaut_Courtois_2018_%28cropped%29.jpg/440px-Thibaut_Courtois_2018_%28cropped%29.jpg",
   "Dries Mertens":        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Dries_Mertens_2018.jpg/440px-Dries_Mertens_2018.jpg",
-  // ── Norway ────────────────────────────────────────────────────────────────
+  // -- Norway ----------------------------------------------------------------
   "Erling Haaland":       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Erling_Haaland_2022_%28cropped%29.jpg/440px-Erling_Haaland_2022_%28cropped%29.jpg",
   "Martin Ødegaard":      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Martin_Odegaard_2022_%28cropped%29.jpg/440px-Martin_Odegaard_2022_%28cropped%29.jpg",
-  // ── Mexico ────────────────────────────────────────────────────────────────
+  // -- Mexico ----------------------------------------------------------------
   "Hirving Lozano":       "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Hirving_Lozano_2022_%28cropped%29.jpg/440px-Hirving_Lozano_2022_%28cropped%29.jpg",
   "Raúl Jiménez":         "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Raul_Jimenez_2022_%28cropped%29.jpg/440px-Raul_Jimenez_2022_%28cropped%29.jpg",
   "Guillermo Ochoa":      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Guillermo_Ochoa_2022_%28cropped%29.jpg/440px-Guillermo_Ochoa_2022_%28cropped%29.jpg",
   "Edson Álvarez":        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edson_Alvarez_2022_%28cropped%29.jpg/440px-Edson_Alvarez_2022_%28cropped%29.jpg",
   "Santiago Giménez":     "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Santiago_Gimenez_2023_%28cropped%29.jpg/440px-Santiago_Gimenez_2023_%28cropped%29.jpg",
-  // ── USA ───────────────────────────────────────────────────────────────────
+  // -- USA -------------------------------------------------------------------
   "Christian Pulisic":    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Christian_Pulisic_2022_%28cropped%29.jpg/440px-Christian_Pulisic_2022_%28cropped%29.jpg",
   "Weston McKennie":      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Weston_McKennie_2022_%28cropped%29.jpg/440px-Weston_McKennie_2022_%28cropped%29.jpg",
   "Tyler Adams":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Tyler_Adams_2022_%28cropped%29.jpg/440px-Tyler_Adams_2022_%28cropped%29.jpg",
   "Gio Reyna":            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Gio_Reyna_2022_%28cropped%29.jpg/440px-Gio_Reyna_2022_%28cropped%29.jpg",
   "Tim Weah":             "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Tim_Weah_2022_%28cropped%29.jpg/440px-Tim_Weah_2022_%28cropped%29.jpg",
   "Matt Turner":          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Matt_Turner_2022_%28cropped%29.jpg/440px-Matt_Turner_2022_%28cropped%29.jpg",
-  // ── Morocco ───────────────────────────────────────────────────────────────
+  // -- Morocco ---------------------------------------------------------------
   "Achraf Hakimi":        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Achraf_Hakimi_2022_%28cropped%29.jpg/440px-Achraf_Hakimi_2022_%28cropped%29.jpg",
   "Hakim Ziyech":         "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Hakim_Ziyech_2022_%28cropped%29.jpg/440px-Hakim_Ziyech_2022_%28cropped%29.jpg",
   "Youssef En-Nesyri":    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Youssef_En-Nesyri_2022_%28cropped%29.jpg/440px-Youssef_En-Nesyri_2022_%28cropped%29.jpg",
   "Romain Saïss":         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Romain_Saiss_2022_%28cropped%29.jpg/440px-Romain_Saiss_2022_%28cropped%29.jpg",
-  // ── Japan ─────────────────────────────────────────────────────────────────
+  // -- Japan -----------------------------------------------------------------
   "Takefusa Kubo":        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Takefusa_Kubo_2022_%28cropped%29.jpg/440px-Takefusa_Kubo_2022_%28cropped%29.jpg",
   "Daichi Kamada":        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Daichi_Kamada_2022_%28cropped%29.jpg/440px-Daichi_Kamada_2022_%28cropped%29.jpg",
   "Kaoru Mitoma":         "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Kaoru_Mitoma_2022_%28cropped%29.jpg/440px-Kaoru_Mitoma_2022_%28cropped%29.jpg",
   "Ritsu Doan":           "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Ritsu_Doan_2022_%28cropped%29.jpg/440px-Ritsu_Doan_2022_%28cropped%29.jpg",
-  // ── South Korea ───────────────────────────────────────────────────────────
+  // -- South Korea -----------------------------------------------------------
   "Son Heung-min":        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Son_Heung-min_2019_%28cropped%29.jpg/440px-Son_Heung-min_2019_%28cropped%29.jpg",
   "Lee Kang-in":          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Lee_Kang-in_2023_%28cropped%29.jpg/440px-Lee_Kang-in_2023_%28cropped%29.jpg",
   "Hwang Hee-chan":       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Hwang_Hee-chan_2022_%28cropped%29.jpg/440px-Hwang_Hee-chan_2022_%28cropped%29.jpg",
-  // ── Senegal ───────────────────────────────────────────────────────────────
+  // -- Senegal ---------------------------------------------------------------
   "Sadio Mané":           "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Sadio_Mane_2019_%28cropped%29.jpg/440px-Sadio_Mane_2019_%28cropped%29.jpg",
   "Édouard Mendy":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Edouard_Mendy_2022_%28cropped%29.jpg/440px-Edouard_Mendy_2022_%28cropped%29.jpg",
   "Idrissa Gueye":        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Idrissa_Gueye_2022_%28cropped%29.jpg/440px-Idrissa_Gueye_2022_%28cropped%29.jpg",
-  // ── Canada ────────────────────────────────────────────────────────────────
+  // -- Canada ----------------------------------------------------------------
   "Alphonso Davies":      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Alphonso_Davies_2022_%28cropped%29.jpg/440px-Alphonso_Davies_2022_%28cropped%29.jpg",
   "Jonathan David":       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Jonathan_David_2022_%28cropped%29.jpg/440px-Jonathan_David_2022_%28cropped%29.jpg",
   "Cyle Larin":           "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Cyle_Larin_2022_%28cropped%29.jpg/440px-Cyle_Larin_2022_%28cropped%29.jpg",
-  // ── Croatia ───────────────────────────────────────────────────────────────
+  // -- Croatia ---------------------------------------------------------------
   "Luka Modrić":          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Luka_Modri%C4%87_2019.jpg/440px-Luka_Modri%C4%87_2019.jpg",
   "Ivan Perišić":         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ivan_Perisic_2022_%28cropped%29.jpg/440px-Ivan_Perisic_2022_%28cropped%29.jpg",
   "Mateo Kovačić":        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Mateo_Kovacic_2022_%28cropped%29.jpg/440px-Mateo_Kovacic_2022_%28cropped%29.jpg",
   "Marcelo Brozović":     "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Marcelo_Brozovic_2022_%28cropped%29.jpg/440px-Marcelo_Brozovic_2022_%28cropped%29.jpg",
   "Ante Rebić":           "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Ante_Rebic_2022_%28cropped%29.jpg/440px-Ante_Rebic_2022_%28cropped%29.jpg",
-  // ── Italy ─────────────────────────────────────────────────────────────────
+  // -- Italy -----------------------------------------------------------------
   "Gianluigi Donnarumma": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Gianluigi_Donnarumma_2021_%28cropped%29.jpg/440px-Gianluigi_Donnarumma_2021_%28cropped%29.jpg",
   "Federico Chiesa":      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Federico_Chiesa_2022_%28cropped%29.jpg/440px-Federico_Chiesa_2022_%28cropped%29.jpg",
   "Nicolo Barella":       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Nicolo_Barella_2022_%28cropped%29.jpg/440px-Nicolo_Barella_2022_%28cropped%29.jpg",
   "Lorenzo Pellegrini":   "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Lorenzo_Pellegrini_2022_%28cropped%29.jpg/440px-Lorenzo_Pellegrini_2022_%28cropped%29.jpg",
-  // ── Uruguay ───────────────────────────────────────────────────────────────
+  // -- Uruguay ---------------------------------------------------------------
   "Darwin Núñez":         "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Darwin_Nunez_2022_%28cropped%29.jpg/440px-Darwin_Nunez_2022_%28cropped%29.jpg",
   "Federico Valverde":    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Federico_Valverde_2022_%28cropped%29.jpg/440px-Federico_Valverde_2022_%28cropped%29.jpg",
   "Luis Suárez":          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Luis_Suarez_2018.jpg/440px-Luis_Suarez_2018.jpg",
   "Rodrigo Bentancur":    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Rodrigo_Bentancur_2022_%28cropped%29.jpg/440px-Rodrigo_Bentancur_2022_%28cropped%29.jpg",
-  // ── Colombia ──────────────────────────────────────────────────────────────
+  // -- Colombia --------------------------------------------------------------
   "James Rodríguez":      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/James_Rodriguez_2018_%28cropped%29.jpg/440px-James_Rodriguez_2018_%28cropped%29.jpg",
   "Luis Díaz":            "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Luis_Diaz_2022_%28cropped%29.jpg/440px-Luis_Diaz_2022_%28cropped%29.jpg",
   "Juan Cuadrado":        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Juan_Cuadrado_2018_%28cropped%29.jpg/440px-Juan_Cuadrado_2018_%28cropped%29.jpg",
   "Jhon Durán":           "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Jhon_Duran_2023_%28cropped%29.jpg/440px-Jhon_Duran_2023_%28cropped%29.jpg",
-  // ── Australia ─────────────────────────────────────────────────────────────
+  // -- Australia -------------------------------------------------------------
   "Mat Ryan":             "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Mat_Ryan_2022_%28cropped%29.jpg/440px-Mat_Ryan_2022_%28cropped%29.jpg",
   "Mitchell Duke":        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Mitchell_Duke_2022_%28cropped%29.jpg/440px-Mitchell_Duke_2022_%28cropped%29.jpg",
-  // ── Ecuador ───────────────────────────────────────────────────────────────
+  // -- Ecuador ---------------------------------------------------------------
   "Enner Valencia":       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Enner_Valencia_2022_%28cropped%29.jpg/440px-Enner_Valencia_2022_%28cropped%29.jpg",
   "Moisés Caicedo":       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Moises_Caicedo_2022_%28cropped%29.jpg/440px-Moises_Caicedo_2022_%28cropped%29.jpg",
-  // ── Switzerland ───────────────────────────────────────────────────────────
+  // -- Switzerland -----------------------------------------------------------
   "Granit Xhaka":         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Granit_Xhaka_2022_%28cropped%29.jpg/440px-Granit_Xhaka_2022_%28cropped%29.jpg",
   "Xherdan Shaqiri":      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Xherdan_Shaqiri_2018_%28cropped%29.jpg/440px-Xherdan_Shaqiri_2018_%28cropped%29.jpg",
-  // ── Nigeria ───────────────────────────────────────────────────────────────
+  // -- Nigeria ---------------------------------------------------------------
   "Victor Osimhen":       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Victor_Osimhen_2022_%28cropped%29.jpg/440px-Victor_Osimhen_2022_%28cropped%29.jpg",
   "Wilfried Zaha":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Wilfried_Zaha_2019_%28cropped%29.jpg/440px-Wilfried_Zaha_2019_%28cropped%29.jpg",
-  // ── Egypt ─────────────────────────────────────────────────────────────────
+  // -- Egypt -----------------------------------------------------------------
   "Mohamed Salah":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Mohamed_Salah_2018.jpg/440px-Mohamed_Salah_2018.jpg",
-  // ── Ghana ─────────────────────────────────────────────────────────────────
+  // -- Ghana -----------------------------------------------------------------
   "Thomas Partey":        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Thomas_Partey_2022_%28cropped%29.jpg/440px-Thomas_Partey_2022_%28cropped%29.jpg",
   "André Ayew":           "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Andre_Ayew_2022_%28cropped%29.jpg/440px-Andre_Ayew_2022_%28cropped%29.jpg",
 };
 
 const NORMALIZED_PHOTO_OVERRIDES = normalizedLookup(PHOTO_OVERRIDES);
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// -- Helpers -------------------------------------------------------------------
 
 /** Build multiple Wikipedia slug variants for a player name */
 function wikiVariants(name: string): string[] {
@@ -365,7 +365,7 @@ async function raceAll(...fns: (() => Promise<string | null>)[]): Promise<string
   });
 }
 
-// ── Route handler ─────────────────────────────────────────────────────────────
+// -- Route handler -------------------------------------------------------------
 export async function GET(req: NextRequest) {
   const rawName = req.nextUrl.searchParams.get("name")?.trim();
   if (!rawName) return NextResponse.json({ url: null });
