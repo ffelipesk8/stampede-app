@@ -6,6 +6,7 @@ import { ShareButton } from "@/components/shared/ShareModal";
 import { useStickerImage } from "@/hooks/useStickerImage";
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
+import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
 
 interface AlbumSticker {
   id: string;
@@ -247,73 +248,80 @@ function StickerSlot({ sticker, onClick }: { sticker: AlbumSticker; onClick: () 
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.owned ? sticker.playerName ?? sticker.name : "",
     sticker.category,
-    sticker.owned ? fallback : null
+    sticker.owned ? fallback : null,
   );
-  const initials = sticker.name.split(" ").map((word) => word[0]).join("").slice(0, 2).toUpperCase();
+  const initials = sticker.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
   const frame = getStickerFrameStyles(sticker.team, color, sticker.category);
 
   return (
-    <div
+    <PremiumCardShell
+      rarity={sticker.rarity as CardRarity}
+      glowColor={color}
+      disabled={!sticker.owned}
+      className={cn("cursor-pointer rounded-xl", !sticker.owned && "opacity-40 grayscale")}
       onClick={onClick}
-      className={cn(
-        "relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 p-[2px] hover:scale-105",
-        sticker.owned ? "hover:shadow-lg" : "opacity-40 grayscale"
-      )}
-      style={sticker.owned ? frame.shell : { background: "#252540" }}
     >
-      <div className="rounded-[10px] overflow-hidden bg-card1">
-        <div className="aspect-[3/4] relative overflow-hidden" style={frame.imagePanel}>
-          <div className="absolute top-0 left-0 right-0 h-1 z-10" style={{ background: color }} />
+      {/* Outer frame border */}
+      <div
+        className="rounded-xl overflow-hidden p-[2.5px]"
+        style={sticker.owned ? frame.shell : { background: "#252540" }}
+      >
+        <div className="rounded-[9px] overflow-hidden bg-card1">
+          <div className="aspect-[3/4] relative overflow-hidden" style={frame.imagePanel}>
 
-          {sticker.owned ? (
-            <>
-              {showPhoto ? (
-                <img
-                  src={photoUrl!}
-                  alt={sticker.name}
-                  className="w-full h-full object-cover object-top"
-                  onLoad={() => setLoaded(true)}
-                  onError={() => setError(true)}
-                />
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-                  <div className="text-2xl">{TEAM_FLAGS[sticker.team] ?? "??"}</div>
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs"
-                    style={{ ...frame.ring, color: "#fff", borderWidth: 2, borderStyle: "solid" }}
-                  >
-                    {initials}
+            {/* Flag stripe bar */}
+            <div className="absolute top-0 left-0 right-0 z-10" style={frame.flagBar} />
+
+            {sticker.owned ? (
+              <>
+                {showPhoto ? (
+                  <img
+                    src={photoUrl!}
+                    alt={sticker.name}
+                    className="w-full h-full object-cover object-top"
+                    onLoad={() => setLoaded(true)}
+                    onError={() => setError(true)}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                    <div className="text-2xl">{TEAM_FLAGS[sticker.team] ?? "??"}</div>
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs border-2"
+                      style={{ ...frame.ring, color: "#fff" }}
+                    >
+                      {initials}
+                    </div>
                   </div>
+                )}
+
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-5 flex items-center justify-between px-1.5 z-10"
+                  style={frame.footer}
+                >
+                  <span className="text-[8px] font-black text-white tracking-widest">{sticker.team}</span>
+                  <span className="text-[9px]">{TEAM_FLAGS[sticker.team] ?? ""}</span>
                 </div>
-              )}
-
-              <div
-                className="absolute bottom-0 left-0 right-0 h-5 flex items-center justify-between px-1.5 z-10"
-                style={frame.footer}
-              >
-                <span className="text-[8px] font-black text-white tracking-widest">{sticker.team}</span>
-                <span className="text-[9px]">{TEAM_FLAGS[sticker.team] ?? ""}</span>
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl opacity-40">?</span>
               </div>
-            </>
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-2xl">?</span>
-            </div>
-          )}
+            )}
 
-          {sticker.quantity > 1 && (
-            <div className="absolute top-1.5 right-1.5 bg-bg/80 text-[9px] font-black text-t1 rounded px-1 z-20">
-              x{sticker.quantity}
-            </div>
-          )}
-        </div>
+            {sticker.quantity > 1 && (
+              <div className="absolute top-1.5 right-1.5 bg-bg/80 text-[9px] font-black text-t1 rounded px-1 z-20">
+                ×{sticker.quantity}
+              </div>
+            )}
+          </div>
 
-        <div className="px-1.5 py-1 bg-card1">
-          <p className="text-[10px] font-semibold text-t1 truncate leading-tight">{sticker.name}</p>
-          <p className="text-[9px]" style={{ color }}>{rarityLabel(sticker.rarity)}</p>
+          <div className="px-1.5 py-1 bg-card1">
+            <p className="text-[10px] font-semibold text-t1 truncate leading-tight">{sticker.name}</p>
+            <p className="text-[9px]" style={{ color }}>{rarityLabel(sticker.rarity)}</p>
+          </div>
         </div>
       </div>
-    </div>
+    </PremiumCardShell>
   );
 }
 

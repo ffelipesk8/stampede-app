@@ -114,15 +114,4 @@ export interface WompiTransactionEvent {
   data: {
     transaction: {
       id:              string;
-      reference:       string;
-      status:          "APPROVED" | "DECLINED" | "ERROR" | "VOIDED" | "PENDING";
-      amount_in_cents: number;
-      currency:        string;
-      customer_email:  string;
-      payment_method_type: string;
-    };
-  };
-  sent_at:     string;
-  timestamp:   number;
-  signature: { properties: string[]; checksum: string };
-}
+      reference:       st
