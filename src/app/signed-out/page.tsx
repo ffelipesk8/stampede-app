@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import type { Route } from "next";
 
 const REDIRECT_SECONDS = 8;
 
@@ -87,7 +88,7 @@ export default function SignedOutPage() {
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            href="/sign-in"
+            href={"/sign-in" as Route}
             className="px-6 py-3 rounded-xl font-bold text-white text-sm transition-all"
             style={{
               background: "linear-gradient(135deg, #E8650A, #FF5E00)",
@@ -97,7 +98,7 @@ export default function SignedOutPage() {
             Iniciar sesion de nuevo
           </Link>
           <Link
-            href="/"
+            href={"/" as Route}
             className="px-6 py-3 rounded-xl font-bold text-sm border border-[#2a2a4a] text-[#8888AA] hover:border-[#E8650A] hover:text-white transition-all"
           >
             Ir al inicio
