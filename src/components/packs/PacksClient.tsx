@@ -6,6 +6,8 @@ import { Zap } from "lucide-react";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
 import { useStickerImage } from "@/hooks/useStickerImage";
 import { ShareButton } from "@/components/shared/ShareModal";
+import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
+import { getStickerFrameStyles } from "@/lib/sticker-frame";
 
 // ── Shared team data ───────────────────────────────────────────────────────────
 const TEAM_FLAGS: Record<string, string> = {
@@ -34,50 +36,60 @@ function StickerCard({ sticker, delay = 0 }: {
 }) {
   const c = rarityColor(sticker.rarity as never);
   const initials = sticker.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
-  const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32","#252540"];
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.name,
     sticker.category ?? "player",
     sticker.imageUrl
   );
+  const frame = getStickerFrameStyles(sticker.team, c, sticker.category ?? "player");
 
   return (
     <motion.div
       initial={{ rotateY: 90, opacity: 0, scale: 0.8 }}
       animate={{ rotateY: 0, opacity: 1, scale: 1 }}
       transition={{ delay, type: "spring", stiffness: 200 }}
-      className="w-24 rounded-xl border-2 overflow-hidden flex-shrink-0 cursor-pointer"
-      style={{ borderColor: c, boxShadow: `0 0 ${sticker.rarity === "LEGENDARY" ? "28px" : sticker.rarity === "EPIC" ? "16px" : "8px"} ${c}50` }}
+      className="flex-shrink-0 w-24"
+      style={{ borderRadius: "0.75rem" }}
     >
-      <div className="h-32 relative overflow-hidden"
-           style={{ background: `linear-gradient(160deg, ${bg1} 0%, ${bg2} 100%)` }}>
-        <div className="absolute top-0 left-0 right-0 h-1 z-10" style={{ background: c }} />
-        {showPhoto && (
-          <img src={photoUrl!} alt={sticker.name}
-               className="w-full h-full object-cover object-top"
-               style={{ transition: "opacity 0.3s" }}
-               onLoad={(e) => { setLoaded(true); (e.target as HTMLImageElement).style.opacity = "1"; }}
-               onError={() => setError(true)} />
-        )}
-        {!showPhoto && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-            <div className="text-2xl">{TEAM_FLAGS[sticker.team] ?? "⚽"}</div>
-            <div className="w-11 h-11 rounded-full flex items-center justify-center font-black text-base"
-                 style={{ background:"rgba(0,0,0,0.4)", color:"#fff", border:`2px solid ${c}80` }}>
-              {initials}
+      <PremiumCardShell
+        rarity={sticker.rarity as CardRarity}
+        glowColor={c}
+        style={{ borderRadius: "0.75rem" }}
+      >
+        {/* ── Outer frame shell ── */}
+        <div className="rounded-xl overflow-hidden p-[2.5px]" style={frame.shell}>
+          <div className="rounded-[11px] overflow-hidden bg-[#090914]">
+            {/* Image area */}
+            <div className="h-32 relative overflow-hidden" style={frame.imagePanel}>
+              <div className="absolute top-0 left-0 right-0 z-10" style={frame.flagBar} />
+              {showPhoto ? (
+                <img src={photoUrl!} alt={sticker.name}
+                     className="w-full h-full object-cover object-top"
+                     onLoad={() => setLoaded(true)}
+                     onError={() => setError(true)} />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                  <div className="text-2xl">{TEAM_FLAGS[sticker.team] ?? "⚽"}</div>
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center font-black text-base"
+                       style={{ ...frame.ring, color: "#fff" }}>
+                    {initials}
+                  </div>
+                </div>
+              )}
+              <div className="absolute bottom-0 left-0 right-0 h-6 flex items-center justify-between px-2 z-10"
+                   style={frame.footer}>
+                <span className="text-[9px] font-black text-white tracking-widest">{sticker.team}</span>
+                <span className="text-[9px]">{TEAM_FLAGS[sticker.team] ?? ""}</span>
+              </div>
+            </div>
+            {/* Card footer */}
+            <div className="px-1.5 py-1.5" style={{ background: "linear-gradient(180deg, #0d0d1a 0%, #080810 100%)" }}>
+              <p className="text-[10px] font-bold text-white truncate leading-tight">{sticker.name}</p>
+              <p className="text-[9px] font-black mt-0.5" style={{ color: c }}>{rarityLabel(sticker.rarity as never)}</p>
             </div>
           </div>
-        )}
-        <div className="absolute bottom-0 left-0 right-0 h-6 flex items-center justify-between px-2 z-10"
-             style={{ background:"rgba(0,0,0,0.6)" }}>
-          <span className="text-[9px] font-black text-white tracking-widest">{sticker.team}</span>
-          <span className="text-[9px]">{TEAM_FLAGS[sticker.team] ?? ""}</span>
         </div>
-      </div>
-      <div className="px-1.5 py-1.5 bg-card1">
-        <p className="text-[10px] font-bold text-t1 truncate leading-tight">{sticker.name}</p>
-        <p className="text-[9px] font-black mt-0.5" style={{ color: c }}>{rarityLabel(sticker.rarity as never)}</p>
-      </div>
+      </PremiumCardShell>
     </motion.div>
   );
 }
@@ -96,7 +108,6 @@ function FifaCard({
 }) {
   const c = rarityColor(sticker.rarity as never);
   const initials = sticker.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
-  const [bg1, bg2] = TEAM_COLORS[sticker.team] ?? ["#1C1C32","#252540"];
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.name,
     sticker.category ?? "player",
@@ -104,6 +115,7 @@ function FifaCard({
   );
   const isLegendary = sticker.rarity === "LEGENDARY";
   const isEpic = sticker.rarity === "EPIC";
+  const frame = getStickerFrameStyles(sticker.team, c, sticker.category ?? "player");
 
   return (
     <motion.div
@@ -168,61 +180,73 @@ function FifaCard({
 
         {/* ── CARD FRONT ── */}
         <div
-          className="absolute inset-0 rounded-2xl overflow-hidden border-2"
+          className="absolute inset-0 rounded-2xl overflow-hidden"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
-            borderColor: c,
-            boxShadow: revealed ? `0 0 24px ${c}80, 0 0 60px ${c}30` : "none",
           }}
         >
-          {/* Photo area — top 65% */}
-          <div className="relative overflow-hidden"
-               style={{ height: "66%", background: `linear-gradient(160deg, ${bg1} 0%, ${bg2} 100%)` }}>
-            {/* Rarity bar */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 z-20" style={{ background: c }} />
-            {/* LEGENDARY holographic shimmer */}
-            {isLegendary && revealed && (
-              <motion.div
-                animate={{ x: ["-100%", "200%"] }}
-                transition={{ repeat: Infinity, duration: 1.8, ease: "linear" }}
-                className="absolute inset-0 w-1/2 z-10 pointer-events-none"
-                style={{ background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)" }}
-              />
-            )}
-            {showPhoto ? (
-              <img
-                src={photoUrl!}
-                alt={sticker.name}
-                className="w-full h-full object-cover object-top"
-                onLoad={() => setLoaded(true)}
-                onError={() => setError(true)}
-              />
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 z-10">
-                <div className="text-2xl">{TEAM_FLAGS[sticker.team] ?? "⚽"}</div>
-                <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-sm"
-                     style={{ background:"rgba(0,0,0,0.45)", color:"#fff", border:`2px solid ${c}80` }}>
-                  {initials}
+          {/* Premium frame shell — 2.5px gradient border */}
+          <div className="w-full h-full rounded-2xl p-[2.5px]"
+               style={{
+                 ...frame.shell,
+                 boxShadow: revealed
+                   ? `0 0 24px ${c}80, 0 0 60px ${c}30, ${frame.shell.boxShadow ?? ""}`
+                   : "none",
+               }}>
+            <div className="w-full h-full rounded-[13px] overflow-hidden bg-[#090914] flex flex-col">
+
+              {/* Photo area — top 66% */}
+              <div className="relative overflow-hidden" style={{ flex: "0 0 66%", ...frame.imagePanel }}>
+                {/* Flag bar top */}
+                <div className="absolute top-0 left-0 right-0 z-20" style={frame.flagBar} />
+
+                {/* LEGENDARY / EPIC holographic shimmer */}
+                {(isLegendary || isEpic) && revealed && (
+                  <motion.div
+                    animate={{ x: ["-100%", "200%"] }}
+                    transition={{ repeat: Infinity, duration: isLegendary ? 1.8 : 3, ease: "linear" }}
+                    className="absolute inset-0 w-1/2 z-10 pointer-events-none"
+                    style={{ background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%)" }}
+                  />
+                )}
+
+                {showPhoto ? (
+                  <img
+                    src={photoUrl!}
+                    alt={sticker.name}
+                    className="w-full h-full object-cover object-top"
+                    onLoad={() => setLoaded(true)}
+                    onError={() => setError(true)}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 z-10">
+                    <div className="text-2xl">{TEAM_FLAGS[sticker.team] ?? "⚽"}</div>
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-sm"
+                         style={{ ...frame.ring, color: "#fff" }}>
+                      {initials}
+                    </div>
+                  </div>
+                )}
+
+                {/* Footer strip inside image panel */}
+                <div className="absolute bottom-0 left-0 right-0 h-6 flex items-center justify-between px-2 z-20"
+                     style={frame.footer}>
+                  <span className="text-[8px] font-black text-white tracking-widest">{sticker.team}</span>
+                  <span className="text-[10px]">{TEAM_FLAGS[sticker.team] ?? ""}</span>
                 </div>
               </div>
-            )}
-            {/* Team badge */}
-            <div className="absolute bottom-0 left-0 right-0 h-6 flex items-center justify-between px-2 z-20"
-                 style={{ background: "rgba(0,0,0,0.72)" }}>
-              <span className="text-[8px] font-black text-white tracking-widest">{sticker.team}</span>
-              <span className="text-[10px]">{TEAM_FLAGS[sticker.team] ?? ""}</span>
-            </div>
-          </div>
 
-          {/* Name area — bottom 34% */}
-          <div className="flex flex-col justify-center px-2 py-1.5 bg-[#0d0d1a]"
-               style={{ height: "34%" }}>
-            <p className="text-[10px] font-black text-white truncate leading-tight">{sticker.name}</p>
-            <div className="flex items-center justify-between mt-0.5">
-              <p className="text-[9px] font-black" style={{ color: c }}>{rarityLabel(sticker.rarity as never)}</p>
-              {isLegendary && <span className="text-[9px]">✨</span>}
-              {isEpic && <span className="text-[9px]">💜</span>}
+              {/* Name area — bottom 34% */}
+              <div className="flex flex-col justify-center px-2 py-1.5"
+                   style={{ flex: "0 0 34%", background: "linear-gradient(180deg, #0d0d1a 0%, #080810 100%)" }}>
+                <p className="text-[10px] font-black text-white truncate leading-tight">{sticker.name}</p>
+                <div className="flex items-center justify-between mt-0.5">
+                  <p className="text-[9px] font-black" style={{ color: c }}>{rarityLabel(sticker.rarity as never)}</p>
+                  {isLegendary && <span className="text-[9px]">✨</span>}
+                  {isEpic && <span className="text-[9px]">💜</span>}
+                </div>
+              </div>
             </div>
           </div>
         </div>
