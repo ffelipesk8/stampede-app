@@ -114,6 +114,72 @@ export type TranslationKey =
   | "profile.stats"
   | "profile.achievements"
   | "profile.collection"
+  // -- Album (extended) --------------------------------------------------------
+  | "album.xpBonus"
+  | "album.groupByTeam"
+  | "album.gridView"
+  | "album.listView"
+  | "album.share"
+  | "album.trade"
+  | "album.stickers"
+  | "album.collapseAll"
+  | "album.expandAll"
+  | "album.noStickers"
+  // -- Events (extended) -------------------------------------------------------
+  | "events.createEvent"
+  | "events.noEvents"
+  | "events.noEventsHint"
+  | "events.joinEvent"
+  | "events.attendees"
+  | "events.full"
+  | "events.stepType"
+  | "events.stepWhen"
+  | "events.stepDetails"
+  | "events.publish"
+  | "events.published"
+  | "events.publishedDesc"
+  | "events.totalFans"
+  | "events.totalCities"
+  | "events.myEvents"
+  | "events.createFirst"
+  | "events.description"
+  | "events.maxAttendees"
+  | "events.venue"
+  | "events.city"
+  | "events.selectCountry"
+  | "events.optional"
+  | "events.typeMatch"
+  | "events.typeBarCrawl"
+  | "events.typeFanzone"
+  | "events.typeTournament"
+  | "events.typeWatch"
+  | "events.typeOther"
+  // -- Ranking (extended) ------------------------------------------------------
+  | "ranking.global"
+  | "ranking.country"
+  | "ranking.newMembers"
+  | "ranking.recentlyJoined"
+  | "ranking.justJoined"
+  | "ranking.welcomeNew"
+  | "ranking.joinedDaysAgo"
+  | "ranking.joinedHoursAgo"
+  | "ranking.joinedMinutesAgo"
+  | "ranking.joinedJustNow"
+  | "ranking.streak"
+  | "ranking.findMe"
+  | "ranking.stickers"
+  // -- Common (extended) -------------------------------------------------------
+  | "common.share"
+  | "common.trade"
+  | "common.grid"
+  | "common.list"
+  | "common.new"
+  | "common.viewAll"
+  | "common.back"
+  | "common.next"
+  | "common.done"
+  | "common.publish"
+  | "common.create"
   // -- Rarity labels -----------------------------------------------------------
   | "rarity.common"
   | "rarity.uncommon"
@@ -225,6 +291,72 @@ const en: Translations = {
   "profile.achievements":"Achievements",
   "profile.collection":  "Collection",
 
+  "album.xpBonus":      "+XP bonus",
+  "album.groupByTeam":  "Group by team",
+  "album.gridView":     "Grid",
+  "album.listView":     "List",
+  "album.share":        "Share",
+  "album.trade":        "Trade",
+  "album.stickers":     "stickers",
+  "album.collapseAll":  "Collapse all",
+  "album.expandAll":    "Expand all",
+  "album.noStickers":   "No stickers yet",
+
+  "events.createEvent":    "Create Event",
+  "events.noEvents":       "No events yet",
+  "events.noEventsHint":   "Be the first to organize a fan meetup!",
+  "events.joinEvent":      "Join",
+  "events.attendees":      "attendees",
+  "events.full":           "Full",
+  "events.stepType":       "Type",
+  "events.stepWhen":       "When & Where",
+  "events.stepDetails":    "Details",
+  "events.publish":        "Publish Event",
+  "events.published":      "Event Published!",
+  "events.publishedDesc":  "Your event is now live. Fans can join!",
+  "events.totalFans":      "fans",
+  "events.totalCities":    "cities",
+  "events.myEvents":       "My Events",
+  "events.createFirst":    "Create your first event",
+  "events.description":    "Description",
+  "events.maxAttendees":   "Max attendees",
+  "events.venue":          "Venue / Place",
+  "events.city":           "City",
+  "events.selectCountry":  "Select country",
+  "events.optional":       "optional",
+  "events.typeMatch":      "Watch Party",
+  "events.typeBarCrawl":   "Bar Crawl",
+  "events.typeFanzone":    "Fan Zone",
+  "events.typeTournament": "Tournament",
+  "events.typeWatch":      "Screening",
+  "events.typeOther":      "Other",
+
+  "ranking.global":           "Global",
+  "ranking.country":          "My Country",
+  "ranking.newMembers":       "New Members",
+  "ranking.recentlyJoined":   "Recently Joined",
+  "ranking.justJoined":       "Just joined!",
+  "ranking.welcomeNew":       "Welcome to the crew",
+  "ranking.joinedDaysAgo":    "{n}d ago",
+  "ranking.joinedHoursAgo":   "{n}h ago",
+  "ranking.joinedMinutesAgo": "{n}m ago",
+  "ranking.joinedJustNow":    "Just now",
+  "ranking.streak":           "streak",
+  "ranking.findMe":           "Find me →",
+  "ranking.stickers":         "stickers",
+
+  "common.share":    "Share",
+  "common.trade":    "Trade",
+  "common.grid":     "Grid",
+  "common.list":     "List",
+  "common.new":      "New",
+  "common.viewAll":  "View all",
+  "common.back":     "Back",
+  "common.next":     "Next",
+  "common.done":     "Done",
+  "common.publish":  "Publish",
+  "common.create":   "Create",
+
   "rarity.common":    "Common",
   "rarity.uncommon":  "Uncommon",
   "rarity.rare":      "Rare",
@@ -332,6 +464,72 @@ const es: Translations = {
   "profile.stats":       "Estadísticas",
   "profile.achievements":"Logros",
   "profile.collection":  "Colección",
+
+  "album.xpBonus":      "+XP bonus",
+  "album.groupByTeam":  "Agrupar por equipo",
+  "album.gridView":     "Cuadrícula",
+  "album.listView":     "Lista",
+  "album.share":        "Compartir",
+  "album.trade":        "Intercambiar",
+  "album.stickers":     "estampas",
+  "album.collapseAll":  "Colapsar todo",
+  "album.expandAll":    "Expandir todo",
+  "album.noStickers":   "Sin estampas aún",
+
+  "events.createEvent":    "Crear evento",
+  "events.noEvents":       "Sin eventos aún",
+  "events.noEventsHint":   "¡Sé el primero en organizar un encuentro de fans!",
+  "events.joinEvent":      "Unirse",
+  "events.attendees":      "asistentes",
+  "events.full":           "Lleno",
+  "events.stepType":       "Tipo",
+  "events.stepWhen":       "Cuándo y dónde",
+  "events.stepDetails":    "Detalles",
+  "events.publish":        "Publicar evento",
+  "events.published":      "¡Evento publicado!",
+  "events.publishedDesc":  "Tu evento ya está activo. ¡Los fans pueden unirse!",
+  "events.totalFans":      "fans",
+  "events.totalCities":    "ciudades",
+  "events.myEvents":       "Mis eventos",
+  "events.createFirst":    "Crea tu primer evento",
+  "events.description":    "Descripción",
+  "events.maxAttendees":   "Máx. asistentes",
+  "events.venue":          "Lugar / Venue",
+  "events.city":           "Ciudad",
+  "events.selectCountry":  "Selecciona país",
+  "events.optional":       "opcional",
+  "events.typeMatch":      "Ver partido",
+  "events.typeBarCrawl":   "Bares",
+  "events.typeFanzone":    "Zona fan",
+  "events.typeTournament": "Torneo",
+  "events.typeWatch":      "Proyección",
+  "events.typeOther":      "Otro",
+
+  "ranking.global":           "Global",
+  "ranking.country":          "Mi país",
+  "ranking.newMembers":       "Nuevos",
+  "ranking.recentlyJoined":   "Recién llegados",
+  "ranking.justJoined":       "¡Acaba de unirse!",
+  "ranking.welcomeNew":       "Bienvenido a la comunidad",
+  "ranking.joinedDaysAgo":    "hace {n}d",
+  "ranking.joinedHoursAgo":   "hace {n}h",
+  "ranking.joinedMinutesAgo": "hace {n}m",
+  "ranking.joinedJustNow":    "Ahora mismo",
+  "ranking.streak":           "racha",
+  "ranking.findMe":           "Encuéntrame →",
+  "ranking.stickers":         "estampas",
+
+  "common.share":    "Compartir",
+  "common.trade":    "Intercambiar",
+  "common.grid":     "Cuadrícula",
+  "common.list":     "Lista",
+  "common.new":      "Nuevo",
+  "common.viewAll":  "Ver todo",
+  "common.back":     "Atrás",
+  "common.next":     "Siguiente",
+  "common.done":     "Listo",
+  "common.publish":  "Publicar",
+  "common.create":   "Crear",
 
   "rarity.common":    "Común",
   "rarity.uncommon":  "Poco común",
@@ -441,6 +639,72 @@ const pt: Translations = {
   "profile.achievements":"Conquistas",
   "profile.collection":  "Coleção",
 
+  "album.xpBonus":      "+XP bônus",
+  "album.groupByTeam":  "Agrupar por seleção",
+  "album.gridView":     "Grade",
+  "album.listView":     "Lista",
+  "album.share":        "Compartilhar",
+  "album.trade":        "Trocar",
+  "album.stickers":     "figurinhas",
+  "album.collapseAll":  "Recolher tudo",
+  "album.expandAll":    "Expandir tudo",
+  "album.noStickers":   "Sem figurinhas ainda",
+
+  "events.createEvent":    "Criar evento",
+  "events.noEvents":       "Sem eventos ainda",
+  "events.noEventsHint":   "Seja o primeiro a organizar um encontro de fãs!",
+  "events.joinEvent":      "Participar",
+  "events.attendees":      "participantes",
+  "events.full":           "Lotado",
+  "events.stepType":       "Tipo",
+  "events.stepWhen":       "Quando e onde",
+  "events.stepDetails":    "Detalhes",
+  "events.publish":        "Publicar evento",
+  "events.published":      "Evento publicado!",
+  "events.publishedDesc":  "Seu evento está no ar. Os fãs podem participar!",
+  "events.totalFans":      "fãs",
+  "events.totalCities":    "cidades",
+  "events.myEvents":       "Meus eventos",
+  "events.createFirst":    "Crie seu primeiro evento",
+  "events.description":    "Descrição",
+  "events.maxAttendees":   "Máx. participantes",
+  "events.venue":          "Local / Venue",
+  "events.city":           "Cidade",
+  "events.selectCountry":  "Selecione o país",
+  "events.optional":       "opcional",
+  "events.typeMatch":      "Ver jogo",
+  "events.typeBarCrawl":   "Bar Crawl",
+  "events.typeFanzone":    "Fan Zone",
+  "events.typeTournament": "Torneio",
+  "events.typeWatch":      "Exibição",
+  "events.typeOther":      "Outro",
+
+  "ranking.global":           "Global",
+  "ranking.country":          "Meu país",
+  "ranking.newMembers":       "Novos",
+  "ranking.recentlyJoined":   "Recém chegados",
+  "ranking.justJoined":       "Acabou de entrar!",
+  "ranking.welcomeNew":       "Bem-vindo à comunidade",
+  "ranking.joinedDaysAgo":    "{n}d atrás",
+  "ranking.joinedHoursAgo":   "{n}h atrás",
+  "ranking.joinedMinutesAgo": "{n}m atrás",
+  "ranking.joinedJustNow":    "Agora mesmo",
+  "ranking.streak":           "sequência",
+  "ranking.findMe":           "Me encontrar →",
+  "ranking.stickers":         "figurinhas",
+
+  "common.share":    "Compartilhar",
+  "common.trade":    "Trocar",
+  "common.grid":     "Grade",
+  "common.list":     "Lista",
+  "common.new":      "Novo",
+  "common.viewAll":  "Ver tudo",
+  "common.back":     "Voltar",
+  "common.next":     "Próximo",
+  "common.done":     "Pronto",
+  "common.publish":  "Publicar",
+  "common.create":   "Criar",
+
   "rarity.common":    "Comum",
   "rarity.uncommon":  "Incomum",
   "rarity.rare":      "Raro",
@@ -548,6 +812,72 @@ const fr: Translations = {
   "profile.stats":       "Statistiques",
   "profile.achievements":"Succès",
   "profile.collection":  "Collection",
+
+  "album.xpBonus":      "+XP bonus",
+  "album.groupByTeam":  "Grouper par équipe",
+  "album.gridView":     "Grille",
+  "album.listView":     "Liste",
+  "album.share":        "Partager",
+  "album.trade":        "Échanger",
+  "album.stickers":     "stickers",
+  "album.collapseAll":  "Tout replier",
+  "album.expandAll":    "Tout développer",
+  "album.noStickers":   "Aucun sticker encore",
+
+  "events.createEvent":    "Créer un événement",
+  "events.noEvents":       "Aucun événement",
+  "events.noEventsHint":   "Soyez le premier à organiser un rassemblement de fans!",
+  "events.joinEvent":      "Rejoindre",
+  "events.attendees":      "participants",
+  "events.full":           "Complet",
+  "events.stepType":       "Type",
+  "events.stepWhen":       "Quand et où",
+  "events.stepDetails":    "Détails",
+  "events.publish":        "Publier",
+  "events.published":      "Événement publié!",
+  "events.publishedDesc":  "Votre événement est en ligne. Les fans peuvent rejoindre!",
+  "events.totalFans":      "fans",
+  "events.totalCities":    "villes",
+  "events.myEvents":       "Mes événements",
+  "events.createFirst":    "Créez votre premier événement",
+  "events.description":    "Description",
+  "events.maxAttendees":   "Max participants",
+  "events.venue":          "Lieu / Venue",
+  "events.city":           "Ville",
+  "events.selectCountry":  "Sélectionner pays",
+  "events.optional":       "optionnel",
+  "events.typeMatch":      "Regarder match",
+  "events.typeBarCrawl":   "Bar Crawl",
+  "events.typeFanzone":    "Fan Zone",
+  "events.typeTournament": "Tournoi",
+  "events.typeWatch":      "Projection",
+  "events.typeOther":      "Autre",
+
+  "ranking.global":           "Global",
+  "ranking.country":          "Mon pays",
+  "ranking.newMembers":       "Nouveaux",
+  "ranking.recentlyJoined":   "Récemment inscrits",
+  "ranking.justJoined":       "Vient de rejoindre!",
+  "ranking.welcomeNew":       "Bienvenue dans la communauté",
+  "ranking.joinedDaysAgo":    "il y a {n}j",
+  "ranking.joinedHoursAgo":   "il y a {n}h",
+  "ranking.joinedMinutesAgo": "il y a {n}m",
+  "ranking.joinedJustNow":    "À l'instant",
+  "ranking.streak":           "série",
+  "ranking.findMe":           "Me trouver →",
+  "ranking.stickers":         "stickers",
+
+  "common.share":    "Partager",
+  "common.trade":    "Échanger",
+  "common.grid":     "Grille",
+  "common.list":     "Liste",
+  "common.new":      "Nouveau",
+  "common.viewAll":  "Tout voir",
+  "common.back":     "Retour",
+  "common.next":     "Suivant",
+  "common.done":     "Terminé",
+  "common.publish":  "Publier",
+  "common.create":   "Créer",
 
   "rarity.common":    "Commun",
   "rarity.uncommon":  "Peu commun",
@@ -657,6 +987,72 @@ const de: Translations = {
   "profile.achievements":"Errungenschaften",
   "profile.collection":  "Sammlung",
 
+  "album.xpBonus":      "+XP Bonus",
+  "album.groupByTeam":  "Nach Team gruppieren",
+  "album.gridView":     "Raster",
+  "album.listView":     "Liste",
+  "album.share":        "Teilen",
+  "album.trade":        "Tauschen",
+  "album.stickers":     "Sticker",
+  "album.collapseAll":  "Alle einklappen",
+  "album.expandAll":    "Alle ausklappen",
+  "album.noStickers":   "Noch keine Sticker",
+
+  "events.createEvent":    "Event erstellen",
+  "events.noEvents":       "Noch keine Events",
+  "events.noEventsHint":   "Sei der Erste und organisiere ein Fan-Treffen!",
+  "events.joinEvent":      "Teilnehmen",
+  "events.attendees":      "Teilnehmer",
+  "events.full":           "Voll",
+  "events.stepType":       "Typ",
+  "events.stepWhen":       "Wann & Wo",
+  "events.stepDetails":    "Details",
+  "events.publish":        "Veröffentlichen",
+  "events.published":      "Event veröffentlicht!",
+  "events.publishedDesc":  "Dein Event ist live. Fans können beitreten!",
+  "events.totalFans":      "Fans",
+  "events.totalCities":    "Städte",
+  "events.myEvents":       "Meine Events",
+  "events.createFirst":    "Erstelle dein erstes Event",
+  "events.description":    "Beschreibung",
+  "events.maxAttendees":   "Max. Teilnehmer",
+  "events.venue":          "Veranstaltungsort",
+  "events.city":           "Stadt",
+  "events.selectCountry":  "Land auswählen",
+  "events.optional":       "optional",
+  "events.typeMatch":      "Spielabend",
+  "events.typeBarCrawl":   "Bar-Tour",
+  "events.typeFanzone":    "Fan-Zone",
+  "events.typeTournament": "Turnier",
+  "events.typeWatch":      "Screening",
+  "events.typeOther":      "Sonstiges",
+
+  "ranking.global":           "Global",
+  "ranking.country":          "Mein Land",
+  "ranking.newMembers":       "Neue",
+  "ranking.recentlyJoined":   "Neu eingetreten",
+  "ranking.justJoined":       "Gerade beigetreten!",
+  "ranking.welcomeNew":       "Willkommen in der Community",
+  "ranking.joinedDaysAgo":    "vor {n}T",
+  "ranking.joinedHoursAgo":   "vor {n}h",
+  "ranking.joinedMinutesAgo": "vor {n}min",
+  "ranking.joinedJustNow":    "Gerade eben",
+  "ranking.streak":           "Serie",
+  "ranking.findMe":           "Find me →",
+  "ranking.stickers":         "Sticker",
+
+  "common.share":    "Teilen",
+  "common.trade":    "Tauschen",
+  "common.grid":     "Raster",
+  "common.list":     "Liste",
+  "common.new":      "Neu",
+  "common.viewAll":  "Alle sehen",
+  "common.back":     "Zurück",
+  "common.next":     "Weiter",
+  "common.done":     "Fertig",
+  "common.publish":  "Veröffentlichen",
+  "common.create":   "Erstellen",
+
   "rarity.common":    "Gewöhnlich",
   "rarity.uncommon":  "Ungewöhnlich",
   "rarity.rare":      "Selten",
@@ -764,6 +1160,72 @@ const ar: Translations = {
   "profile.stats":       "الإحصاءات",
   "profile.achievements":"الإنجازات",
   "profile.collection":  "المجموعة",
+
+  "album.xpBonus":      "+مكافأة XP",
+  "album.groupByTeam":  "تجميع حسب الفريق",
+  "album.gridView":     "شبكة",
+  "album.listView":     "قائمة",
+  "album.share":        "مشاركة",
+  "album.trade":        "تبادل",
+  "album.stickers":     "ملصقات",
+  "album.collapseAll":  "طي الكل",
+  "album.expandAll":    "توسيع الكل",
+  "album.noStickers":   "لا ملصقات بعد",
+
+  "events.createEvent":    "إنشاء حدث",
+  "events.noEvents":       "لا أحداث بعد",
+  "events.noEventsHint":   "كن أول من ينظم لقاء للمشجعين!",
+  "events.joinEvent":      "انضمام",
+  "events.attendees":      "حضور",
+  "events.full":           "مكتمل",
+  "events.stepType":       "النوع",
+  "events.stepWhen":       "متى وأين",
+  "events.stepDetails":    "تفاصيل",
+  "events.publish":        "نشر الحدث",
+  "events.published":      "تم النشر!",
+  "events.publishedDesc":  "حدثك الآن مباشر. يمكن للمشجعين الانضمام!",
+  "events.totalFans":      "مشجع",
+  "events.totalCities":    "مدن",
+  "events.myEvents":       "أحداثي",
+  "events.createFirst":    "أنشئ حدثك الأول",
+  "events.description":    "وصف",
+  "events.maxAttendees":   "أقصى عدد",
+  "events.venue":          "المكان",
+  "events.city":           "المدينة",
+  "events.selectCountry":  "اختر الدولة",
+  "events.optional":       "اختياري",
+  "events.typeMatch":      "مشاهدة مباراة",
+  "events.typeBarCrawl":   "جولة مقاهي",
+  "events.typeFanzone":    "منطقة المشجعين",
+  "events.typeTournament": "بطولة",
+  "events.typeWatch":      "عرض خاص",
+  "events.typeOther":      "أخرى",
+
+  "ranking.global":           "عالمي",
+  "ranking.country":          "بلدي",
+  "ranking.newMembers":       "جدد",
+  "ranking.recentlyJoined":   "المنضمون حديثاً",
+  "ranking.justJoined":       "انضم للتو!",
+  "ranking.welcomeNew":       "مرحباً في المجتمع",
+  "ranking.joinedDaysAgo":    "منذ {n} أيام",
+  "ranking.joinedHoursAgo":   "منذ {n} ساعات",
+  "ranking.joinedMinutesAgo": "منذ {n} دقائق",
+  "ranking.joinedJustNow":    "الآن",
+  "ranking.streak":           "سلسلة",
+  "ranking.findMe":           "← جدني",
+  "ranking.stickers":         "ملصقات",
+
+  "common.share":    "مشاركة",
+  "common.trade":    "تبادل",
+  "common.grid":     "شبكة",
+  "common.list":     "قائمة",
+  "common.new":      "جديد",
+  "common.viewAll":  "عرض الكل",
+  "common.back":     "رجوع",
+  "common.next":     "التالي",
+  "common.done":     "تم",
+  "common.publish":  "نشر",
+  "common.create":   "إنشاء",
 
   "rarity.common":    "شائع",
   "rarity.uncommon":  "غير شائع",

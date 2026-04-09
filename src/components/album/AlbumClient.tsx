@@ -7,6 +7,7 @@ import { useStickerImage } from "@/hooks/useStickerImage";
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
 import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -101,6 +102,7 @@ function ProgressRing({ pct, size = 96 }: { pct: number; size?: number }) {
 // ---------------------------------------------------------------------------
 
 export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: AlbumClientProps) {
+  const { t } = useLanguage();
   const [activeTeam,    setActiveTeam]    = useState("ALL");
   const [activeRarity,  setActiveRarity]  = useState("ALL");
   const [search,        setSearch]        = useState("");
@@ -167,10 +169,10 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
             <div className="flex items-center gap-2 mb-0.5">
               <span className="text-[10px] font-black text-[#E8650A] uppercase tracking-[0.2em]">FANPACK 26</span>
             </div>
-            <h1 className="font-condensed text-4xl font-black text-white tracking-tight">My Album</h1>
+            <h1 className="font-condensed text-4xl font-black text-white tracking-tight">{t("album.title")}</h1>
             <p className="text-[#8888AA] text-sm mt-0.5">
               <span className="text-white font-bold">{totalOwned}</span>
-              <span> / {totalStickers} stickers collected</span>
+              <span> / {totalStickers} {t("album.stickers")}</span>
             </p>
 
             {/* Per-rarity pills */}
@@ -199,7 +201,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
           {/* XP / share actions */}
           <div className="flex flex-col gap-2 shrink-0">
             <div className="text-right">
-              <p className="text-xs text-[#8888AA]">Completion bonus</p>
+              <p className="text-xs text-[#8888AA]">{t("album.xpBonus")}</p>
               <p className="font-condensed font-black text-[#E8650A] text-lg">+{pct * 10} XP</p>
             </div>
           </div>
@@ -214,7 +216,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
             <input
               type="text"
-              placeholder="Search stickers..."
+              placeholder={t("album.searchStickers")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-card1 border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-t1 placeholder:text-t3 focus:outline-none focus:border-orange"
@@ -227,7 +229,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
               <button key={v} onClick={() => setShowOwned(v)}
                 className={cn("px-3 py-1.5 rounded-lg text-xs font-bold transition-colors capitalize",
                   showOwned === v ? "bg-card2 text-t1" : "text-t3 hover:text-t1")}>
-                {v === "all" ? "All" : v === "owned" ? "Owned" : "Missing"}
+                {v === "all" ? t("common.all") : v === "owned" ? t("common.owned") : t("common.missing")}
               </button>
             ))}
           </div>
@@ -254,7 +256,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
                 : "border-border text-t3 bg-card1 hover:text-t1"
             )}
           >
-            🏳️ Teams
+            🏳️ {t("album.groupByTeam")}
           </button>
         </div>
 
@@ -266,7 +268,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
               activeRarity === "ALL" ? "text-white border-transparent" : "bg-card1 border-border text-t3 hover:text-t1")}
             style={activeRarity === "ALL" ? { background: "#E8650A" } : {}}
           >
-            All Rarities
+            {t("album.allRarities")}
           </button>
           {RARITY_ORDER.map((r) => {
             const meta = RARITY_META[r];
@@ -293,7 +295,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
             className={cn("shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all whitespace-nowrap",
               activeTeam === "ALL" ? "text-white border-transparent" : "bg-card1 border-border text-t2 hover:text-t1")}
             style={activeTeam === "ALL" ? { background: "#E8650A" } : {}}>
-            🌍 All Teams
+            {t("album.allTeams")}
           </button>
           {teams.map((team) => (
             <button key={team} onClick={() => setActiveTeam(activeTeam === team ? "ALL" : team)}
@@ -309,7 +311,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
 
       {/* ---- Result count ---- */}
       <p className="text-t3 text-xs px-0.5">
-        Showing <span className="text-t1 font-semibold">{filtered.length}</span> stickers
+        {t("album.showingStickers", { n: filtered.length })}
         {activeTeam !== "ALL" && <> · <span className="text-[#E8650A]">{FLAG[activeTeam]} {activeTeam}</span></>}
         {activeRarity !== "ALL" && <> · <span style={{ color: RARITY_META[activeRarity]?.color }}>{RARITY_META[activeRarity]?.label}</span></>}
       </p>
@@ -590,11 +592,12 @@ function ListRow({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => v
 // ---------------------------------------------------------------------------
 
 function EmptyState({ className }: { className?: string }) {
+  const { t } = useLanguage();
   return (
     <div className={cn("text-center py-16 bg-card1 border border-dashed border-border rounded-2xl", className)}>
       <p className="text-5xl mb-3">🔍</p>
-      <p className="font-display font-bold text-t1">No stickers match your filters</p>
-      <p className="text-t3 text-sm mt-1">Try a different team, rarity or search term</p>
+      <p className="font-display font-bold text-t1">{t("album.noMatch")}</p>
+      <p className="text-t3 text-sm mt-1">{t("album.noMatchHint")}</p>
     </div>
   );
 }
@@ -604,6 +607,7 @@ function EmptyState({ className }: { className?: string }) {
 // ---------------------------------------------------------------------------
 
 function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: () => void }) {
+  const { t } = useLanguage();
   const meta    = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
   const color   = rarityColor(sticker.rarity);
   const frame   = getStickerFrameStyles(sticker.team, color, sticker.category);
@@ -693,7 +697,7 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
             <div className="grid grid-cols-2 gap-2">
               {[
                 { label: "Category", value: sticker.category },
-                { label: "Status",   value: sticker.owned ? "Collected" : "Missing" },
+                { label: t("common.owned"),   value: sticker.owned ? t("album.inCollection") : t("album.notOwned") },
                 { label: "Quantity", value: sticker.owned ? `x${sticker.quantity}` : "—" },
                 { label: "Tier",     value: meta.tier },
               ].map(({ label, value }) => (
@@ -723,17 +727,17 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
               }}
               className="flex-1 justify-center py-2.5 rounded-xl text-sm font-bold"
             >
-              Share Card
+              {t("album.share")}
             </ShareButton>
           )}
           {sticker.owned && sticker.quantity > 1 && (
             <button className="flex-1 bg-card2 border border-border text-t1 rounded-xl py-2.5 text-sm font-bold hover:border-[#00D97E] hover:text-[#00D97E] transition-colors">
-              Trade
+              {t("album.trade")}
             </button>
           )}
           <button onClick={onClose}
             className="flex-1 bg-card2 border border-border text-t2 rounded-xl py-2.5 text-sm font-bold hover:text-t1 transition-colors">
-            Close
+            {t("common.close")}
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getFanTitle } from "@/lib/xp";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface LeaderboardEntry {
   rank: number;
@@ -17,6 +18,19 @@ interface LeaderboardEntry {
   isMe: boolean;
 }
 
+interface RecentMember {
+  id: string;
+  username: string;
+  avatarUrl: string | null;
+  level: number;
+  xp: number;
+  stickerCount: number;
+  streakDays: number;
+  favoriteTeam: string | null;
+  createdAt: string;
+  isMe: boolean;
+}
+
 interface CurrentUser {
   id: string;
   username: string;
@@ -28,6 +42,7 @@ interface CurrentUser {
 interface RankingClientProps {
   initialLeaderboard: LeaderboardEntry[];
   currentUser: CurrentUser;
+  recentMembers: RecentMember[];
 }
 
 const TEAM_FLAGS: Record<string, string> = {
@@ -46,12 +61,26 @@ const RANK_BADGES: Record<number, { emoji: string; color: string; label: string 
   3: { emoji: "🥉", color: "#CD7F32", label: "Bronze" },
 };
 
-type Tab = "global" | "country" | "friends";
+type Tab = "global" | "country" | "newMembers";
+
+// Time-ago helper
+function timeAgo(dateStr: string): { value: number; unit: "days" | "hours" | "minutes" | "now" } {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days  = Math.floor(diff / 86400000);
+  if (days  >= 1) return { value: days,  unit: "days"    };
+  if (hours >= 1) return { value: hours, unit: "hours"   };
+  if (mins  >= 1) return { value: mins,  unit: "minutes" };
+  return              { value: 0,     unit: "now"      };
+}
 
 export default function RankingClient({
   initialLeaderboard,
   currentUser,
+  recentMembers,
 }: RankingClientProps) {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>("global");
   const [search, setSearch] = useState("");
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
@@ -82,8 +111,8 @@ export default function RankingClient({
       <div className="flex-shrink-0 px-6 py-4 border-b border-white/10">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Global Ranking 🏆</h1>
-            <p className="text-white/40 text-sm">Top fans worldwide by XP</p>
+            <h1 className="text-2xl font-black text-white">{t("ranking.title")} 🏆</h1>
+            <p className="text-white/40 text-sm">{t("ranking.subtitle")}</p>
           </div>
           {currentUser.myRank && (
             <button
@@ -91,7 +120,7 @@ export default function RankingClient({
               className="flex flex-col items-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/10 transition-colors"
             >
               <span className="text-[#FFB800] text-xs font-bold uppercase tracking-wider">
-                Your rank
+                {t("ranking.yourRank")}
               </span>
               <span className="text-white font-black text-xl">
                 #{currentUser.myRank}
@@ -102,17 +131,24 @@ export default function RankingClient({
 
         {/* Tabs */}
         <div className="flex gap-1 bg-white/5 rounded-xl p-1 mb-4">
-          {(["global", "country", "friends"] as Tab[]).map((t) => (
+          {(["global", "country", "newMembers"] as Tab[]).map((tabKey) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 py-2 rounded-lg text-sm font-semibold capitalize transition-all ${
-                tab === t
+              key={tabKey}
+              onClick={() => setTab(tabKey)}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all relative ${
+                tab === tabKey
                   ? "bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white"
                   : "text-white/40 hover:text-white/70"
               }`}
             >
-              {t === "country" ? "My Country" : t === "friends" ? "Friends" : t}
+              {tabKey === "country"    ? t("ranking.country")
+               : tabKey === "newMembers" ? t("ranking.newMembers")
+               : t("ranking.global")}
+              {tabKey === "newMembers" && recentMembers.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#00D97E] text-[9px] font-black text-white flex items-center justify-center">
+                  {recentMembers.length}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -156,18 +192,141 @@ export default function RankingClient({
           </motion.div>
         )}
 
-        {/* Country / Friends tab placeholder */}
-        {(tab === "country" || tab === "friends") && (
+        {/* Country tab placeholder */}
+        {tab === "country" && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="text-5xl mb-4">{tab === "country" ? "🌍" : "👥"}</div>
-            <h3 className="text-white font-black text-xl mb-2">
-              {tab === "country" ? "Country ranking" : "Friend leaderboard"}
-            </h3>
+            <div className="text-5xl mb-4">🌍</div>
+            <h3 className="text-white font-black text-xl mb-2">{t("ranking.country")}</h3>
             <p className="text-white/40 text-sm max-w-xs">
-              {tab === "country"
-                ? "Coming soon — compete against fans from your country!"
-                : "Add friends to see how you compare. Coming in Beta!"}
+              Coming soon — compete against fans from your country!
             </p>
+          </div>
+        )}
+
+        {/* ---- NEW MEMBERS TAB ---- */}
+        {tab === "newMembers" && (
+          <div className="space-y-3">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-2">
+              <div>
+                <h2 className="text-white font-black text-lg">{t("ranking.recentlyJoined")} 🌱</h2>
+                <p className="text-white/40 text-xs">{t("ranking.welcomeNew")}</p>
+              </div>
+            </div>
+
+            {recentMembers.length === 0 ? (
+              <div className="text-center py-12 text-white/30">{t("common.loading")}</div>
+            ) : (
+              recentMembers.map((member, i) => {
+                const ago    = timeAgo(member.createdAt);
+                const isVeryNew = ago.unit === "now" || (ago.unit === "hours" && ago.value < 2);
+                const agoStr = ago.unit === "now"      ? t("ranking.joinedJustNow")
+                             : ago.unit === "minutes"  ? t("ranking.joinedMinutesAgo", { n: ago.value })
+                             : ago.unit === "hours"    ? t("ranking.joinedHoursAgo",   { n: ago.value })
+                             :                           t("ranking.joinedDaysAgo",    { n: ago.value });
+
+                return (
+                  <motion.div
+                    key={member.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.06 }}
+                    className={`relative rounded-2xl p-4 border transition-all ${
+                      member.isMe
+                        ? "border-[#FF5E00]/60 bg-[#FF5E00]/10"
+                        : isVeryNew
+                          ? "border-[#00D97E]/40 bg-[#00D97E]/5"
+                          : "border-white/10 bg-white/5 hover:bg-white/8"
+                    }`}
+                  >
+                    {/* Very new pulse */}
+                    {isVeryNew && (
+                      <div className="absolute top-3 right-3">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00D97E] opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00D97E]" />
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-3">
+                      {/* Avatar */}
+                      <div
+                        className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-base border-2 shrink-0 overflow-hidden ${
+                          member.isMe
+                            ? "border-[#FF5E00] bg-gradient-to-br from-[#E8003D] to-[#FF5E00] text-white"
+                            : "border-white/20 bg-white/10 text-white"
+                        }`}
+                      >
+                        {member.avatarUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={member.avatarUrl} alt={member.username} className="w-full h-full object-cover" />
+                        ) : (
+                          member.username.slice(0, 2).toUpperCase()
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`font-black text-sm truncate ${member.isMe ? "text-[#FF5E00]" : "text-white"}`}>
+                            {member.username}
+                          </span>
+                          {/* Welcome badge */}
+                          <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md"
+                            style={{ background: "#00D97E20", color: "#00D97E", border: "1px solid #00D97E40" }}>
+                            👋 {t("ranking.justJoined")}
+                          </span>
+                          {/* Streak badge */}
+                          {member.streakDays >= 3 && (
+                            <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md"
+                              style={{ background: "#FFB80020", color: "#FFB800", border: "1px solid #FFB80040" }}>
+                              🔥 {member.streakDays}d {t("ranking.streak")}
+                            </span>
+                          )}
+                          {/* Team flag */}
+                          {member.favoriteTeam && (
+                            <span className="text-sm">{TEAM_FLAGS[member.favoriteTeam] ?? ""}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 mt-0.5 flex-wrap">
+                          <span className="text-white/40 text-xs">Lv.{member.level}</span>
+                          <span className="text-white/40 text-xs">{member.xp.toLocaleString()} XP</span>
+                          <span className="text-white/40 text-xs">{member.stickerCount} {t("ranking.stickers")}</span>
+                        </div>
+                      </div>
+
+                      {/* Joined time */}
+                      <div className="text-right shrink-0">
+                        <p className="text-white/30 text-xs">{agoStr}</p>
+                        <div className="mt-1 flex items-center justify-end gap-1">
+                          {/* XP progress mini bar */}
+                          <div className="w-14 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${Math.min(100, (member.xp % 1000) / 10)}%`,
+                                background: "linear-gradient(90deg, #E8003D, #FF5E00)",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })
+            )}
+
+            {/* Gamification nudge footer */}
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-center">
+              <p className="text-white/60 text-xs">
+                🏆 Be an early adopter — the community is just getting started!
+              </p>
+              <p className="text-white/30 text-[10px] mt-1">
+                First 1000 fans get the <span className="text-[#FFB800] font-black">Founder Badge</span>
+              </p>
+            </div>
           </div>
         )}
 
@@ -291,7 +450,7 @@ export default function RankingClient({
               onClick={() => setSearch(currentUser.username)}
               className="text-[#FF5E00] text-xs font-bold hover:opacity-80"
             >
-              Find me →
+              {t("ranking.findMe")}
             </button>
           </div>
         </motion.div>

@@ -7,6 +7,7 @@ import {
   ChevronRight, ChevronLeft, Check, Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -136,6 +137,7 @@ function getQuickDates() {
 // ---------------------------------------------------------------------------
 
 export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCode }: EventsClientProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab]     = useState<"discover" | "my">("discover");
   const [search, setSearch]           = useState("");
   const [filterType, setFilterType]   = useState<EventType | "ALL">("ALL");
@@ -192,7 +194,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-2xl">🌍</span>
-                <span className="text-xs font-black text-[#E8650A] uppercase tracking-[0.2em]">Fan Events Hub</span>
+                <span className="text-xs font-black text-[#E8650A] uppercase tracking-[0.2em]">{t("events.title")}</span>
               </div>
               <h1 className="font-condensed text-4xl font-black text-white tracking-tight mb-1">
                 Find your tribe.<br />
@@ -200,8 +202,8 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
               </h1>
               <p className="text-[#8888AA] text-sm">
                 {events.length > 0
-                  ? `${events.length} events happening · ${totalFans} fans connected across ${totalCities} cities`
-                  : "Be the first to create an event in your city!"}
+                  ? `${events.length} events · ${totalFans} ${t("events.totalFans")} · ${totalCities} ${t("events.totalCities")}`
+                  : t("events.noEventsHint")}
               </p>
             </div>
 
@@ -215,7 +217,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
               }}
             >
               <Plus className="w-4 h-4" />
-              Create Event
+              {t("events.createEvent")}
             </button>
           </div>
 
@@ -223,10 +225,10 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
           {events.length > 0 && (
             <div className="flex gap-6 mt-5 pt-5 border-t border-white/10">
               {[
-                { icon: "⚽", label: "Events",       value: events.length },
-                { icon: "👥", label: "Fans joined",  value: totalFans },
-                { icon: "📍", label: "Cities",       value: totalCities },
-                { icon: "🌎", label: "My events",    value: myEvents.length },
+                { icon: "⚽", label: t("events.title"),     value: events.length },
+                { icon: "👥", label: t("events.totalFans"), value: totalFans },
+                { icon: "📍", label: t("events.totalCities"), value: totalCities },
+                { icon: "🌎", label: t("events.myEvents"),  value: myEvents.length },
               ].map(({ icon, label, value }) => (
                 <div key={label}>
                   <p className="text-white font-condensed text-2xl font-black">{value}</p>
@@ -250,7 +252,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
                 activeTab === tab ? "bg-card2 text-t1" : "text-t3 hover:text-t1"
               )}
             >
-              {tab === "discover" ? "Discover" : "My Events"}
+              {tab === "discover" ? t("events.upcoming") : t("events.myEvents")}
               {tab === "my" && myEvents.length > 0 && (
                 <span className="ml-1.5 bg-[#E8650A] text-white text-[10px] font-black w-4 h-4 rounded-full inline-flex items-center justify-center">
                   {myEvents.length}
@@ -264,7 +266,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <input
             type="text"
-            placeholder="Search event or city..."
+            placeholder={`${t("common.search")} event or city...`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-card1 border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-t1 placeholder:text-t3 focus:outline-none focus:border-orange"
@@ -284,7 +286,7 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
           )}
           style={filterType === "ALL" ? { background: "#E8650A" } : {}}
         >
-          🌍 All
+          🌍 {t("common.all")}
         </button>
         {(Object.entries(EVENT_TYPE_CONFIG) as [EventType, (typeof EVENT_TYPE_CONFIG)[EventType]][]).map(
           ([type, conf]) => (
@@ -368,16 +370,15 @@ export function EventsClient({ events, myEvents, userId, favoriteTeam, countryCo
 // ---------------------------------------------------------------------------
 
 function EmptyState({ isMyTab, onCreate }: { isMyTab: boolean; onCreate: () => void }) {
+  const { t } = useLanguage();
   return (
     <div className="text-center py-16 bg-card1 border border-dashed border-border rounded-2xl">
       <p className="text-5xl mb-4">{isMyTab ? "📅" : "📍"}</p>
       <p className="font-display font-bold text-t1 text-lg mb-1">
-        {isMyTab ? "No events yet" : "No events found"}
+        {isMyTab ? t("events.myEvents") : t("events.noEvents")}
       </p>
       <p className="text-t3 text-sm mb-6">
-        {isMyTab
-          ? "Create your first event and invite other fans!"
-          : "Try different filters or be the first in your city!"}
+        {isMyTab ? t("events.createFirst") : t("events.noEventsHint")}
       </p>
       <button
         onClick={onCreate}
@@ -385,7 +386,7 @@ function EmptyState({ isMyTab, onCreate }: { isMyTab: boolean; onCreate: () => v
         style={{ background: "linear-gradient(135deg, #E8650A, #FF5E00)" }}
       >
         <Plus className="w-4 h-4" />
-        Create Event
+        {t("events.createEvent")}
       </button>
     </div>
   );
@@ -398,6 +399,7 @@ function EmptyState({ isMyTab, onCreate }: { isMyTab: boolean; onCreate: () => v
 function EventCard({
   event, isAttending, onAttend, onClick,
 }: { event: FanEvent; isAttending: boolean; onAttend: () => void; onClick: () => void }) {
+  const { t } = useLanguage();
   const conf      = EVENT_TYPE_CONFIG[event.type];
   const startDate = new Date(event.startsAt);
   const isSoon    = startDate.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
@@ -455,7 +457,7 @@ function EventCard({
             <Users className="w-3 h-3 shrink-0" />
             <span className="font-semibold text-t2">{event.attendeeCount}</span>
             {event.maxAttendees && <span className="text-t3">/{event.maxAttendees}</span>}
-            <span className="text-t3">fans</span>
+            <span className="text-t3">{t("events.totalFans")}</span>
           </div>
         </div>
 
@@ -486,7 +488,7 @@ function EventCard({
               : "bg-card2 border-border text-t2 hover:border-[#E8650A] hover:text-[#E8650A]"
         )}
       >
-        {isAttending ? "✓ Going" : isFull ? "Full" : "Join"}
+        {isAttending ? "✓ Going" : isFull ? t("events.full") : t("events.joinEvent")}
       </button>
     </div>
   );
@@ -499,6 +501,7 @@ function EventCard({
 function EventDetailModal({
   event, isAttending, onAttend, onClose,
 }: { event: FanEvent; isAttending: boolean; onAttend: () => void; onClose: () => void }) {
+  const { t } = useLanguage();
   const conf      = EVENT_TYPE_CONFIG[event.type];
   const startDate = new Date(event.startsAt);
   const isFull    = event.maxAttendees ? event.attendeeCount >= event.maxAttendees : false;
@@ -579,7 +582,7 @@ function EventDetailModal({
             </div>
             <div className="flex-1">
               <p className="text-t1 font-semibold">
-                <span style={{ color: "#E8650A" }}>{event.attendeeCount}</span> fans attending
+                <span style={{ color: "#E8650A" }}>{event.attendeeCount}</span> {t("events.attendees")}
                 {event.maxAttendees && ` · ${event.maxAttendees - event.attendeeCount} spots left`}
               </p>
               {fillPct !== null && (
@@ -629,7 +632,7 @@ function EventDetailModal({
             : {}
           }
         >
-          {isAttending ? "✓ You're going · Tap to leave" : isFull ? "Event is full" : "Join this event →"}
+          {isAttending ? "✓ You're going · Tap to leave" : isFull ? t("events.full") : `${t("events.joinEvent")} →`}
         </button>
       </motion.div>
     </motion.div>
@@ -665,6 +668,7 @@ function getDefaultDate() {
 function CreateEventWizard({
   onClose, favoriteTeam, countryCode,
 }: { onClose: () => void; favoriteTeam: string | null; countryCode: string | null }) {
+  const { t } = useLanguage();
   const defaultCountry = countryCode ?? favoriteTeam ?? "COL";
   const [step, setStep]     = useState<WizardStep>(1);
   const [loading, setLoading] = useState(false);
@@ -770,8 +774,8 @@ function CreateEventWizard({
             >
               <Check className="w-8 h-8 text-white" />
             </motion.div>
-            <h3 className="font-display font-bold text-t1 text-xl mb-2">Event Created!</h3>
-            <p className="text-t3 text-sm">Your event is live. Fans can find it right now.</p>
+            <h3 className="font-display font-bold text-t1 text-xl mb-2">{t("events.published")}</h3>
+            <p className="text-t3 text-sm">{t("events.publishedDesc")}</p>
             <div className="mt-4 flex items-center justify-center gap-2 text-t3 text-xs">
               <Clock className="w-3 h-3 animate-spin" />
               <span>Refreshing...</span>
@@ -783,7 +787,7 @@ function CreateEventWizard({
         {!done && step === 1 && (
           <div className="p-6">
             <div className="mb-5">
-              <p className="text-t3 text-xs font-black uppercase tracking-widest mb-1">Step 1 of 3</p>
+              <p className="text-t3 text-xs font-black uppercase tracking-widest mb-1">{t("events.stepType")} · 1/3</p>
               <h2 className="font-display font-bold text-t1 text-xl">What type of event?</h2>
             </div>
             <div className="grid grid-cols-1 gap-2">
@@ -825,8 +829,8 @@ function CreateEventWizard({
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <div>
-                <p className="text-t3 text-xs font-black uppercase tracking-widest">Step 2 of 3</p>
-                <h2 className="font-display font-bold text-t1 text-xl">When &amp; Where?</h2>
+                <p className="text-t3 text-xs font-black uppercase tracking-widest">{t("events.stepWhen")} · 2/3</p>
+                <h2 className="font-display font-bold text-t1 text-xl">{t("events.stepWhen")}?</h2>
               </div>
             </div>
 
@@ -891,7 +895,7 @@ function CreateEventWizard({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-t3 text-xs font-semibold block mb-1.5">
-                    City <span className="text-[#E8650A]">*</span>
+                    {t("events.city")} <span className="text-[#E8650A]">*</span>
                   </label>
                   <input
                     type="text"
@@ -903,7 +907,7 @@ function CreateEventWizard({
                 </div>
                 <div>
                   <label className="text-t3 text-xs font-semibold block mb-1.5">
-                    Country <span className="text-[#E8650A]">*</span>
+                    {t("events.selectCountry")} <span className="text-[#E8650A]">*</span>
                   </label>
                   <select
                     value={form.country}
@@ -920,7 +924,7 @@ function CreateEventWizard({
               {/* Venue */}
               <div>
                 <label className="text-t3 text-xs font-semibold block mb-1.5">
-                  Venue / Meeting point
+                  {t("events.venue")}
                 </label>
                 <input
                   type="text"
@@ -942,7 +946,7 @@ function CreateEventWizard({
                   : { background: "#1a1a2e", color: "#666" }
                 }
               >
-                Continue <ChevronRight className="w-4 h-4" />
+                {t("common.next")} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -956,8 +960,8 @@ function CreateEventWizard({
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <div>
-                <p className="text-t3 text-xs font-black uppercase tracking-widest">Step 3 of 3</p>
-                <h2 className="font-display font-bold text-t1 text-xl">Final details</h2>
+                <p className="text-t3 text-xs font-black uppercase tracking-widest">{t("events.stepDetails")} · 3/3</p>
+                <h2 className="font-display font-bold text-t1 text-xl">{t("events.stepDetails")}</h2>
               </div>
             </div>
 
@@ -977,8 +981,8 @@ function CreateEventWizard({
               {/* Description */}
               <div>
                 <label className="text-t3 text-xs font-semibold block mb-1.5">
-                  Description
-                  <span className="text-t3 font-normal ml-1">(optional but recommended)</span>
+                  {t("events.description")}
+                  <span className="text-t3 font-normal ml-1">({t("events.optional")})</span>
                 </label>
                 <textarea
                   placeholder="What should fans expect? Dress code, what to bring, how to find the group..."
@@ -992,7 +996,7 @@ function CreateEventWizard({
               {/* Max attendees */}
               <div>
                 <label className="text-t3 text-xs font-semibold block mb-1.5">
-                  Max attendees <span className="text-t3 font-normal">(optional, blank = unlimited)</span>
+                  {t("events.maxAttendees")} <span className="text-t3 font-normal">({t("events.optional")})</span>
                 </label>
                 <input
                   type="number"
@@ -1007,7 +1011,7 @@ function CreateEventWizard({
               {/* Address */}
               <div>
                 <label className="text-t3 text-xs font-semibold block mb-1.5">
-                  Exact address <span className="text-t3 font-normal">(optional)</span>
+                  {t("events.venue")} <span className="text-t3 font-normal">({t("events.optional")})</span>
                 </label>
                 <input
                   type="text"
@@ -1041,9 +1045,9 @@ function CreateEventWizard({
                 style={{ background: "linear-gradient(135deg, #E8650A, #FF5E00)", boxShadow: "0 0 20px rgba(232,101,10,0.3)" }}
               >
                 {loading ? (
-                  <><Clock className="w-4 h-4 animate-spin" /> Creating...</>
+                  <><Clock className="w-4 h-4 animate-spin" /> {t("common.loading")}</>
                 ) : (
-                  <><Zap className="w-4 h-4" /> Publish Event</>
+                  <><Zap className="w-4 h-4" /> {t("events.publish")}</>
                 )}
               </button>
             </div>

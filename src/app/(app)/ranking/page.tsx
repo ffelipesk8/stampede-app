@@ -27,21 +27,38 @@ export default async function RankingPage() {
 
   if (!user) redirect("/sign-in");
 
-  // Fetch top 100 globally server-side for SSR
-  const topUsers = await db.user.findMany({
-    orderBy: { xp: "desc" },
-    take: 100,
-    select: {
-      id: true,
-      username: true,
-      avatarUrl: true,
-      level: true,
-      xp: true,
-      favoriteTeam: true,
-      countryCode: true,
-      _count: { select: { stickers: true } },
-    },
-  });
+  // Fetch top 100 + 10 most recent members in parallel
+  const [topUsers, recentUsers] = await Promise.all([
+    db.user.findMany({
+      orderBy: { xp: "desc" },
+      take: 100,
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+        level: true,
+        xp: true,
+        favoriteTeam: true,
+        countryCode: true,
+        _count: { select: { stickers: true } },
+      },
+    }),
+    db.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+        level: true,
+        xp: true,
+        streakDays: true,
+        favoriteTeam: true,
+        createdAt: true,
+        _count: { select: { stickers: true } },
+      },
+    }),
+  ]);
 
   const enriched = topUsers.map((u, i) => ({
     rank: i + 1,
@@ -56,12 +73,26 @@ export default async function RankingPage() {
     isMe: u.id === user.id,
   }));
 
+  const recentMembers = recentUsers.map((u) => ({
+    id: u.id,
+    username: u.username,
+    avatarUrl: u.avatarUrl,
+    level: u.level,
+    xp: u.xp,
+    streakDays: u.streakDays,
+    favoriteTeam: u.favoriteTeam,
+    stickerCount: u._count.stickers,
+    createdAt: u.createdAt.toISOString(),
+    isMe: u.id === user.id,
+  }));
+
   const myRank = enriched.find((u) => u.isMe)?.rank ?? null;
 
   return (
     <RankingClient
       initialLeaderboard={enriched}
       currentUser={{ ...user, myRank }}
+      recentMembers={recentMembers}
     />
   );
 }
