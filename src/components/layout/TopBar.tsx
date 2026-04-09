@@ -134,8 +134,7 @@ export function TopBar({ xp, coins = 0, notificationCount = 0 }: TopBarProps) {
 
       {/* Clerk user button */}
       <UserButton
-        afterSignOutUrl="/"
-        appearance={{ variables: { colorPrimary: "#E8003D" } }}
+        appearance={{ variables: { colorPrimary: "#E8650A" } }}
       />
     </header>
   );
