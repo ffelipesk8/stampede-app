@@ -105,25 +105,34 @@ export function getStickerFrameStyles(team: string, rarityColor: string, categor
   const bgB = mix(s, "#05070F", 0.38);
   const bgC = t ? mix(t, "#030508", 0.3) : bgA;
 
-  // -- Shell (outer gradient border, 80/20 split) --------------------------
-  //   Using conic-gradient: first 80% cycles through flag colours,
-  //   last 20% shows accent (category) colour — bottom-right corner.
+  // -- Shell (outer gradient border — Panini iridescent foil effect) ----------
+  //   Mimics the holographic rainbow shimmer of real Panini International WC26 cards.
+  //   Flag colours anchor the gradient; white highlights simulate the prismatic
+  //   iridescent flash visible on premium physical stickers.
+  const foilMid  = mix(p, s, 0.5);
+  const foilHigh = mix(foilMid, "#FFFFFF", 0.35);   // bright prismatic highlight
+  const foilAccent = mix(accent, "#FFFFFF", 0.15);
+
   const shell: CSSProperties = {
     background: [
-      // Outer shell: flag stripes (80%) + accent corner (20%)
       `conic-gradient(`,
-      `  from 135deg,`,
+      `  from 120deg at 40% 45%,`,
       `  ${p} 0deg,`,
-      `  ${s} 108deg,`,                      // 30 % of 360 = 108
-      `  ${t ?? mix(p, s, 0.5)} 216deg,`,   // 60 %
-      `  ${p} 288deg,`,                      // 80 %
-      `  ${accent} 288deg,`,                 // start of 20 % accent strip
-      `  ${mix(accent,"#FFFFFF",0.2)} 360deg`, // end
+      `  ${foilHigh} 45deg,`,          // bright prismatic flash (top)
+      `  ${s} 90deg,`,
+      `  ${foilMid} 135deg,`,
+      `  ${t ?? mix(p, s, 0.5)} 180deg,`,
+      `  ${foilHigh} 210deg,`,         // second flash
+      `  ${p} 250deg,`,
+      `  ${accent} 280deg,`,
+      `  ${foilAccent} 320deg,`,
+      `  ${p} 360deg`,
       `)`,
     ].join(""),
     boxShadow: [
-      `0 0 0 1px ${rgba(accent, 0.3)}`,
-      `0 12px 28px ${rgba(accent, 0.15)}`,
+      `0 0 0 1px ${rgba(accent, 0.35)}`,
+      `0 0 10px 2px ${rgba(foilHigh, 0.18)}`,
+      `0 14px 32px ${rgba(accent, 0.20)}`,
     ].join(", "),
   };
 

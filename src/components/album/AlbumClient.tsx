@@ -15,10 +15,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AlbumSticker {
   id: string;
+  number: number;
   name: string;
   playerName: string | null;
   team: string;
+  teamFlag: string;
   category: string;
+  position: string;
   rarity: string;
   imageUrl: string;
   owned: boolean;
@@ -26,6 +29,14 @@ interface AlbumSticker {
   isCustom: boolean;
   customImageUrl: string | null;
 }
+
+// Position display names (Panini-style label)
+const POSITION_LABEL: Record<string, string> = {
+  GK: "PORTERO",  CB: "DEFENSA",  LB: "DEFENSA",  RB: "DEFENSA",
+  CM: "VOLANTE",  CDM:"VOLANTE",  CAM:"VOLANTE",   LM: "VOLANTE",  RM: "VOLANTE",
+  ST: "DELANT.",  CF: "DELANT.",  LW: "DELANT.",   RW: "DELANT.",
+  COACH: "D.T.",  "?": "PLY",
+};
 
 interface AlbumClientProps {
   stickers: AlbumSticker[];
@@ -397,17 +408,19 @@ function TeamSection({ team, stickers, onSelect }: {
 // ---------------------------------------------------------------------------
 
 function FifaCard({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => void }) {
-  const meta   = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
-  const color  = rarityColor(sticker.rarity);
-  const frame  = getStickerFrameStyles(sticker.team, color, sticker.category);
+  const meta     = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
+  const color    = rarityColor(sticker.rarity);
+  const frame    = getStickerFrameStyles(sticker.team, color, sticker.category);
+  const posLabel = POSITION_LABEL[sticker.position] ?? sticker.position;
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.owned ? (sticker.playerName ?? sticker.name) : "",
     sticker.category,
     sticker.owned ? (sticker.customImageUrl ?? sticker.imageUrl) : null,
   );
-  const initials = sticker.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-  const catBadge = CAT_BADGE[sticker.category] ?? "PLY";
+  const initials  = sticker.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const flagEmoji = sticker.teamFlag || FLAG[sticker.team] || "⚽";
 
+  // ---- MISSING / LOCKED card ------------------------------------------------
   if (!sticker.owned) {
     return (
       <div
@@ -416,29 +429,41 @@ function FifaCard({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => 
         style={{ aspectRatio: "3/4.2" }}
       >
         <div
-          className="w-full h-full rounded-xl flex flex-col relative overflow-hidden border border-white/5"
+          className="w-full h-full rounded-xl flex flex-col relative overflow-hidden border border-white/8"
           style={{ background: "linear-gradient(160deg, #111120 0%, #080810 100%)" }}
         >
           {/* Top bar */}
-          <div className="flex items-center justify-between px-1.5 pt-1.5 pb-1 z-10 shrink-0">
-            <span className="text-[8px] font-black text-white/20 tracking-widest">{catBadge}</span>
-            <span className="text-[8px] font-black text-white/20">{sticker.team}</span>
+          <div className="flex items-start justify-between px-2 pt-2 pb-1 z-10 shrink-0">
+            <span className="text-[7px] font-black text-white/20 tracking-widest leading-tight">
+              {sticker.team}<br/>
+              <span className="text-white/10">· 2026</span>
+            </span>
+            <div className="text-right">
+              <p className="text-[7px] text-white/15 font-bold">{posLabel}</p>
+              <p className="font-condensed text-base font-black text-white/15 leading-none">#{sticker.number}</p>
+            </div>
           </div>
 
           {/* Center: lock */}
           <div className="flex-1 flex flex-col items-center justify-center gap-1">
             <Lock className="w-5 h-5 text-white/15" />
-            <span className="text-[9px] font-black text-white/15 tracking-widest">?</span>
+            <span className="text-[7px] font-black text-white/12 tracking-widest">?</span>
           </div>
 
           {/* Bottom strip */}
-          <div className="px-1.5 pb-1.5 pt-1 border-t border-white/5 shrink-0">
-            <p className="text-[9px] font-black text-white/20 truncate">{sticker.name}</p>
+          <div className="px-2 pb-2 pt-1 border-t border-white/5 shrink-0 flex items-end justify-between">
+            <p className="text-[9px] font-black text-white/20 truncate flex-1 leading-tight uppercase">{sticker.name}</p>
+            <span className="text-sm text-white/15 ml-1 shrink-0">{flagEmoji}</span>
           </div>
         </div>
       </div>
     );
   }
+
+  // ---- OWNED / COLLECTED card -----------------------------------------------
+  // Build the Panini-style holographic background using team primary color
+  const holo1 = frame.primary;
+  const holo2 = frame.secondary;
 
   return (
     <PremiumCardShell
@@ -448,27 +473,57 @@ function FifaCard({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => 
       onClick={onClick}
       style={{ aspectRatio: "3/4.2" }}
     >
-      {/* Outer gradient border */}
-      <div className="w-full h-full rounded-xl p-[2px]" style={frame.shell}>
+      {/* Outer border shell (team flag gradient) */}
+      <div className="w-full h-full rounded-xl p-[2.5px]" style={frame.shell}>
         <div
-          className="w-full h-full rounded-[10px] flex flex-col overflow-hidden relative"
-          style={{ background: meta.bg }}
+          className="w-full h-full rounded-[9px] flex flex-col overflow-hidden relative"
+          style={{
+            background: [
+              /* Panini-style: translucent holographic overlay on team-colored bg */
+              `radial-gradient(ellipse 120% 60% at 50% 0%, ${holo1}55 0%, transparent 55%)`,
+              `radial-gradient(ellipse 80% 50% at 80% 100%, ${holo2}35 0%, transparent 50%)`,
+              meta.bg,
+            ].join(", "),
+          }}
         >
-          {/* Top badges row */}
-          <div className="flex items-center justify-between px-1.5 pt-1.5 pb-0.5 z-10 shrink-0">
-            <span
-              className="text-[8px] font-black tracking-widest px-1 py-0.5 rounded"
-              style={{ background: `${color}25`, color }}
-            >
-              {catBadge}
-            </span>
-            <span className="text-[8px] font-black text-white/60">{sticker.team}</span>
+          {/* === FLAG BAR (top, like Panini) === */}
+          <div className="w-full h-[5px] shrink-0 z-20" style={frame.flagBar} />
+
+          {/* === TOP ROW: left info + right position/number === */}
+          <div className="flex items-start justify-between px-2 pt-1.5 pb-0.5 z-10 shrink-0">
+
+            {/* Left: ✓ + team code */}
+            <div className="flex flex-col gap-0.5">
+              {/* FIFA-style checkmark + year */}
+              <div className="flex items-center gap-1">
+                <span
+                  className="text-[7px] font-black px-1 py-0.5 rounded leading-none"
+                  style={{ background: `${color}30`, color, border: `0.5px solid ${color}50` }}
+                >
+                  WC26
+                </span>
+              </div>
+              <p className="text-[8px] font-black text-white/70 tracking-wider">{sticker.team}</p>
+            </div>
+
+            {/* Right: position label + big number (Panini style) */}
+            <div className="text-right flex flex-col items-end">
+              <p
+                className="text-[7px] font-black uppercase tracking-widest leading-none mb-0.5"
+                style={{ color: `${color}CC` }}
+              >
+                {posLabel}
+              </p>
+              <p
+                className="font-condensed text-2xl font-black leading-none"
+                style={{ color: "#fff", textShadow: `0 0 8px ${color}80` }}
+              >
+                {sticker.number}
+              </p>
+            </div>
           </div>
 
-          {/* Flag bar */}
-          <div className="absolute top-0 left-0 right-0 h-[2.5px] z-20" style={frame.flagBar} />
-
-          {/* Photo area */}
+          {/* === PHOTO AREA === */}
           <div className="flex-1 relative overflow-hidden">
             {showPhoto ? (
               <img
@@ -477,35 +532,59 @@ function FifaCard({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => 
                 onLoad={() => setLoaded(true)} onError={() => setError(true)}
               />
             ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-                <div className="text-xl">{FLAG[sticker.team] ?? "⚽"}</div>
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5"
+                style={frame.imagePanel}
+              >
+                <div className="text-2xl">{flagEmoji}</div>
                 <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center font-black text-[10px]"
-                  style={{ background: "rgba(0,0,0,0.5)", color: "#fff", border: `1.5px solid ${color}60` }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center font-black text-[11px]"
+                  style={{ background: "rgba(0,0,0,0.55)", color: "#fff", border: `2px solid ${color}70` }}
                 >
                   {initials}
                 </div>
               </div>
             )}
 
-            {/* Gradient overlay at bottom of photo */}
+            {/* Bottom gradient fade into name strip */}
             <div
-              className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none"
-              style={{ background: `linear-gradient(to top, ${meta.bg.match(/#[0-9a-f]{6}/gi)?.[1] ?? "#080810"} 0%, transparent 100%)` }}
+              className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
+              style={{
+                background: `linear-gradient(to top, ${meta.bg.match(/#[0-9a-f]{6}/gi)?.[1] ?? "#080810"} 0%, transparent 100%)`,
+              }}
             />
           </div>
 
-          {/* Bottom info strip */}
+          {/* === BOTTOM NAME STRIP (Panini style) === */}
           <div
-            className="px-1.5 pb-1.5 pt-1 shrink-0 border-t"
-            style={{ borderColor: `${color}20` }}
+            className="shrink-0 px-2 pb-2 pt-1"
+            style={{
+              background: `linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.75) 100%)`,
+              borderTop: `1.5px solid ${color}25`,
+            }}
           >
-            <p className="text-[10px] font-black text-white truncate leading-tight">{sticker.name}</p>
+            {/* Player name big + flag right (like the card) */}
+            <div className="flex items-end justify-between gap-1">
+              <p
+                className="font-condensed font-black text-white leading-tight truncate uppercase"
+                style={{ fontSize: "clamp(9px, 2.8cqw, 13px)", textShadow: "0 1px 4px rgba(0,0,0,0.9)" }}
+              >
+                {sticker.name}
+              </p>
+              <span className="text-sm shrink-0 leading-none mb-0.5">{flagEmoji}</span>
+            </div>
+
+            {/* Tier badge + duplicate count */}
             <div className="flex items-center justify-between mt-0.5">
-              <p className="text-[9px] font-bold" style={{ color }}>{meta.tier}</p>
+              <span
+                className="text-[8px] font-black leading-none"
+                style={{ color }}
+              >
+                {meta.tier}
+              </span>
               {sticker.quantity > 1 && (
                 <span
-                  className="text-[8px] font-black px-1 py-0.5 rounded"
+                  className="text-[7px] font-black px-1 py-0.5 rounded"
                   style={{ background: `${color}25`, color }}
                 >
                   x{sticker.quantity}
@@ -608,10 +687,11 @@ function EmptyState({ className }: { className?: string }) {
 
 function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: () => void }) {
   const { t } = useLanguage();
-  const meta    = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
-  const color   = rarityColor(sticker.rarity);
-  const frame   = getStickerFrameStyles(sticker.team, color, sticker.category);
-  const catBadge = CAT_BADGE[sticker.category] ?? "PLY";
+  const meta     = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
+  const color    = rarityColor(sticker.rarity);
+  const frame    = getStickerFrameStyles(sticker.team, color, sticker.category);
+  const posLabel = POSITION_LABEL[sticker.position] ?? sticker.position;
+  const flagEmoji = sticker.teamFlag || FLAG[sticker.team] || "⚽";
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.playerName ?? sticker.name,
     sticker.category,
@@ -637,23 +717,36 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
           className="relative px-6 pt-6 pb-4 flex items-start gap-5"
           style={{ background: `linear-gradient(135deg, ${meta.bg.match(/#[0-9a-f]{6}/gi)?.[0] ?? "#1a1a2e"} 0%, #080810 100%)` }}
         >
-          {/* Big card preview */}
+          {/* Big card preview — Panini style */}
           <PremiumCardShell
             rarity={sticker.rarity as CardRarity}
             glowColor={color}
             className="rounded-xl shrink-0"
             style={{ width: 110, height: 154 }}
           >
-            <div className="w-full h-full rounded-xl p-[2px]" style={frame.shell}>
-              <div className="w-full h-full rounded-[10px] overflow-hidden relative flex flex-col"
-                   style={{ background: meta.bg }}>
-                {/* Badges */}
-                <div className="flex items-center justify-between px-1.5 pt-1.5 pb-0.5 shrink-0 z-10">
-                  <span className="text-[8px] font-black px-1 py-0.5 rounded"
-                    style={{ background: `${color}25`, color }}>{catBadge}</span>
-                  <span className="text-[8px] font-black text-white/60">{sticker.team}</span>
+            <div className="w-full h-full rounded-xl p-[2.5px]" style={frame.shell}>
+              <div className="w-full h-full rounded-[9px] overflow-hidden relative flex flex-col"
+                   style={{
+                     background: [
+                       `radial-gradient(ellipse 120% 60% at 50% 0%, ${frame.primary}55 0%, transparent 55%)`,
+                       meta.bg,
+                     ].join(", "),
+                   }}>
+                {/* Flag bar */}
+                <div className="w-full h-[4px] shrink-0 z-20" style={frame.flagBar} />
+
+                {/* Top: team + position + number */}
+                <div className="flex items-start justify-between px-1.5 pt-1 pb-0 shrink-0 z-10">
+                  <div>
+                    <span className="text-[7px] font-black px-1 py-0.5 rounded leading-none block"
+                      style={{ background: `${color}30`, color }}>WC26</span>
+                    <span className="text-[7px] font-black text-white/60 mt-0.5 block">{sticker.team}</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[6px] font-black leading-none" style={{ color: `${color}CC` }}>{posLabel}</p>
+                    <p className="font-condensed text-lg font-black leading-none text-white">{sticker.number}</p>
+                  </div>
                 </div>
-                <div className="absolute top-0 left-0 right-0 h-[2px]" style={frame.flagBar} />
 
                 {/* Photo */}
                 <div className="flex-1 relative overflow-hidden">
@@ -662,7 +755,7 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
                       ? <img src={photoUrl!} alt={sticker.name} className="w-full h-full object-cover object-top"
                              onLoad={() => setLoaded(true)} onError={() => setError(true)} />
                       : <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-                          <div className="text-2xl">{FLAG[sticker.team] ?? "⚽"}</div>
+                          <div className="text-2xl">{flagEmoji}</div>
                           <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
                                style={{ background: "rgba(0,0,0,0.5)", color: "#fff", border: `2px solid ${color}60` }}>
                             {initials}
@@ -673,11 +766,17 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
                       <Lock className="w-6 h-6 text-white/20" />
                     </div>
                   )}
+                  {/* Bottom fade */}
+                  <div className="absolute bottom-0 left-0 right-0 h-6 pointer-events-none"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)" }} />
                 </div>
 
                 {/* Name strip */}
-                <div className="px-1.5 pb-1.5 pt-1 shrink-0 border-t" style={{ borderColor: `${color}20` }}>
-                  <p className="text-[9px] font-black text-white truncate">{sticker.name}</p>
+                <div className="px-1.5 pb-1.5 pt-0.5 shrink-0 border-t" style={{ borderColor: `${color}20` }}>
+                  <div className="flex items-end justify-between gap-0.5">
+                    <p className="text-[8px] font-black text-white truncate uppercase leading-tight flex-1">{sticker.name}</p>
+                    <span className="text-[10px] shrink-0">{flagEmoji}</span>
+                  </div>
                   <p className="text-[8px] font-bold" style={{ color }}>{meta.tier}</p>
                 </div>
               </div>
@@ -696,10 +795,10 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
             {/* Stats grid */}
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: "Category", value: sticker.category },
-                { label: t("common.owned"),   value: sticker.owned ? t("album.inCollection") : t("album.notOwned") },
-                { label: "Quantity", value: sticker.owned ? `x${sticker.quantity}` : "—" },
-                { label: "Tier",     value: meta.tier },
+                { label: "Posición",  value: posLabel },
+                { label: "# Carta",   value: `#${sticker.number}` },
+                { label: t("common.owned"), value: sticker.owned ? t("album.inCollection") : t("album.notOwned") },
+                { label: "Tier",      value: meta.tier },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white/5 rounded-lg px-2.5 py-2">
                   <p className="text-[10px] text-[#8888AA] mb-0.5">{label}</p>
