@@ -4,12 +4,17 @@ import { db } from "@/lib/db";
 import { redis, REDIS_KEYS } from "@/lib/redis";
 import { awardXp } from "@/lib/xp";
 import { normalizeStickerDisplay } from "@/lib/sticker-display";
-import { Rarity } from "@prisma/client";
+import { PackType, Rarity } from "@prisma/client";
 import { z } from "zod";
 
-const schema = z.object({
-  packId: z.string().min(1),
-});
+const schema = z
+  .object({
+    packId: z.string().min(1).optional(),
+    packType: z.nativeEnum(PackType).optional(),
+  })
+  .refine((value) => Boolean(value.packId || value.packType), {
+    message: "packId or packType is required",
+  });
 
 const RARITY_ORDER: Rarity[] = ["COMMON", "UNCOMMON", "RARE", "EPIC", "LEGENDARY"];
 
@@ -21,22 +26,28 @@ export async function POST(req: NextRequest) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 
-  const { packId } = parsed.data;
+  const { packId, packType } = parsed.data;
 
   const user = await db.user.findUnique({ where: { clerkId } });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  const pack = await db.pack.findUnique({
-    where: { id: packId, isActive: true },
-    include: { contents: { include: { sticker: true } } },
-  });
+  const pack = packId
+    ? await db.pack.findUnique({
+        where: { id: packId, isActive: true },
+        include: { contents: { include: { sticker: true } } },
+      })
+    : await db.pack.findFirst({
+        where: { type: packType, isActive: true },
+        include: { contents: { include: { sticker: true } } },
+        orderBy: { createdAt: "asc" },
+      });
 
   if (!pack) return NextResponse.json({ error: "Pack not found or inactive" }, { status: 404 });
 
   // -- Welcome pack: can only open once ------------------
   if (pack.type === "WELCOME") {
     const alreadyOpened = await db.packLog.findFirst({
-      where: { userId: user.id, packId },
+      where: { userId: user.id, packId: pack.id },
     });
     if (alreadyOpened) {
       return NextResponse.json({ error: "Welcome pack already opened" }, { status: 409 });
@@ -59,7 +70,7 @@ export async function POST(req: NextRequest) {
       const startOfDay = new Date(today + "T00:00:00.000Z");
       const endOfDay = new Date(today + "T23:59:59.999Z");
       const existingLog = await db.packLog.findFirst({
-        where: { userId: user.id, packId, openedAt: { gte: startOfDay, lte: endOfDay } },
+        where: { userId: user.id, packId: pack.id, openedAt: { gte: startOfDay, lte: endOfDay } },
       });
       if (existingLog) alreadyOpened = true;
     }
@@ -116,7 +127,7 @@ export async function POST(req: NextRequest) {
   await db.packLog.create({
     data: {
       userId: user.id,
-      packId,
+      packId: pack.id,
       stickersWon: finalStickers.map((s) => ({ id: s.id, rarity: s.rarity, name: s.name })),
       xpEarned: pack.xpBonus,
     },
