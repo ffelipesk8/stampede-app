@@ -42,6 +42,19 @@ export default async function DashboardPage({
 
   if (!user) redirect("/sign-in");
 
+  // Activity feed — most recent EPIC/LEGENDARY pulls from all users
+  const recentActivity = await db.userSticker.findMany({
+    where: {
+      sticker: { rarity: { in: ["EPIC", "LEGENDARY"] } },
+    },
+    include: {
+      user:    { select: { username: true, avatarUrl: true } },
+      sticker: { select: { name: true, team: true, rarity: true, category: true } },
+    },
+    orderBy: { acquiredAt: "desc" },
+    take: 8,
+  });
+
   const fanTitle = getFanTitle(user.level);
   const missionCompletion = user.missions.length
     ? Math.round(
@@ -372,6 +385,72 @@ export default async function DashboardPage({
           </div>
         )}
       </section>
+
+      {/* ── ACTIVITY FEED ── */}
+      {recentActivity.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-condensed text-sm font-bold uppercase tracking-widest text-t2">
+              Community Pulls
+            </h2>
+            <div className="flex items-center gap-1">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green" />
+              <span className="text-xs text-t3">Live</span>
+            </div>
+          </div>
+
+          <div
+            className="rounded-2xl border border-border bg-card1/60 backdrop-blur-sm divide-y divide-border overflow-hidden"
+            style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.03)" }}
+          >
+            {recentActivity.map((activity, i) => {
+              const isLegendary = activity.sticker.rarity === "LEGENDARY";
+              const isEpic      = activity.sticker.rarity === "EPIC";
+              const rarityColor  = isLegendary ? "#E8003D" : "#FFB800";
+              const rarityLabel  = isLegendary ? "LEGENDARY" : "EPIC";
+              const diff = Date.now() - new Date(activity.acquiredAt).getTime();
+              const mins = Math.floor(diff / 60000);
+              const hours = Math.floor(diff / 3600000);
+              const days = Math.floor(diff / 86400000);
+              const timeAgo = days >= 1 ? `${days}d` : hours >= 1 ? `${hours}h` : mins >= 1 ? `${mins}m` : "just now";
+
+              return (
+                <div key={activity.id} className="flex items-center gap-3 px-4 py-2.5">
+                  {/* Avatar circle */}
+                  <div
+                    className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full font-condensed text-xs font-black"
+                    style={{ background: `${rarityColor}20`, color: rarityColor, border: `1px solid ${rarityColor}30` }}
+                  >
+                    {activity.user.username.slice(0, 2).toUpperCase()}
+                  </div>
+
+                  {/* Text */}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs text-t1">
+                      <span className="font-bold">{activity.user.username}</span>
+                      {" "}unlocked{" "}
+                      <span className="font-bold" style={{ color: rarityColor }}>
+                        {activity.sticker.name}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Rarity badge + time */}
+                  <div className="flex flex-shrink-0 items-center gap-2">
+                    <span
+                      className="rounded-full px-2 py-0.5 font-condensed text-[9px] font-black uppercase tracking-wider"
+                      style={{ background: `${rarityColor}15`, color: rarityColor, border: `1px solid ${rarityColor}30` }}
+                    >
+                      {rarityLabel}
+                    </span>
+                    <span className="text-[10px] text-t3">{timeAgo}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ── QUICK ACTIONS ── */}
       <section>

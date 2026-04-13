@@ -2,12 +2,13 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap } from "lucide-react";
+import { Zap, Star } from "lucide-react";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
 import { useStickerImage } from "@/hooks/useStickerImage";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
+import { PremiumCard } from "@/components/shared/PremiumCard";
 
 // -- Shared team data -----------------------------------------------------------
 const TEAM_FLAGS: Record<string, string> = {
@@ -719,16 +720,50 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                   </div>
                 </motion.div>
 
+                {/* LEGENDARY cinematic banner */}
+                <AnimatePresence>
+                  {[...revealedSet].some((i) => openResult.stickers[i]?.rarity === "LEGENDARY") && (
+                    <motion.div
+                      key="legendary-banner"
+                      initial={{ opacity: 0, scale: 0.85, y: -20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                      className="flex items-center gap-2 px-5 py-2 rounded-2xl border border-red/40 bg-red/10 backdrop-blur-sm"
+                    >
+                      <Star className="w-4 h-4 text-red fill-red animate-pulse" />
+                      <span className="font-condensed font-black text-sm tracking-widest text-red uppercase">
+                        Legendary Pull!
+                      </span>
+                      <Star className="w-4 h-4 text-red fill-red animate-pulse" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Cards row */}
                 <div className="flex flex-wrap justify-center gap-4">
                   {openResult.stickers.map((sticker, i) => (
-                    <FifaCard
+                    <motion.div
                       key={sticker.id}
-                      sticker={sticker}
-                      index={i}
-                      revealed={revealedSet.has(i)}
-                      onReveal={() => setRevealedSet((prev) => { const s = new Set(prev); s.add(i); return s; })}
-                    />
+                      initial={{ y: 80, opacity: 0, scale: 0.7, rotateZ: i % 2 === 0 ? -8 : 8 }}
+                      animate={{ y: 0, opacity: 1, scale: 1, rotateZ: 0 }}
+                      transition={{ delay: 0.08 + i * 0.09, type: "spring", stiffness: 170, damping: 18 }}
+                    >
+                      <PremiumCard
+                        sticker={{
+                          ...sticker,
+                          position: (sticker as { position?: string }).position ?? "?",
+                          number: (sticker as { number?: number }).number ?? i + 1,
+                          category: sticker.category ?? "player",
+                          teamFlag: null,
+                        }}
+                        owned={true}
+                        size="md"
+                        flipMode={true}
+                        revealed={revealedSet.has(i)}
+                        onReveal={() => setRevealedSet((prev) => { const s = new Set(prev); s.add(i); return s; })}
+                      />
+                    </motion.div>
                   ))}
                 </div>
 

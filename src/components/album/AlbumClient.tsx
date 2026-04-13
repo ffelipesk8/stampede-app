@@ -7,6 +7,7 @@ import { useStickerImage } from "@/hooks/useStickerImage";
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
 import { cn, rarityColor, rarityLabel } from "@/lib/utils";
 import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
+import { PremiumCard } from "@/components/shared/PremiumCard";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 // ---------------------------------------------------------------------------
@@ -339,7 +340,13 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
               {filtered.length === 0
                 ? <EmptyState className="col-span-full" />
                 : filtered.map((s) => (
-                    <FifaCard key={s.id} sticker={s} onClick={() => setSelectedSticker(s)} />
+                    <PremiumCard
+                      key={s.id}
+                      sticker={s}
+                      owned={s.owned}
+                      size="sm"
+                      onClick={() => setSelectedSticker(s)}
+                    />
                   ))}
             </div>
           )
@@ -395,7 +402,13 @@ function TeamSection({ team, stickers, onSelect }: {
       {!collapsed && (
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 mb-6">
           {stickers.map((s) => (
-            <FifaCard key={s.id} sticker={s} onClick={() => onSelect(s)} />
+            <PremiumCard
+              key={s.id}
+              sticker={s}
+              owned={s.owned}
+              size="sm"
+              onClick={() => onSelect(s)}
+            />
           ))}
         </div>
       )}
