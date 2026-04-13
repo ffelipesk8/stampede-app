@@ -1,36 +1,102 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const PERKS = [
-  {
-    icon: "🎁",
-    title: "Free Pack",
-    description: "You + your friend each get a bonus pack when they join",
+const COPY = {
+  en: {
+    step: "Step 5 of 5 · Almost there",
+    title: "Invite your crew",
+    subtitle: "World Cups are better with friends. Share your link and both of you get rewards.",
+    linkLabel: "Your referral link",
+    loadingLink: "Loading...",
+    copy: "Copy",
+    copied: "Copied!",
+    share: "Share link",
+    whatsapp: "WhatsApp",
+    notificationsTitle: "Stay in the game",
+    notificationsBody: "Get notified about new drops, trades and match alerts.",
+    enable: "Enable",
+    enabled: "Notifications enabled!",
+    enter: "Enter STAMPEDE",
+    skip: "Skip for now",
+    loading: "Loading...",
+    shareTitle: "Join me on STAMPEDE",
+    shareText: "I'm collecting World Cup 2026 stickers on STAMPEDE. Join me and we both get a free pack.",
+    whatsappText: (link: string) =>
+      `Join me on STAMPEDE - the World Cup 2026 fan platform.\n\n${link}`,
+    perks: [
+      {
+        icon: "🎁",
+        title: "Free Pack",
+        description: "You and your friend each get a bonus pack when they join.",
+      },
+      {
+        icon: "⚡",
+        title: "100 XP",
+        description: "Earn 100 XP for every friend who completes onboarding.",
+      },
+      {
+        icon: "🏆",
+        title: "Recruiter Badge",
+        description: "Invite 5 friends to unlock the exclusive Recruiter badge.",
+      },
+    ],
   },
-  {
-    icon: "⚡",
-    title: "100 XP",
-    description: "Earn 100 XP for every friend who completes onboarding",
+  es: {
+    step: "Paso 5 de 5 · Casi listo",
+    title: "Invita a tu crew",
+    subtitle: "Los Mundiales se viven mejor con amigos. Comparte tu link y los dos reciben recompensas.",
+    linkLabel: "Tu link de invitacion",
+    loadingLink: "Cargando...",
+    copy: "Copiar",
+    copied: "Copiado!",
+    share: "Compartir link",
+    whatsapp: "WhatsApp",
+    notificationsTitle: "Sigue en el juego",
+    notificationsBody: "Recibe avisos de nuevos drops, trades y alertas de partidos.",
+    enable: "Activar",
+    enabled: "Notificaciones activadas!",
+    enter: "Entrar a STAMPEDE",
+    skip: "Ahora no",
+    loading: "Cargando...",
+    shareTitle: "Unete a STAMPEDE",
+    shareText: "Estoy coleccionando estampas del Mundial 2026 en STAMPEDE. Unete y los dos recibimos un sobre gratis.",
+    whatsappText: (link: string) =>
+      `Unete a STAMPEDE, la plataforma fan del Mundial 2026.\n\n${link}`,
+    perks: [
+      {
+        icon: "🎁",
+        title: "Sobre gratis",
+        description: "Tu y tu amigo reciben un sobre bonus cuando se una.",
+      },
+      {
+        icon: "⚡",
+        title: "100 XP",
+        description: "Gana 100 XP por cada amigo que complete el onboarding.",
+      },
+      {
+        icon: "🏆",
+        title: "Badge Recruiter",
+        description: "Invita a 5 amigos para desbloquear la insignia exclusiva.",
+      },
+    ],
   },
-  {
-    icon: "🏅",
-    title: "Recruiter Badge",
-    description: "Invite 5 friends to unlock the exclusive Recruiter badge",
-  },
-];
+} as const;
 
 export default function InvitePage() {
   const router = useRouter();
-  const [referralCode, setReferralCode] = useState<string>("");
+  const { locale } = useLanguage();
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.en;
+
+  const [referralCode, setReferralCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [notifStatus, setNotifStatus] = useState<"idle" | "granted" | "denied" | "unsupported">("idle");
   const [completing, setCompleting] = useState(false);
 
   useEffect(() => {
-    // Fetch user's referral code
     fetch("/api/users/me")
       .then((r) => r.json())
       .then((data) => {
@@ -38,7 +104,6 @@ export default function InvitePage() {
       })
       .catch(() => {});
 
-    // Check notification support
     if (!("Notification" in window)) {
       setNotifStatus("unsupported");
     } else if (Notification.permission === "granted") {
@@ -58,7 +123,6 @@ export default function InvitePage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Fallback for non-HTTPS environments
       const textarea = document.createElement("textarea");
       textarea.value = referralLink;
       document.body.appendChild(textarea);
@@ -74,8 +138,8 @@ export default function InvitePage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Join me on STAMPEDE",
-          text: "I'm collecting World Cup 2026 stickers on STAMPEDE! Join me and we both get a free pack 🔥",
+          title: copy.shareTitle,
+          text: copy.shareText,
           url: referralLink,
         });
       } catch {}
@@ -104,120 +168,98 @@ export default function InvitePage() {
 
   return (
     <div className="w-full max-w-lg text-center">
-      {/* Step indicator */}
-      <div className="flex items-center gap-2 mb-8 justify-center">
+      <div className="mb-8 flex items-center justify-center gap-2">
         {[1, 2, 3, 4, 5].map((s) => (
           <div
             key={s}
             className={`h-1.5 rounded-full transition-all ${
-              s <= 5
-                ? "w-8 bg-gradient-to-r from-[#E8003D] to-[#FF5E00]"
-                : "w-4 bg-white/20"
+              s <= 5 ? "w-8 bg-gradient-to-r from-[#E8003D] to-[#FF5E00]" : "w-4 bg-white/20"
             }`}
           />
         ))}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <p className="text-[#FF5E00] text-sm font-semibold uppercase tracking-widest mb-2">
-          Step 5 of 5 — Almost there!
-        </p>
-        <h1 className="text-4xl font-black text-white mb-3">
-          Invite your crew 🤝
-        </h1>
-        <p className="text-white/60 text-lg mb-8">
-          World Cups are better with friends. Share your link and both of you get rewards.
-        </p>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-[#FF5E00]">{copy.step}</p>
+        <h1 className="mb-3 text-4xl font-black text-white">{copy.title}</h1>
+        <p className="mb-8 text-lg text-white/60">{copy.subtitle}</p>
 
-        {/* Perks */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          {PERKS.map((perk, i) => (
+        <div className="mb-8 grid grid-cols-3 gap-3">
+          {copy.perks.map((perk, i) => (
             <motion.div
               key={perk.title}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white/5 border border-white/10 rounded-xl p-3 text-left"
+              className="rounded-xl border border-white/10 bg-white/5 p-3 text-left"
             >
-              <div className="text-2xl mb-2">{perk.icon}</div>
-              <p className="text-white font-bold text-sm mb-1">{perk.title}</p>
-              <p className="text-white/50 text-xs leading-tight">{perk.description}</p>
+              <div className="mb-2 text-2xl">{perk.icon}</div>
+              <p className="mb-1 text-sm font-bold text-white">{perk.title}</p>
+              <p className="text-xs leading-tight text-white/50">{perk.description}</p>
             </motion.div>
           ))}
         </div>
 
-        {/* Referral link */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4"
+          className="mb-4 rounded-xl border border-white/10 bg-white/5 p-4"
         >
-          <p className="text-white/40 text-xs uppercase tracking-wider mb-2 font-semibold">
-            Your referral link
-          </p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/40">{copy.linkLabel}</p>
           <div className="flex items-center gap-2">
-            <code className="flex-1 text-[#FFB800] text-sm bg-white/5 rounded-lg px-3 py-2 font-mono truncate">
-              {referralCode
-                ? `stampede.app/join?ref=${referralCode}`
-                : "Loading…"}
+            <code className="flex-1 truncate rounded-lg bg-white/5 px-3 py-2 font-mono text-sm text-[#FFB800]">
+              {referralCode ? `stampede.app/join?ref=${referralCode}` : copy.loadingLink}
             </code>
             <button
               onClick={handleCopy}
-              className={`flex-shrink-0 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                copied
-                  ? "bg-[#4ADE80] text-black"
-                  : "bg-white/10 text-white hover:bg-white/20"
+              className={`flex-shrink-0 rounded-lg px-4 py-2 text-sm font-bold transition-all ${
+                copied ? "bg-[#4ADE80] text-black" : "bg-white/10 text-white hover:bg-white/20"
               }`}
             >
-              {copied ? "✓ Copied!" : "Copy"}
+              {copied ? copy.copied : copy.copy}
             </button>
           </div>
         </motion.div>
 
-        {/* Share buttons */}
-        <div className="flex gap-3 mb-6">
+        <div className="mb-6 flex gap-3">
           <button
             onClick={handleShare}
-            className="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E8003D] to-[#FF5E00] py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
           >
-            <span>📤</span> Share link
+            <span>📤</span>
+            {copy.share}
           </button>
           <button
             onClick={() => {
-              const text = `Join me on STAMPEDE — the World Cup 2026 fan platform! 🔥⚽\n\n${referralLink}`;
+              const text = copy.whatsappText(referralLink);
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
             }}
-            className="flex-1 py-3 rounded-xl font-bold text-sm bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/30 transition-colors flex items-center justify-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#25D366]/30 bg-[#25D366]/20 py-3 text-sm font-bold text-[#25D366] transition-colors hover:bg-[#25D366]/30"
           >
-            <span>💬</span> WhatsApp
+            <span>💬</span>
+            {copy.whatsapp}
           </button>
         </div>
 
-        {/* Push notifications */}
         {notifStatus === "idle" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6"
+            className="mb-6 rounded-xl border border-white/10 bg-white/5 p-4"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">🔔</span>
-              <div className="text-left flex-1">
-                <p className="text-white font-bold text-sm">Stay in the game</p>
-                <p className="text-white/50 text-xs">
-                  Get notified about new drops, trades & match alerts
-                </p>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-bold text-white">{copy.notificationsTitle}</p>
+                <p className="text-xs text-white/50">{copy.notificationsBody}</p>
               </div>
               <button
                 onClick={handleRequestNotifications}
-                className="flex-shrink-0 px-3 py-2 rounded-lg bg-white/10 text-white text-xs font-bold hover:bg-white/20 transition-colors"
+                className="flex-shrink-0 rounded-lg bg-white/10 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-white/20"
               >
-                Enable
+                {copy.enable}
               </button>
             </div>
           </motion.div>
@@ -227,30 +269,26 @@ export default function InvitePage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-2 justify-center bg-[#4ADE80]/10 border border-[#4ADE80]/30 rounded-xl p-3 mb-6"
+            className="mb-6 flex items-center justify-center gap-2 rounded-xl border border-[#4ADE80]/30 bg-[#4ADE80]/10 p-3"
           >
             <span className="text-[#4ADE80]">🔔</span>
-            <span className="text-[#4ADE80] text-sm font-bold">Notifications enabled!</span>
+            <span className="text-sm font-bold text-[#4ADE80]">{copy.enabled}</span>
           </motion.div>
         )}
 
-        {/* CTA */}
         <motion.button
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
           onClick={handleComplete}
           disabled={completing}
-          className="w-full py-4 rounded-xl font-black text-xl bg-gradient-to-r from-[#E8003D] via-[#FF5E00] to-[#FFB800] text-white hover:opacity-90 transition-opacity shadow-lg shadow-[#FF5E00]/30"
+          className="w-full rounded-xl bg-gradient-to-r from-[#E8003D] via-[#FF5E00] to-[#FFB800] py-4 text-xl font-black text-white shadow-lg shadow-[#FF5E00]/30 transition-opacity hover:opacity-90"
         >
-          {completing ? "Loading…" : "Enter STAMPEDE! 🔥"}
+          {completing ? copy.loading : copy.enter}
         </motion.button>
 
-        <button
-          onClick={handleComplete}
-          className="mt-3 text-white/30 text-sm hover:text-white/60 transition-colors"
-        >
-          Skip for now
+        <button onClick={handleComplete} className="mt-3 text-sm text-white/30 transition-colors hover:text-white/60">
+          {copy.skip}
         </button>
       </motion.div>
     </div>

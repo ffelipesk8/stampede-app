@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
   id: string;
@@ -26,18 +27,62 @@ interface CoachClientProps {
   userContext: UserContext;
 }
 
-const QUICK_PROMPTS = [
-  { icon: "🏆", text: "Who are the favorites to win?" },
-  { icon: "📈", text: "How do I level up faster?" },
-  { icon: "🔄", text: "Tips for trading stickers?" },
-  { icon: "📅", text: "When are the next matches?" },
-  { icon: "⭐", text: "How do I get Legendary stickers?" },
-  { icon: "🎯", text: "What missions should I focus on?" },
-];
-
 const FREE_DAILY_LIMIT = 5;
 
-function MessageBubble({ message }: { message: Message }) {
+const COPY = {
+  en: {
+    you: "You",
+    title: "AI Fan Coach",
+    subtitle: "Powered by GPT-4o · World Cup 2026 expert",
+    leftToday: (n: number) => `${n} left today`,
+    hey: (name: string) => `Hey ${name}!`,
+    intro:
+      "I'm your personal World Cup AI coach. Ask me anything about the tournament, your collection, trading tips, or predictions.",
+    rateLimitPro: "Rate limit reached. Try again in a moment.",
+    rateLimitFree: `You've used your ${FREE_DAILY_LIMIT} free messages today. Upgrade to PRO for unlimited coaching.`,
+    genericError: "Something went wrong. Try again.",
+    connectionError: "Connection interrupted. Please try again.",
+    upgrade: "Upgrade",
+    placeholderLimited: "Upgrade to PRO for unlimited messages...",
+    placeholderOpen: "Ask anything about the World Cup...",
+    footerHint: "Press Enter to send · Shift+Enter for new line",
+    prompts: [
+      { icon: "🏆", text: "Who are the favorites to win?" },
+      { icon: "📈", text: "How do I level up faster?" },
+      { icon: "🔄", text: "Tips for trading stickers?" },
+      { icon: "📅", text: "When are the next matches?" },
+      { icon: "⭐", text: "How do I get Legendary stickers?" },
+      { icon: "🎯", text: "What missions should I focus on?" },
+    ],
+  },
+  es: {
+    you: "Tu",
+    title: "Coach IA",
+    subtitle: "Potenciado por GPT-4o · experto en Mundial 2026",
+    leftToday: (n: number) => `${n} hoy`,
+    hey: (name: string) => `Hola ${name}!`,
+    intro:
+      "Soy tu coach IA personal del Mundial. Preguntame sobre el torneo, tu coleccion, trades, estrategia o predicciones.",
+    rateLimitPro: "Llegaste al limite por ahora. Intentalo de nuevo en un momento.",
+    rateLimitFree: `Ya usaste tus ${FREE_DAILY_LIMIT} mensajes gratis de hoy. Hazte PRO para coaching ilimitado.`,
+    genericError: "Algo salio mal. Intentalo otra vez.",
+    connectionError: "La conexion se interrumpio. Intenta de nuevo.",
+    upgrade: "Hazte PRO",
+    placeholderLimited: "Hazte PRO para mensajes ilimitados...",
+    placeholderOpen: "Pregunta lo que quieras sobre el Mundial...",
+    footerHint: "Enter para enviar · Shift+Enter para nueva linea",
+    prompts: [
+      { icon: "🏆", text: "Quienes son los favoritos para ganar?" },
+      { icon: "📈", text: "Como subo de nivel mas rapido?" },
+      { icon: "🔄", text: "Consejos para intercambiar estampas?" },
+      { icon: "📅", text: "Cuando son los proximos partidos?" },
+      { icon: "⭐", text: "Como consigo estampas legendarias?" },
+      { icon: "🎯", text: "Que misiones deberia priorizar?" },
+    ],
+  },
+} as const;
+
+function MessageBubble({ message, youLabel }: { message: Message; youLabel: string }) {
   const isUser = message.role === "user";
 
   return (
@@ -46,23 +91,19 @@ function MessageBubble({ message }: { message: Message }) {
       animate={{ opacity: 1, y: 0 }}
       className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
     >
-      {/* Avatar */}
       <div
-        className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-          isUser
-            ? "bg-[#FF5E00]/20 border border-[#FF5E00]/40"
-            : "bg-gradient-to-br from-[#E8003D] to-[#FF5E00]"
+        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+          isUser ? "border border-[#FF5E00]/40 bg-[#FF5E00]/20" : "bg-gradient-to-br from-[#E8003D] to-[#FF5E00]"
         }`}
       >
-        {isUser ? "You" : "🤖"}
+        {isUser ? youLabel : "🤖"}
       </div>
 
-      {/* Bubble */}
       <div
         className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? "bg-[#FF5E00]/20 border border-[#FF5E00]/30 text-white ml-auto"
-            : "bg-white/5 border border-white/10 text-white/90"
+            ? "ml-auto border border-[#FF5E00]/30 bg-[#FF5E00]/20 text-white"
+            : "border border-white/10 bg-white/5 text-white/90"
         }`}
       >
         {message.content}
@@ -74,16 +115,16 @@ function MessageBubble({ message }: { message: Message }) {
 function TypingIndicator() {
   return (
     <div className="flex gap-3">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#E8003D] to-[#FF5E00] flex items-center justify-center text-sm">
+      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E8003D] to-[#FF5E00] text-sm">
         🤖
       </div>
-      <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex gap-1.5 items-center">
+      <div className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
         {[0, 0.2, 0.4].map((delay, i) => (
           <motion.div
             key={i}
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 0.6, delay, repeat: Infinity }}
-            className="w-1.5 h-1.5 bg-white/40 rounded-full"
+            className="h-1.5 w-1.5 rounded-full bg-white/40"
           />
         ))}
       </div>
@@ -92,14 +133,15 @@ function TypingIndicator() {
 }
 
 export default function CoachClient({ initialMessages, userContext }: CoachClientProps) {
+  const { locale } = useLanguage();
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.en;
+
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
   const [dailyCount, setDailyCount] = useState(0);
-  const [conversationId, setConversationId] = useState<string | null>(
-    userContext.conversationId
-  );
+  const [conversationId, setConversationId] = useState<string | null>(userContext.conversationId);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -113,11 +155,10 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
     scrollToBottom();
   }, [messages, streamingContent, scrollToBottom]);
 
-  // Fetch daily count
   useEffect(() => {
     fetch("/api/coach/status")
       .then((r) => r.json())
-      .then((d) => setDailyCount(d.count ?? 0))
+      .then((data) => setDailyCount(data.count ?? 0))
       .catch(() => {});
   }, []);
 
@@ -134,6 +175,7 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
       content: messageText,
       createdAt: new Date().toISOString(),
     };
+
     setMessages((prev) => [...prev, userMsg]);
     setIsStreaming(true);
     setStreamingContent("");
@@ -155,23 +197,18 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         if (res.status === 429) {
-          setError(
-            userContext.isPro
-              ? "Rate limit reached. Try again in a moment."
-              : `You've used your ${FREE_DAILY_LIMIT} free messages today. Upgrade to PRO for unlimited coaching! 🚀`
-          );
+          setError(userContext.isPro ? copy.rateLimitPro : copy.rateLimitFree);
         } else {
-          setError(err.error || "Something went wrong. Try again.");
+          setError(err.error || copy.genericError);
         }
         setIsStreaming(false);
         return;
       }
 
-      // SSE streaming
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       let fullContent = "";
-      let newConvId = conversationId;
+      let newConversationId = conversationId;
 
       if (reader) {
         while (true) {
@@ -182,36 +219,36 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
           const lines = chunk.split("\n");
 
           for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6).trim();
-              if (data === "[DONE]") continue;
-              try {
-                const parsed = JSON.parse(data);
-                if (parsed.conversationId) newConvId = parsed.conversationId;
-                if (parsed.content) {
-                  fullContent += parsed.content;
-                  setStreamingContent(fullContent);
-                }
-              } catch {}
-            }
+            if (!line.startsWith("data: ")) continue;
+            const data = line.slice(6).trim();
+            if (data === "[DONE]") continue;
+
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.conversationId) newConversationId = parsed.conversationId;
+              if (parsed.content) {
+                fullContent += parsed.content;
+                setStreamingContent(fullContent);
+              }
+            } catch {}
           }
         }
       }
 
-      // Finalize
       const assistantMsg: Message = {
         id: `assistant-${Date.now()}`,
         role: "assistant",
         content: fullContent,
         createdAt: new Date().toISOString(),
       };
+
       setMessages((prev) => [...prev, assistantMsg]);
       setStreamingContent("");
-      setConversationId(newConvId);
-      setDailyCount((c) => c + 1);
+      setConversationId(newConversationId);
+      setDailyCount((count) => count + 1);
     } catch (err) {
       if ((err as Error).name !== "AbortError") {
-        setError("Connection interrupted. Please try again.");
+        setError(copy.connectionError);
       }
     } finally {
       setIsStreaming(false);
@@ -236,78 +273,63 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col h-full max-h-[calc(100vh-4rem)]">
-      {/* Header */}
-      <div className="flex-shrink-0 px-6 py-4 border-b border-white/10">
+    <div className="flex h-full max-h-[calc(100vh-4rem)] flex-col">
+      <div className="flex-shrink-0 border-b border-white/10 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E8003D] to-[#FF5E00] flex items-center justify-center text-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#E8003D] to-[#FF5E00] text-lg">
               🤖
             </div>
             <div>
-              <h1 className="text-white font-black text-lg">AI Fan Coach</h1>
-              <p className="text-white/40 text-xs">
-                Powered by GPT-4o · World Cup 2026 expert
-              </p>
+              <h1 className="text-lg font-black text-white">{copy.title}</h1>
+              <p className="text-xs text-white/40">{copy.subtitle}</p>
             </div>
           </div>
+
           <div className="flex items-center gap-3">
             {!userContext.isPro && (
-              <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
-                <div
-                  className="h-1 rounded-full bg-white/20 overflow-hidden"
-                  style={{ width: 60 }}
-                >
+              <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
+                <div className="h-1 overflow-hidden rounded-full bg-white/20" style={{ width: 60 }}>
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-[#E8003D] to-[#FF5E00] transition-all"
-                    style={{
-                      width: `${Math.min((dailyCount / FREE_DAILY_LIMIT) * 100, 100)}%`,
-                    }}
+                    style={{ width: `${Math.min((dailyCount / FREE_DAILY_LIMIT) * 100, 100)}%` }}
                   />
                 </div>
-                <span className="text-white/50 text-xs">
-                  {Math.max(FREE_DAILY_LIMIT - dailyCount, 0)} left today
-                </span>
+                <span className="text-xs text-white/50">{copy.leftToday(Math.max(FREE_DAILY_LIMIT - dailyCount, 0))}</span>
               </div>
             )}
+
             {userContext.isPro && (
-              <div className="flex items-center gap-1.5 bg-[#FFB800]/10 border border-[#FFB800]/30 rounded-full px-3 py-1.5">
-                <span className="text-[#FFB800] text-xs font-bold">⚡ PRO</span>
+              <div className="flex items-center gap-1.5 rounded-full border border-[#FFB800]/30 bg-[#FFB800]/10 px-3 py-1.5">
+                <span className="text-xs font-bold text-[#FFB800]">⚡ PRO</span>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+      <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4">
         {isEmpty && !isStreaming && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center h-full text-center gap-6 py-10"
+            className="flex h-full flex-col items-center justify-center gap-6 py-10 text-center"
           >
             <div className="text-6xl">🤖</div>
             <div>
-              <h2 className="text-2xl font-black text-white mb-2">
-                Hey {userContext.username}! ⚽
-              </h2>
-              <p className="text-white/50 max-w-sm">
-                I&apos;m your personal World Cup AI coach. Ask me anything about
-                the tournament, your collection, trading tips, or predictions!
-              </p>
+              <h2 className="mb-2 text-2xl font-black text-white">{copy.hey(userContext.username)} ⚽</h2>
+              <p className="max-w-sm text-white/50">{copy.intro}</p>
             </div>
 
-            {/* Quick prompts */}
-            <div className="grid grid-cols-2 gap-2 w-full max-w-md">
-              {QUICK_PROMPTS.map((prompt) => (
+            <div className="grid w-full max-w-md grid-cols-2 gap-2">
+              {copy.prompts.map((prompt) => (
                 <button
                   key={prompt.text}
                   onClick={() => handleSend(prompt.text)}
                   disabled={isAtLimit}
-                  className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 text-left hover:bg-white/10 hover:border-white/20 transition-all text-sm text-white/70 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-3 text-left text-sm text-white/70 transition-all hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  <span className="text-base flex-shrink-0">{prompt.icon}</span>
+                  <span className="flex-shrink-0 text-base">{prompt.icon}</span>
                   <span className="line-clamp-2 text-xs">{prompt.text}</span>
                 </button>
               ))}
@@ -317,39 +339,40 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
 
         {!isEmpty && (
           <>
-            {messages.map((msg) => (
-              <MessageBubble key={msg.id} message={msg} />
+            {messages.map((message) => (
+              <MessageBubble key={message.id} message={message} youLabel={copy.you} />
             ))}
+
             {isStreaming && streamingContent && (
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#E8003D] to-[#FF5E00] flex items-center justify-center text-sm">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E8003D] to-[#FF5E00] text-sm">
                   🤖
                 </div>
-                <div className="max-w-[75%] bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm leading-relaxed text-white/90">
+                <div className="max-w-[75%] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm leading-relaxed text-white/90">
                   {streamingContent}
                   <motion.span
                     animate={{ opacity: [1, 0] }}
                     transition={{ duration: 0.5, repeat: Infinity }}
-                    className="inline-block w-1 h-4 bg-white/60 ml-0.5 align-text-bottom"
+                    className="ml-0.5 inline-block h-4 w-1 bg-white/60 align-text-bottom"
                   />
                 </div>
               </div>
             )}
+
             {isStreaming && !streamingContent && <TypingIndicator />}
           </>
         )}
 
-        {/* Suggested follow-ups (only when there are messages and not streaming) */}
-        {!isEmpty && !isStreaming && messages.length > 0 && messages.length < 4 && (
+        {!isEmpty && !isStreaming && messages.length < 4 && (
           <div className="flex flex-wrap gap-2 pt-2">
-            {QUICK_PROMPTS.slice(0, 3).map((p) => (
+            {copy.prompts.slice(0, 3).map((prompt) => (
               <button
-                key={p.text}
-                onClick={() => handleSend(p.text)}
+                key={prompt.text}
+                onClick={() => handleSend(prompt.text)}
                 disabled={isAtLimit}
-                className="text-xs bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-white/60 hover:text-white hover:bg-white/10 transition-all disabled:opacity-30"
+                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/60 transition-all hover:bg-white/10 hover:text-white disabled:opacity-30"
               >
-                {p.icon} {p.text}
+                {prompt.icon} {prompt.text}
               </button>
             ))}
           </div>
@@ -358,24 +381,23 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Error message */}
       <AnimatePresence>
         {error && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="flex-shrink-0 mx-6 mb-2"
+            className="mx-6 mb-2 flex-shrink-0"
           >
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 flex items-start gap-2">
-              <span className="text-red-400 flex-shrink-0">⚠️</span>
-              <p className="text-red-400 text-sm">{error}</p>
+            <div className="flex items-start gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3">
+              <span className="flex-shrink-0 text-red-400">⚠️</span>
+              <p className="text-sm text-red-400">{error}</p>
               {!userContext.isPro && isAtLimit && (
                 <a
                   href="/upgrade"
-                  className="ml-auto flex-shrink-0 text-xs bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white px-3 py-1.5 rounded-full font-bold hover:opacity-90"
+                  className="ml-auto flex-shrink-0 rounded-full bg-gradient-to-r from-[#E8003D] to-[#FF5E00] px-3 py-1.5 text-xs font-bold text-white hover:opacity-90"
                 >
-                  Upgrade
+                  {copy.upgrade}
                 </a>
               )}
             </div>
@@ -383,10 +405,9 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
         )}
       </AnimatePresence>
 
-      {/* Input area */}
-      <div className="flex-shrink-0 px-6 py-4 border-t border-white/10">
-        <div className="flex gap-3 items-end">
-          <div className="flex-1 relative">
+      <div className="flex-shrink-0 border-t border-white/10 px-6 py-4">
+        <div className="flex items-end gap-3">
+          <div className="relative flex-1">
             <textarea
               ref={textareaRef}
               value={input}
@@ -396,39 +417,35 @@ export default function CoachClient({ initialMessages, userContext }: CoachClien
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder={
-                isAtLimit
-                  ? "Upgrade to PRO for unlimited messages…"
-                  : "Ask anything about the World Cup…"
-              }
+              placeholder={isAtLimit ? copy.placeholderLimited : copy.placeholderOpen}
               disabled={isAtLimit || isStreaming}
               rows={1}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none focus:outline-none focus:border-[#FF5E00]/50 focus:bg-white/8 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 transition-all focus:border-[#FF5E00]/50 focus:bg-white/8 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
             />
           </div>
+
           {isStreaming ? (
             <button
               onClick={handleStop}
-              className="flex-shrink-0 w-11 h-11 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20"
             >
-              <span className="w-3 h-3 bg-white rounded-sm" />
+              <span className="h-3 w-3 rounded-sm bg-white" />
             </button>
           ) : (
             <button
               onClick={() => handleSend()}
               disabled={!input.trim() || isAtLimit}
-              className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-r from-[#E8003D] to-[#FF5E00] flex items-center justify-center text-white hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed shadow-lg shadow-[#FF5E00]/20"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white shadow-lg shadow-[#FF5E00]/20 transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-                <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           )}
         </div>
-        <p className="text-white/20 text-xs mt-2 text-center">
-          Press Enter to send · Shift+Enter for new line
-        </p>
+
+        <p className="mt-2 text-center text-xs text-white/20">{copy.footerHint}</p>
       </div>
     </div>
   );

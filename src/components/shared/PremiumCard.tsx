@@ -17,8 +17,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Lock } from "lucide-react";
 import { useStickerImage } from "@/hooks/useStickerImage";
 import { getStickerFrameStyles, getTeamPalette } from "@/lib/sticker-frame";
-import { rarityColor, rarityLabel } from "@/lib/utils";
+import { rarityColor } from "@/lib/utils";
 import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -86,9 +87,30 @@ const SIZE_DIMENSIONS: Record<string, string> = {
 };
 const SIZE_ASPECT = "3/4.2";
 
+function getTierLabel(locale: string, rarity: string) {
+  const tiers: Record<string, Record<string, string>> = {
+    en: {
+      COMMON: "Bronze",
+      UNCOMMON: "Silver",
+      RARE: "Gold",
+      EPIC: "Epic",
+      LEGENDARY: "Elite",
+    },
+    es: {
+      COMMON: "Bronce",
+      UNCOMMON: "Plata",
+      RARE: "Oro",
+      EPIC: "Epica",
+      LEGENDARY: "Elite",
+    },
+  };
+
+  return tiers[locale]?.[rarity] ?? tiers.en[rarity] ?? rarity;
+}
+
 // ── Card Back (pack unrevealed face) ─────────────────────────────────────────
 
-function CardBack({ size }: { size: "sm" | "md" | "lg" }) {
+function CardBack({ size, tapLabel }: { size: "sm" | "md" | "lg"; tapLabel: string }) {
   const large = size === "lg";
   return (
     <div
@@ -127,7 +149,7 @@ function CardBack({ size }: { size: "sm" | "md" | "lg" }) {
         className="absolute bottom-2 text-center font-black text-[#FFB800] tracking-widest"
         style={{ fontSize: large ? 9 : 7 }}
       >
-        TAP ▼
+        {tapLabel}
       </motion.p>
     </div>
   );
@@ -235,7 +257,15 @@ function LockedCard({ sticker }: { sticker: PremiumCardSticker }) {
 
 // ── Owned / collected card ────────────────────────────────────────────────────
 
-function OwnedCard({ sticker, size }: { sticker: PremiumCardSticker; size: "sm" | "md" | "lg" }) {
+function OwnedCard({
+  sticker,
+  size,
+  locale,
+}: {
+  sticker: PremiumCardSticker;
+  size: "sm" | "md" | "lg";
+  locale: string;
+}) {
   const meta     = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
   const color    = rarityColor(sticker.rarity);
   const frame    = getStickerFrameStyles(sticker.team, color, sticker.category);
@@ -358,7 +388,7 @@ function OwnedCard({ sticker, size }: { sticker: PremiumCardSticker; size: "sm" 
           </div>
           <div className="flex items-center justify-between mt-0.5">
             <span className="font-black leading-none" style={{ fontSize: isLg ? "9px" : "7px", color }}>
-              {meta.tier}
+              {getTierLabel(locale, sticker.rarity)}
             </span>
             {(sticker.quantity ?? 0) > 1 && (
               <span
@@ -429,6 +459,7 @@ export function PremiumCard({
   onClick,
   className = "",
 }: PremiumCardProps) {
+  const { locale } = useLanguage();
   const color = rarityColor(sticker.rarity);
   const w     = SIZE_DIMENSIONS[size];
   const isRevealed = !flipMode || revealed;
@@ -472,7 +503,7 @@ export function PremiumCard({
             className="absolute inset-0 rounded-xl overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
           >
-            <CardBack size={size} />
+            <CardBack size={size} tapLabel={locale === "es" ? "TOCA" : "TAP"} />
           </div>
 
           {/* FRONT face */}
@@ -485,7 +516,7 @@ export function PremiumCard({
               glowColor={color}
               className="rounded-xl w-full h-full"
             >
-              <OwnedCard sticker={sticker} size={size} />
+              <OwnedCard sticker={sticker} size={size} locale={locale} />
             </PremiumCardShell>
           </div>
         </motion.div>
@@ -517,7 +548,7 @@ export function PremiumCard({
       onClick={onClick}
       style={{ width: w, aspectRatio: SIZE_ASPECT }}
     >
-      <OwnedCard sticker={sticker} size={size} />
+      <OwnedCard sticker={sticker} size={size} locale={locale} />
     </PremiumCardShell>
   );
 }
