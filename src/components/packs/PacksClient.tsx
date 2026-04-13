@@ -387,6 +387,8 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
 
     if (next >= 3) {
       // Kick off API call immediately (before animation finishes)
+      // Returns the result on success, null on failure
+      let apiResult: { stickers: unknown[]; xpEarned: number; newXp: number; levelUp: boolean } | null = null;
       const apiCall = (async () => {
         try {
           const res  = await fetch("/api/packs/open", {
@@ -396,9 +398,11 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error ?? "Failed to open pack");
+          apiResult = data;
           setOpenResult(data);
         } catch (err) {
           setError((err as Error).message);
+          apiResult = null;
         }
       })();
       apiPromiseRef.current = apiCall;
@@ -412,7 +416,14 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
       await new Promise<void>((resolve) => setTimeout(resolve, 1600));
       await apiCall;
 
-      setPhase("reveal");
+      // Only advance to reveal if API succeeded — otherwise go back to idle
+      // so the user sees the error and can close the modal
+      if (apiResult) {
+        setPhase("reveal");
+      } else {
+        setPhase("idle");
+        setTapCount(0);
+      }
       setLoading(false);
     }
   }, [openingPack, phase, tapCount]);
@@ -807,7 +818,18 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                     Add to Album
                   </button>
                   <button
-                    onClick={() => { setPhase("idle"); setTapCount(0); setOpenResult(null); setRevealedSet(new Set()); }}
+                    onClick={() => {
+                      // Fully close the modal and reset all state
+                      // so the user picks a new pack from the store grid
+                      setOpeningPack(null);
+                      setPhase("idle");
+                      setTapCount(0);
+                      setOpenResult(null);
+                      setRevealedSet(new Set());
+                      setError(null);
+                      setFlashOn(false);
+                      apiPromiseRef.current = null;
+                    }}
                     className="font-display font-bold px-6 py-3 rounded-xl text-black transition-all"
                     style={{ background: `linear-gradient(135deg, ${vis.glow}, #FF5E00)` }}
                   >
