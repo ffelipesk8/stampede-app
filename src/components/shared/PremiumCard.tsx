@@ -136,29 +136,98 @@ function CardBack({ size }: { size: "sm" | "md" | "lg" }) {
 // ── Missing / locked card ────────────────────────────────────────────────────
 
 function LockedCard({ sticker }: { sticker: PremiumCardSticker }) {
-  const posLabel = POSITION_LABEL[sticker.position] ?? sticker.position;
+  const posLabel  = POSITION_LABEL[sticker.position] ?? sticker.position;
   const flagEmoji = sticker.teamFlag || FLAG[sticker.team] || "⚽";
+  const meta      = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
+  // Subtle team-tinted hue for the mystery effect
+  const hint = meta.color;
+
   return (
     <div
-      className="w-full h-full rounded-xl flex flex-col relative overflow-hidden border border-white/[0.07]"
-      style={{ background: "linear-gradient(160deg,#111120 0%,#080810 100%)" }}
+      className="w-full h-full rounded-xl flex flex-col relative overflow-hidden"
+      style={{
+        background: "linear-gradient(160deg, #0c0c1a 0%, #080810 100%)",
+        border: `1px solid ${hint}18`,
+        boxShadow: `inset 0 0 32px ${hint}08`,
+      }}
     >
-      <div className="flex items-start justify-between px-2 pt-2 pb-1 z-10 shrink-0">
-        <span className="text-[7px] font-black text-white/20 tracking-widest leading-tight">
-          {sticker.team}<br /><span className="text-white/10">· 2026</span>
-        </span>
+      {/* Deep rarity-tinted ambient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 90% 70% at 50% 40%, ${hint}12 0%, transparent 65%)`,
+        }}
+      />
+
+      {/* Subtle diamond hatch */}
+      <div
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{
+          backgroundImage: "repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)",
+          backgroundSize: "10px 10px",
+        }}
+      />
+
+      {/* Slow shimmer sweep to show it's "alive" */}
+      <motion.div
+        animate={{ x: ["-120%", "240%"] }}
+        transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
+        className="absolute inset-y-0 w-1/3 pointer-events-none z-10"
+        style={{ background: `linear-gradient(to right, transparent, ${hint}08, transparent)` }}
+      />
+
+      {/* Top row: team + position/number */}
+      <div className="flex items-start justify-between px-2 pt-2 pb-0.5 shrink-0 relative z-10">
+        <div>
+          <span className="text-[7px] font-black tracking-widest leading-none"
+                style={{ color: `${hint}55` }}>
+            {sticker.team}
+          </span>
+          <br />
+          <span className="text-[6px] text-white/10 font-bold">· 2026</span>
+        </div>
         <div className="text-right">
-          <p className="text-[7px] text-white/15 font-bold">{posLabel}</p>
-          <p className="font-condensed text-base font-black text-white/15 leading-none">#{sticker.number}</p>
+          <p className="text-[7px] font-bold leading-none mb-0.5" style={{ color: "rgba(255,255,255,0.1)" }}>
+            {posLabel}
+          </p>
+          <p className="font-condensed text-xl font-black leading-none" style={{ color: `${hint}20` }}>
+            {sticker.number}
+          </p>
         </div>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center gap-1">
-        <Lock className="w-5 h-5 text-white/15" />
-        <span className="text-[7px] font-black text-white/12 tracking-widest">?</span>
+
+      {/* Centre mystery area */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-2 relative z-10">
+        {/* Large faded flag — team hint */}
+        <div style={{ fontSize: 32, opacity: 0.1, filter: "grayscale(0.8)" }}>
+          {flagEmoji}
+        </div>
+        {/* Lock circle */}
+        <div
+          className="rounded-full flex items-center justify-center"
+          style={{
+            width: 30, height: 30,
+            background: `rgba(255,255,255,0.03)`,
+            border: `1.5px solid ${hint}20`,
+            boxShadow: `0 0 12px ${hint}15`,
+          }}
+        >
+          <Lock style={{ width: 13, height: 13, color: `${hint}55` }} />
+        </div>
       </div>
-      <div className="px-2 pb-2 pt-1 border-t border-white/5 shrink-0 flex items-end justify-between">
-        <p className="text-[9px] font-black text-white/20 truncate flex-1 leading-tight uppercase">{sticker.name}</p>
-        <span className="text-sm text-white/15 ml-1 shrink-0">{flagEmoji}</span>
+
+      {/* Bottom name strip */}
+      <div
+        className="px-2 pb-2 pt-1.5 shrink-0 flex items-center justify-between relative z-10"
+        style={{ borderTop: `1px solid ${hint}12` }}
+      >
+        <p
+          className="text-[8px] font-black truncate flex-1 leading-tight uppercase"
+          style={{ color: "rgba(255,255,255,0.16)" }}
+        >
+          {sticker.name}
+        </p>
+        <span className="text-sm ml-1 shrink-0" style={{ opacity: 0.1 }}>{flagEmoji}</span>
       </div>
     </div>
   );

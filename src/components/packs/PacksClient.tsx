@@ -9,6 +9,7 @@ import { ShareButton } from "@/components/shared/ShareModal";
 import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCardShell";
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
 import { PremiumCard } from "@/components/shared/PremiumCard";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // -- Shared team data -----------------------------------------------------------
 const TEAM_FLAGS: Record<string, string> = {
@@ -344,6 +345,7 @@ const PACK_VISUALS: Record<string, { gradient: string; glow: string; label: stri
 
 // -- Main component -------------------------------------------------------------
 export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
+  const { t } = useLanguage();
   const [openingPack, setOpeningPack]  = useState<Pack | null>(null);
   const [openResult, setOpenResult]    = useState<{
     stickers: Array<{ id: string; name: string; rarity: Rarity; team: string; imageUrl: string; category?: string }>;
@@ -361,12 +363,25 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
   const [flashOn, setFlashOn]       = useState(false);
   // which cards have been flipped by the user
   const [revealedSet, setRevealedSet] = useState<Set<number>>(new Set());
-  const apiPromiseRef = useRef<Promise<void> | null>(null);
+  // Guards against stale async closures — null means no active open
+  const activePackIdRef = useRef<string | null>(null);
 
   const freePack   = packs.find((p) => p.type === "FREE_DAILY");
   const storePacks = packs.filter((p) => p.type !== "FREE_DAILY");
 
+  const closeModal = useCallback(() => {
+    activePackIdRef.current = null;
+    setOpeningPack(null);
+    setPhase("idle");
+    setTapCount(0);
+    setOpenResult(null);
+    setError(null);
+    setFlashOn(false);
+    setRevealedSet(new Set());
+  }, []);
+
   const startOpen = useCallback((pack: Pack) => {
+    activePackIdRef.current = pack.id;
     setOpeningPack(pack);
     setPhase("idle");
     setTapCount(0);
@@ -374,7 +389,6 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
     setError(null);
     setFlashOn(false);
     setRevealedSet(new Set());
-    apiPromiseRef.current = null;
   }, []);
 
   // Single tap on the pack during charging phase
@@ -386,41 +400,49 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
     setPhase("charging");
 
     if (next >= 3) {
-      // Kick off API call immediately (before animation finishes)
-      // Returns the result on success, null on failure
-      let apiResult: { stickers: unknown[]; xpEarned: number; newXp: number; levelUp: boolean } | null = null;
+      // Capture which pack this open belongs to — guards against stale closures
+      const thisPackId = openingPack.id;
+
+      // Kick off API immediately so it runs in parallel with the animation
+      type OpenData = { stickers: unknown[]; xpEarned: number; newXp: number; levelUp: boolean };
+      let apiData: OpenData | null = null;
+      let apiError: string | null = null;
+
       const apiCall = (async () => {
         try {
-          const res  = await fetch("/api/packs/open", {
+          const res = await fetch("/api/packs/open", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ packId: openingPack.id }),
+            body: JSON.stringify({ packId: thisPackId }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error ?? "Failed to open pack");
-          apiResult = data;
-          setOpenResult(data);
+          apiData = data;
         } catch (err) {
-          setError((err as Error).message);
-          apiResult = null;
+          apiError = (err as Error).message;
         }
       })();
-      apiPromiseRef.current = apiCall;
 
       // Explode animation
       setPhase("explode");
       setFlashOn(true);
       setTimeout(() => setFlashOn(false), 350);
 
-      // Wait for both animation + API (at least 1.6s for drama)
+      // Wait for drama (≥1.6 s) AND API together
       await new Promise<void>((resolve) => setTimeout(resolve, 1600));
       await apiCall;
 
-      // Only advance to reveal if API succeeded — otherwise go back to idle
-      // so the user sees the error and can close the modal
-      if (apiResult) {
+      // Guard: if user closed/changed pack while we were waiting, bail out
+      if (activePackIdRef.current !== thisPackId) return;
+
+      if (apiData) {
+        // Set openResult AND phase in the same synchronous block so React 18
+        // batches them into ONE render — eliminates the "phase=reveal, result=null"
+        // flash that caused the black screen on the second open.
+        setOpenResult(apiData as Parameters<typeof setOpenResult>[0]);
         setPhase("reveal");
       } else {
+        setError(apiError ?? "Error al abrir el sobre");
         setPhase("idle");
         setTapCount(0);
       }
@@ -459,8 +481,8 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
 
       {/* -- Header -- */}
       <div>
-        <h1 className="font-condensed text-4xl font-black text-t1 tracking-wide">Pack Store</h1>
-        <p className="text-t2 text-sm mt-1">Open packs · Collect stickers · Level up</p>
+        <h1 className="font-condensed text-4xl font-black text-t1 tracking-wide">{t("packs.title")}</h1>
+        <p className="text-t2 text-sm mt-1">{t("packs.subtitle")}</p>
       </div>
 
       {/* -- Free daily pack -- */}
@@ -471,27 +493,27 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-orange font-condensed text-xl font-black tracking-wide">FREE DAILY PACK</span>
-              <span className="bg-orange text-bg text-[10px] font-black px-1.5 py-0.5 rounded">FREE</span>
+              <span className="text-orange font-condensed text-xl font-black tracking-wide">{t("packs.freeDailyPack")}</span>
+              <span className="bg-orange text-bg text-[10px] font-black px-1.5 py-0.5 rounded">{t("common.free")}</span>
             </div>
-            <p className="text-t2 text-sm">{freePack.cardCount} stickers · Resets every 24h</p>
+            <p className="text-t2 text-sm">{freePack.cardCount} {t("packs.freeDailyDesc")}</p>
             <div className="flex items-center gap-1 mt-1">
               <Zap className="w-3 h-3 text-gold" />
-              <span className="text-gold text-xs font-bold">+{freePack.xpBonus || 50} XP bonus</span>
+              <span className="text-gold text-xs font-bold">+{freePack.xpBonus || 50} {t("packs.xpBonus")}</span>
             </div>
           </div>
           <button
             onClick={() => startOpen(freePack)}
             className="bg-orange hover:bg-orange/90 text-white font-display font-bold px-6 py-3 rounded-xl transition-colors shrink-0"
           >
-            Open Free →
+            {t("packs.openFree")}
           </button>
         </div>
       )}
 
       {/* -- Store packs grid -- */}
       <div>
-        <h2 className="font-display font-bold text-t1 text-lg mb-4">Pack Store</h2>
+        <h2 className="font-display font-bold text-t1 text-lg mb-4">{t("packs.storeTitle")}</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {storePacks.map((pack) => {
             const v = PACK_VISUALS[pack.rarity] ?? PACK_VISUALS.COMMON;
@@ -514,7 +536,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                   <div className="text-5xl" style={{ filter: `drop-shadow(0 0 12px ${v.glow})` }}>{v.emoji}</div>
                   {isLimited && (
                     <div className="absolute top-2 right-2 bg-bg/80 text-xs font-bold px-2 py-1 rounded-md" style={{ color: v.glow }}>
-                      {isSoldOut ? "SOLD OUT" : `${remaining} left`}
+                      {isSoldOut ? t("packs.soldOut") : `${remaining} ${t("packs.left")}`}
                     </div>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: v.glow + "60" }} />
@@ -531,7 +553,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                   {pack.xpBonus > 0 && (
                     <div className="flex items-center gap-1 mt-1.5">
                       <Zap className="w-3 h-3 text-gold" />
-                      <span className="text-gold text-[10px] font-bold">+{pack.xpBonus} XP bonus</span>
+                      <span className="text-gold text-[10px] font-bold">+{pack.xpBonus} {t("packs.xpBonus")}</span>
                     </div>
                   )}
                 </div>
@@ -544,7 +566,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
       {/* -- Recent opens -- */}
       {recentOpens.length > 0 && (
         <div>
-          <h2 className="font-display font-bold text-t1 text-lg mb-4">Recent Opens</h2>
+          <h2 className="font-display font-bold text-t1 text-lg mb-4">{t("packs.recentOpens")}</h2>
           <div className="space-y-2">
             {recentOpens.map((open) => (
               <div key={open.id} className="bg-card1 border border-border rounded-xl px-4 py-3 flex items-center gap-4">
@@ -685,9 +707,9 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                       transition={{ repeat: Infinity, duration: 1.5 }}
                       className="text-[#aaaacc] text-sm font-bold tracking-widest"
                     >
-                      {tapCount === 0 ? "TAP THE PACK" : tapCount === 1 ? "AGAIN..." : "ONE MORE!"}
+                      {tapCount === 0 ? t("packs.tapToOpen") : tapCount === 1 ? t("packs.again") : t("packs.oneMore")}
                     </motion.p>
-                    <p className="text-[#555577] text-xs mt-1">{3 - tapCount} tap{3 - tapCount !== 1 ? "s" : ""} to open</p>
+                    <p className="text-[#555577] text-xs mt-1">{3 - tapCount} {t("packs.tapsLeft")}</p>
                   </div>
                 )}
                 {phase === "explode" && (
@@ -696,12 +718,12 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                     animate={{ opacity: 1, scale: 1 }}
                     className="text-white font-condensed text-2xl font-black tracking-widest"
                   >
-                    OPENING...
+                    {t("packs.opening")}
                   </motion.p>
                 )}
                 {error && <p className="text-red-400 text-sm">{error}</p>}
-                <button onClick={() => setOpeningPack(null)} className="text-[#555577] text-xs hover:text-[#aaaacc] transition-colors mt-2">
-                  Cancel
+                <button onClick={closeModal} className="text-[#555577] text-xs hover:text-[#aaaacc] transition-colors mt-2">
+                  {t("common.cancel")}
                 </button>
               </div>
             )}
@@ -718,7 +740,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                   className="text-center"
                 >
                   <h2 className="font-condensed text-5xl font-black text-white tracking-wide drop-shadow-lg">
-                    {openResult.levelUp ? "🎉 LEVEL UP!" : `YOU GOT ${openResult.stickers.length}!`}
+                    {openResult.levelUp ? "🎉 LEVEL UP!" : `${t("packs.youGot")} ${openResult.stickers.length}!`}
                   </h2>
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <Zap className="w-4 h-4 text-[#FFB800]" />
@@ -790,7 +812,7 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                       className="px-6 py-3 rounded-xl font-display font-bold text-sm border transition-all"
                       style={{ borderColor: vis.glow, color: vis.glow, background: `${vis.glow}15` }}
                     >
-                      Reveal All
+                      {t("packs.revealAll")}
                     </button>
                   )}
                   {allRevealed && openResult && (() => {
@@ -807,33 +829,22 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                         }}
                         className="px-6 py-3 rounded-xl font-display font-bold text-sm bg-[#1a1a2e] border-[#3a3a5c] text-white hover:border-orange hover:text-orange"
                       >
-                        Share Pulls 🔗
+                        {t("common.share")} 🔗
                       </ShareButton>
                     );
                   })()}
                   <button
-                    onClick={() => setOpeningPack(null)}
+                    onClick={closeModal}
                     className="bg-[#1a1a2e] border border-[#3a3a5c] text-white font-display font-bold px-6 py-3 rounded-xl hover:border-[#6a6a8c] transition-colors"
                   >
-                    Add to Album
+                    {t("packs.addToAlbum")}
                   </button>
                   <button
-                    onClick={() => {
-                      // Fully close the modal and reset all state
-                      // so the user picks a new pack from the store grid
-                      setOpeningPack(null);
-                      setPhase("idle");
-                      setTapCount(0);
-                      setOpenResult(null);
-                      setRevealedSet(new Set());
-                      setError(null);
-                      setFlashOn(false);
-                      apiPromiseRef.current = null;
-                    }}
+                    onClick={closeModal}
                     className="font-display font-bold px-6 py-3 rounded-xl text-black transition-all"
                     style={{ background: `linear-gradient(135deg, ${vis.glow}, #FF5E00)` }}
                   >
-                    Open Another 🔥
+                    {t("packs.openAnother")}
                   </button>
                 </motion.div>
               </div>

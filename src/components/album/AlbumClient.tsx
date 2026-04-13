@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { Search, LayoutGrid, LayoutList, Lock, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { useStickerImage } from "@/hooks/useStickerImage";
@@ -113,6 +114,14 @@ function ProgressRing({ pct, size = 96 }: { pct: number; size?: number }) {
 // Main component
 // ---------------------------------------------------------------------------
 
+const RARITY_KEYS: Record<string, "rarity.common"|"rarity.uncommon"|"rarity.rare"|"rarity.epic"|"rarity.legendary"> = {
+  COMMON: "rarity.common",
+  UNCOMMON: "rarity.uncommon",
+  RARE: "rarity.rare",
+  EPIC: "rarity.epic",
+  LEGENDARY: "rarity.legendary",
+};
+
 export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: AlbumClientProps) {
   const { t } = useLanguage();
   const [activeTeam,    setActiveTeam]    = useState("ALL");
@@ -153,76 +162,137 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
   }, [filtered, groupByTeam]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-5 pb-10">
+    <div className="max-w-7xl mx-auto space-y-5 pb-16 relative">
 
-      {/* ---- HEADER ---- */}
+      {/* ====== CINEMATIC HEADER ====== */}
       <div
-        className="rounded-2xl p-5 relative overflow-hidden"
+        className="rounded-2xl relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #0d0d22 0%, #1a0a2e 45%, #0a1a0d 100%)",
-          border: "1px solid rgba(232,101,10,0.2)",
+          background: "linear-gradient(145deg, #07070f 0%, #0e0520 40%, #050d0a 100%)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          minHeight: 220,
         }}
       >
-        <div className="absolute top-0 right-0 w-56 h-56 opacity-15 pointer-events-none"
-             style={{ background: "radial-gradient(circle, #E8650A 0%, transparent 70%)" }} />
+        {/* ── Layer 1: stadium floodlight orbs ── */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full opacity-20"
+               style={{ background: "radial-gradient(circle, #E8650A 0%, transparent 60%)" }} />
+          <div className="absolute -bottom-20 right-0 w-80 h-80 rounded-full opacity-12"
+               style={{ background: "radial-gradient(circle, #FF5E00 0%, transparent 55%)" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-32 opacity-8"
+               style={{ background: "radial-gradient(ellipse, #4A6FFF 0%, transparent 65%)" }} />
+        </div>
 
-        <div className="relative z-10 flex items-center gap-6 flex-wrap">
-          {/* Progress ring */}
+        {/* ── Layer 2: subtle hex / grid overlay ── */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+             style={{
+               backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+               backgroundSize: "40px 40px",
+             }} />
+
+        {/* ── Layer 3: animated shimmer across full header ── */}
+        <motion.div
+          animate={{ x: ["-60%", "120%"] }}
+          transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+          className="absolute inset-0 w-1/2 pointer-events-none"
+          style={{ background: "linear-gradient(to right, transparent, rgba(255,255,255,0.025), transparent)" }}
+        />
+
+        {/* ── Faded watermark ball ── */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 text-[140px] leading-none pointer-events-none select-none opacity-[0.04]">
+          ⚽
+        </div>
+
+        {/* ── Content ── */}
+        <div className="relative z-10 p-7 flex items-center gap-8 flex-wrap">
+
+          {/* Big progress ring */}
           <div className="relative shrink-0">
-            <ProgressRing pct={pct} size={96} />
+            <ProgressRing pct={pct} size={120} />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-condensed text-2xl font-black text-white">{pct}%</span>
-              <span className="text-[9px] text-[#8888AA] font-bold uppercase tracking-wider">done</span>
+              <span className="font-condensed text-3xl font-black text-white leading-none">{pct}%</span>
+              <span className="text-[9px] text-[#E8650A] font-black uppercase tracking-[0.18em] mt-0.5">
+                {t("album.complete")}
+              </span>
             </div>
+            {/* Glow behind the ring */}
+            <div className="absolute inset-0 rounded-full -z-10 blur-xl opacity-30"
+                 style={{ background: "#E8650A" }} />
           </div>
 
-          {/* Title & counts */}
+          {/* Title & counters */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-[10px] font-black text-[#E8650A] uppercase tracking-[0.2em]">FANPACK 26</span>
+            <div className="flex items-center gap-2 mb-1">
+              <span
+                className="text-[10px] font-black uppercase tracking-[0.25em] px-2.5 py-0.5 rounded-full"
+                style={{ background: "rgba(232,101,10,0.15)", color: "#E8650A", border: "1px solid rgba(232,101,10,0.3)" }}
+              >
+                FANPACK 26
+              </span>
             </div>
-            <h1 className="font-condensed text-4xl font-black text-white tracking-tight">{t("album.title")}</h1>
-            <p className="text-[#8888AA] text-sm mt-0.5">
-              <span className="text-white font-bold">{totalOwned}</span>
-              <span> / {totalStickers} {t("album.stickers")}</span>
+            <h1 className="font-condensed text-5xl font-black text-white tracking-tight leading-none drop-shadow-lg">
+              {t("album.title")}
+            </h1>
+
+            {/* Big collector count */}
+            <p className="mt-2 text-sm" style={{ color: "#8888AA" }}>
+              <span className="text-white font-bold text-base">{totalOwned}</span>
+              <span className="mx-1 text-white/20">/</span>
+              <span>{totalStickers} {t("album.stickers")}</span>
             </p>
 
-            {/* Per-rarity pills */}
-            <div className="flex gap-2 mt-3 flex-wrap">
+            {/* Rarity breakdown pills */}
+            <div className="flex gap-2 mt-4 flex-wrap">
               {rarityStats.map(({ rarity, owned, total }) => {
                 const meta = RARITY_META[rarity];
+                const pctR = total > 0 ? Math.round((owned / total) * 100) : 0;
                 return (
                   <button
                     key={rarity}
                     onClick={() => setActiveRarity(activeRarity === rarity ? "ALL" : rarity)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
                     style={{
-                      borderColor: activeRarity === rarity ? meta.color : "rgba(255,255,255,0.08)",
-                      background: activeRarity === rarity ? meta.pill : "rgba(255,255,255,0.04)",
+                      border: `1px solid ${activeRarity === rarity ? meta.color : meta.color + "28"}`,
+                      background: activeRarity === rarity ? `${meta.color}20` : "rgba(255,255,255,0.03)",
                       color: meta.color,
+                      boxShadow: activeRarity === rarity ? `0 0 12px ${meta.color}30` : "none",
                     }}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: meta.color }} />
-                    {meta.label} {owned}/{total}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: meta.color }} />
+                    <span>{t(RARITY_KEYS[rarity] ?? "rarity.common")}</span>
+                    <span className="opacity-60">{owned}/{total}</span>
+                    {pctR === 100 && <span className="text-[9px]">✓</span>}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* XP / share actions */}
-          <div className="flex flex-col gap-2 shrink-0">
-            <div className="text-right">
-              <p className="text-xs text-[#8888AA]">{t("album.xpBonus")}</p>
-              <p className="font-condensed font-black text-[#E8650A] text-lg">+{pct * 10} XP</p>
-            </div>
+          {/* XP Bonus card */}
+          <div
+            className="shrink-0 flex flex-col items-center justify-center gap-1 px-6 py-4 rounded-2xl"
+            style={{
+              background: "rgba(232,101,10,0.08)",
+              border: "1px solid rgba(232,101,10,0.2)",
+            }}
+          >
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#8888AA]">{t("album.xpBonus")}</span>
+            <span className="font-condensed font-black text-2xl text-[#E8650A]">+{pct * 10}</span>
+            <span className="text-[10px] font-bold text-[#E8650A]">XP</span>
           </div>
         </div>
       </div>
 
-      {/* ---- FILTERS ---- */}
-      <div className="space-y-3">
-        {/* Search + view toggles */}
+      {/* ====== FILTERS (glassmorphism panel) ====== */}
+      <div
+        className="rounded-2xl p-4 space-y-3"
+        style={{
+          background: "rgba(255,255,255,0.025)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        {/* Row 1: Search + view controls */}
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
@@ -231,54 +301,83 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
               placeholder={t("album.searchStickers")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-card1 border border-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-t1 placeholder:text-t3 focus:outline-none focus:border-orange"
+              className="w-full rounded-xl pl-9 pr-4 py-2.5 text-sm text-t1 placeholder:text-t3 focus:outline-none transition-colors"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+              onFocus={(e) => (e.currentTarget.style.border = "1px solid rgba(232,101,10,0.6)")}
+              onBlur={(e) => (e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)")}
             />
           </div>
 
-          {/* Owned/Missing/All */}
-          <div className="flex items-center bg-card1 border border-border rounded-xl p-1 gap-0.5 shrink-0">
+          {/* Owned/Missing/All toggle */}
+          <div
+            className="flex items-center rounded-xl p-1 gap-0.5 shrink-0"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+          >
             {(["all","owned","missing"] as const).map((v) => (
               <button key={v} onClick={() => setShowOwned(v)}
-                className={cn("px-3 py-1.5 rounded-lg text-xs font-bold transition-colors capitalize",
-                  showOwned === v ? "bg-card2 text-t1" : "text-t3 hover:text-t1")}>
+                className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+                style={{
+                  background: showOwned === v ? "rgba(232,101,10,0.2)" : "transparent",
+                  color: showOwned === v ? "#E8650A" : "rgba(255,255,255,0.4)",
+                  border: showOwned === v ? "1px solid rgba(232,101,10,0.3)" : "1px solid transparent",
+                }}
+              >
                 {v === "all" ? t("common.all") : v === "owned" ? t("common.owned") : t("common.missing")}
               </button>
             ))}
           </div>
 
           {/* Grid/List */}
-          <div className="flex items-center bg-card1 border border-border rounded-xl p-1 gap-0.5 shrink-0">
+          <div
+            className="flex items-center rounded-xl p-1 gap-0.5 shrink-0"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+          >
             <button onClick={() => setViewMode("grid")}
-              className={cn("p-2 rounded-lg transition-colors", viewMode==="grid" ? "bg-card2 text-t1" : "text-t3 hover:text-t1")}>
+              className="p-2 rounded-lg transition-all"
+              style={{
+                background: viewMode === "grid" ? "rgba(232,101,10,0.2)" : "transparent",
+                color: viewMode === "grid" ? "#E8650A" : "rgba(255,255,255,0.35)",
+              }}>
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button onClick={() => setViewMode("list")}
-              className={cn("p-2 rounded-lg transition-colors", viewMode==="list" ? "bg-card2 text-t1" : "text-t3 hover:text-t1")}>
+              className="p-2 rounded-lg transition-all"
+              style={{
+                background: viewMode === "list" ? "rgba(232,101,10,0.2)" : "transparent",
+                color: viewMode === "list" ? "#E8650A" : "rgba(255,255,255,0.35)",
+              }}>
               <LayoutList className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Group by team toggle */}
+          {/* Group by team */}
           <button
             onClick={() => setGroupByTeam((v) => !v)}
-            className={cn(
-              "shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all",
-              groupByTeam
-                ? "border-[#E8650A] text-[#E8650A] bg-[#E8650A12]"
-                : "border-border text-t3 bg-card1 hover:text-t1"
-            )}
+            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+            style={{
+              background: groupByTeam ? "rgba(232,101,10,0.15)" : "rgba(255,255,255,0.04)",
+              border: groupByTeam ? "1px solid rgba(232,101,10,0.4)" : "1px solid rgba(255,255,255,0.07)",
+              color: groupByTeam ? "#E8650A" : "rgba(255,255,255,0.4)",
+            }}
           >
             🏳️ {t("album.groupByTeam")}
           </button>
         </div>
 
-        {/* Rarity filter row */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        {/* Row 2: Rarity filter chips */}
+        <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-thin">
           <button
             onClick={() => setActiveRarity("ALL")}
-            className={cn("shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
-              activeRarity === "ALL" ? "text-white border-transparent" : "bg-card1 border-border text-t3 hover:text-t1")}
-            style={activeRarity === "ALL" ? { background: "#E8650A" } : {}}
+            className="shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all"
+            style={{
+              background: activeRarity === "ALL" ? "linear-gradient(90deg,#E8650A,#FF5E00)" : "rgba(255,255,255,0.05)",
+              color: activeRarity === "ALL" ? "#fff" : "rgba(255,255,255,0.4)",
+              border: "1px solid transparent",
+              boxShadow: activeRarity === "ALL" ? "0 0 14px rgba(232,101,10,0.4)" : "none",
+            }}
           >
             {t("album.allRarities")}
           </button>
@@ -287,33 +386,41 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
             const active = activeRarity === r;
             return (
               <button key={r} onClick={() => setActiveRarity(active ? "ALL" : r)}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all"
+                className="shrink-0 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all"
                 style={{
-                  borderColor: active ? meta.color : "rgba(255,255,255,0.08)",
-                  background: active ? meta.color : "transparent",
-                  color: active ? "#fff" : meta.color,
+                  background: active ? `${meta.color}22` : "rgba(255,255,255,0.04)",
+                  border: `1px solid ${active ? meta.color + "80" : "rgba(255,255,255,0.07)"}`,
+                  color: active ? meta.color : meta.color + "88",
+                  boxShadow: active ? `0 0 12px ${meta.color}30` : "none",
                 }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                {meta.label}
-                <span className="opacity-60 text-[10px]">{meta.tier}</span>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: meta.color }} />
+                {t(RARITY_KEYS[r] ?? "rarity.common")}
+                {active && <span className="opacity-50 text-[9px]">{meta.tier}</span>}
               </button>
             );
           })}
         </div>
 
-        {/* Team filter row */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        {/* Row 3: Team filter chips */}
+        <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
           <button onClick={() => setActiveTeam("ALL")}
-            className={cn("shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all whitespace-nowrap",
-              activeTeam === "ALL" ? "text-white border-transparent" : "bg-card1 border-border text-t2 hover:text-t1")}
-            style={activeTeam === "ALL" ? { background: "#E8650A" } : {}}>
+            className="shrink-0 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap"
+            style={{
+              background: activeTeam === "ALL" ? "linear-gradient(90deg,#E8650A,#FF5E00)" : "rgba(255,255,255,0.04)",
+              color: activeTeam === "ALL" ? "#fff" : "rgba(255,255,255,0.35)",
+              border: "1px solid transparent",
+              boxShadow: activeTeam === "ALL" ? "0 0 10px rgba(232,101,10,0.35)" : "none",
+            }}>
             {t("album.allTeams")}
           </button>
           {teams.map((team) => (
             <button key={team} onClick={() => setActiveTeam(activeTeam === team ? "ALL" : team)}
-              className={cn("shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all whitespace-nowrap",
-                activeTeam === team ? "text-white border-transparent" : "bg-card1 border-border text-t2 hover:text-t1")}
-              style={activeTeam === team ? { background: "#E8650A" } : {}}>
+              className="shrink-0 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap"
+              style={{
+                background: activeTeam === team ? "rgba(232,101,10,0.18)" : "rgba(255,255,255,0.04)",
+                border: activeTeam === team ? "1px solid rgba(232,101,10,0.45)" : "1px solid rgba(255,255,255,0.07)",
+                color: activeTeam === team ? "#E8650A" : "rgba(255,255,255,0.35)",
+              }}>
               <span>{FLAG[team] ?? "🏳️"}</span>
               <span>{team}</span>
             </button>
@@ -322,10 +429,10 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
       </div>
 
       {/* ---- Result count ---- */}
-      <p className="text-t3 text-xs px-0.5">
+      <p className="text-xs px-0.5" style={{ color: "rgba(255,255,255,0.28)" }}>
         {t("album.showingStickers", { n: filtered.length })}
-        {activeTeam !== "ALL" && <> · <span className="text-[#E8650A]">{FLAG[activeTeam]} {activeTeam}</span></>}
-        {activeRarity !== "ALL" && <> · <span style={{ color: RARITY_META[activeRarity]?.color }}>{RARITY_META[activeRarity]?.label}</span></>}
+        {activeTeam !== "ALL" && <> · <span style={{ color: "#E8650A" }}>{FLAG[activeTeam]} {activeTeam}</span></>}
+        {activeRarity !== "ALL" && <> · <span style={{ color: RARITY_META[activeRarity]?.color }}>{t(RARITY_KEYS[activeRarity] ?? "rarity.common")}</span></>}
       </p>
 
       {/* ---- GRID VIEW ---- */}
@@ -336,7 +443,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
                 onSelect={setSelectedSticker} />
             ))
           : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
               {filtered.length === 0
                 ? <EmptyState className="col-span-full" />
                 : filtered.map((s) => (
@@ -380,27 +487,56 @@ function TeamSection({ team, stickers, onSelect }: {
   stickers: AlbumSticker[];
   onSelect: (s: AlbumSticker) => void;
 }) {
+  const { t } = useLanguage();
   const [collapsed, setCollapsed] = useState(false);
   const owned = stickers.filter((s) => s.owned).length;
+
+  const pctTeam = stickers.length > 0 ? Math.round((owned / stickers.length) * 100) : 0;
+  const complete = owned === stickers.length;
 
   return (
     <div>
       <button
         onClick={() => setCollapsed((v) => !v)}
-        className="w-full flex items-center gap-3 mb-3 group"
+        className="w-full flex items-center gap-3 mb-4 group"
       >
-        <span className="text-xl">{FLAG[team] ?? "🏳️"}</span>
-        <span className="font-condensed font-black text-t1 text-lg tracking-wide">{team}</span>
-        <span className="text-t3 text-xs">{owned}/{stickers.length} collected</span>
-        <div className="flex-1 h-px bg-border ml-1" />
-        <div className="w-1 h-8 rounded-full mx-1" style={{ background: owned === stickers.length ? "#00D97E" : "#E8650A30" }} />
+        {/* Flag + team code */}
+        <span className="text-2xl">{FLAG[team] ?? "🏳️"}</span>
+        <span className="font-condensed font-black text-white text-xl tracking-wide group-hover:text-[#E8650A] transition-colors">
+          {team}
+        </span>
+        {/* Progress bar */}
+        <div className="flex-1 relative h-1.5 rounded-full overflow-hidden mx-2"
+             style={{ background: "rgba(255,255,255,0.07)" }}>
+          <div
+            className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
+            style={{
+              width: `${pctTeam}%`,
+              background: complete
+                ? "linear-gradient(90deg,#00D97E,#00FF94)"
+                : "linear-gradient(90deg,#E8650A,#FF5E00)",
+              boxShadow: complete ? "0 0 8px #00D97E80" : "0 0 6px #E8650A60",
+            }}
+          />
+        </div>
+        {/* Count badge */}
+        <span
+          className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0"
+          style={{
+            background: complete ? "rgba(0,217,126,0.12)" : "rgba(232,101,10,0.1)",
+            color: complete ? "#00D97E" : "#E8650A",
+            border: `1px solid ${complete ? "rgba(0,217,126,0.25)" : "rgba(232,101,10,0.2)"}`,
+          }}
+        >
+          {owned}/{stickers.length}
+        </span>
         {collapsed
-          ? <ChevronDown className="w-4 h-4 text-t3 group-hover:text-t1" />
-          : <ChevronUp className="w-4 h-4 text-t3 group-hover:text-t1" />}
+          ? <ChevronDown className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.3)" }} />
+          : <ChevronUp className="w-4 h-4 shrink-0" style={{ color: "rgba(255,255,255,0.3)" }} />}
       </button>
 
       {!collapsed && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 mb-6">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 mb-8">
           {stickers.map((s) => (
             <PremiumCard
               key={s.id}
@@ -616,6 +752,7 @@ function FifaCard({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => 
 // ---------------------------------------------------------------------------
 
 function ListRow({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => void }) {
+  const { t } = useLanguage();
   const meta  = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
   const color = rarityColor(sticker.rarity);
   const frame = getStickerFrameStyles(sticker.team, color, sticker.category);
@@ -668,11 +805,11 @@ function ListRow({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => v
           className="text-[10px] font-black px-2 py-0.5 rounded-full"
           style={{ background: meta.pill, color: meta.color, border: `1px solid ${meta.color}30` }}
         >
-          {meta.label}
+          {t(RARITY_KEYS[sticker.rarity] ?? "rarity.common")}
         </span>
         {sticker.owned
           ? sticker.quantity > 1 && <span className="text-[10px] text-t3 font-semibold">x{sticker.quantity}</span>
-          : <span className="text-[10px] text-t3 flex items-center gap-0.5"><Lock className="w-3 h-3" /> Missing</span>
+          : <span className="text-[10px] text-t3 flex items-center gap-0.5"><Lock className="w-3 h-3" /> {t("common.missing")}</span>
         }
       </div>
     </div>
