@@ -16,6 +16,9 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force && npx tsx prisma/seed.ts"
   },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@clerk/nextjs": "^5.3.0",
     "@prisma/client": "^5.22.0",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, LayoutGrid, LayoutList, Lock, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { useStickerImage } from "@/hooks/useStickerImage";
@@ -468,9 +468,11 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
       )}
 
       {/* ---- Detail Modal ---- */}
-      {selectedSticker && (
-        <StickerModal sticker={selectedSticker} onClose={() => setSelectedSticker(null)} />
-      )}
+      <AnimatePresence>
+        {selectedSticker && (
+          <StickerModal key={selectedSticker.id} sticker={selectedSticker} onClose={() => setSelectedSticker(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -493,17 +495,21 @@ function TeamSection({ team, stickers, onSelect }: {
 
   return (
     <div
-      className="rounded-2xl overflow-hidden mb-5"
+      className="rounded-2xl mb-5"
       style={{
         background: "linear-gradient(180deg, #0d0d1e 0%, #070710 100%)",
         border: "1px solid rgba(255,255,255,0.055)",
         boxShadow: "0 6px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)",
+        /* overflow:clip clips to border-radius WITHOUT creating a new stacking
+           context — essential to avoid flattening PremiumCardShell's preserve-3d */
+        overflow: "clip",
       }}
     >
-      {/* Team colour accent bar (flag primary) */}
+      {/* Team colour accent bar — use borderRadius on this to match parent corners */}
       <div
         style={{
           height: 3,
+          borderRadius: "12px 12px 0 0",
           background: `linear-gradient(90deg, ${teamPrimary}ee 0%, ${teamSecondary}88 50%, transparent 100%)`,
         }}
       />
