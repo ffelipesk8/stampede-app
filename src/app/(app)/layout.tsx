@@ -1,10 +1,11 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { getFanTitle, xpForLevel } from "@/lib/xp";
+import { xpForLevel } from "@/lib/xp";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { AppSceneTransition } from "@/components/shared/AppSceneTransition";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 function generateReferralCode() {
@@ -56,11 +57,35 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <QueryProvider>
       <LanguageProvider>
-        <div className="flex min-h-screen">
+        {/* ── Root shell ── */}
+        <div className="relative flex min-h-screen overflow-hidden bg-[#05060D]">
+          {/* Global ambient background */}
+          <div className="pointer-events-none absolute inset-0 -z-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(74,111,255,0.10),transparent_30%),radial-gradient(circle_at_top_right,rgba(232,0,61,0.08),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(0,217,126,0.06),transparent_30%)]" />
+            <div
+              className="absolute inset-0 opacity-[0.018]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.6) 1px,transparent 1px)",
+                backgroundSize: "48px 48px",
+              }}
+            />
+          </div>
+
+          {/* ── Sidebar (desktop) ── */}
           <AppSidebar user={user} xpProgress={xpProgress} />
-          <div className="flex-1 flex flex-col min-w-0">
-            <TopBar xp={user.xp} coins={user.coins} />
-            <main className="flex-1 p-6 overflow-auto">{children}</main>
+
+          {/* ── Main content column ── */}
+          <div className="flex min-w-0 flex-1 flex-col">
+            {/* Top bar */}
+            <TopBar xp={user.xp} coins={user.coins ?? 0} />
+
+            {/* Page content with scene transition */}
+            <main className="relative flex-1 overflow-auto">
+              <div className="mx-auto px-4 py-5 md:px-6 md:py-6 lg:px-8">
+                <AppSceneTransition>{children}</AppSceneTransition>
+              </div>
+            </main>
           </div>
         </div>
       </LanguageProvider>

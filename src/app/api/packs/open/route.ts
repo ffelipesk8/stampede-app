@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { redis, REDIS_KEYS } from "@/lib/redis";
 import { awardXp } from "@/lib/xp";
+import { normalizeStickerDisplay } from "@/lib/sticker-display";
 import { Rarity } from "@prisma/client";
 import { z } from "zod";
 
@@ -97,6 +98,8 @@ export async function POST(req: NextRequest) {
       finalStickers[0] = teamSticker.sticker; // Slot 0 = guaranteed team rare
     }
   }
+
+  finalStickers = finalStickers.map((sticker) => normalizeStickerDisplay(sticker));
 
   // -- Upsert to user_stickers ----------------------------
   await db.$transaction(

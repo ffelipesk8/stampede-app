@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
+import { normalizeStickerDisplay } from "@/lib/sticker-display";
 import { z } from "zod";
 
 // GET /api/marketplace?stickerId=&team=&drop=true
@@ -20,15 +21,21 @@ export async function GET(req: NextRequest) {
       ...(team ? { sticker: { team } } : {}),
     },
     include: {
-      sticker: { select: { id: true, name: true, team: true, rarity: true, imageUrl: true } },
+      sticker: { select: { id: true, name: true, team: true, rarity: true, imageUrl: true, category: true } },
       seller: { select: { id: true, username: true, avatarUrl: true } },
     },
     orderBy: { createdAt: "desc" },
     skip: (page - 1) * limit,
     take: limit,
   });
-
-  return NextResponse.json({ listings, page, limit });
+  return NextResponse.json({
+    listings: listings.map((listing) => ({
+      ...listing,
+      sticker: normalizeStickerDisplay(listing.sticker),
+    })),
+    page,
+    limit,
+  });
 }
 
 const createSchema = z.object({

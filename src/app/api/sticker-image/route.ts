@@ -66,6 +66,17 @@ const COACH_IMAGES: Record<string, string> = {
   "Paulo Bento":      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Paulo_Bento_2022_%28cropped%29.jpg/440px-Paulo_Bento_2022_%28cropped%29.jpg",
 };
 
+const REFEREE_IMAGES: Record<string, string> = {
+  "Szymon Marciniak": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Szymon_Marciniak_2018.jpg/440px-Szymon_Marciniak_2018.jpg",
+  "Cesar Ramos": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Cesar_Arturo_Ramos_2022.jpg/440px-Cesar_Arturo_Ramos_2022.jpg",
+  "Facundo Tello": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Facundo_Tello_2022.jpg/440px-Facundo_Tello_2022.jpg",
+  "Ismail Elfath": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Ismail_Elfath_2022.jpg/440px-Ismail_Elfath_2022.jpg",
+  "Anthony Taylor": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Anthony_Taylor_referee_2018.jpg/440px-Anthony_Taylor_referee_2018.jpg",
+  "Daniele Orsato": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Daniele_Orsato_2015.jpg/440px-Daniele_Orsato_2015.jpg",
+  "Clement Turpin": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Clement_Turpin_2018.jpg/440px-Clement_Turpin_2018.jpg",
+  "Michael Oliver": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Michael_Oliver_2014.jpg/440px-Michael_Oliver_2014.jpg",
+};
+
 // -- Team Crests ---------------------------------------------------------------
 const CREST_IMAGES: Record<string, string> = {
   "Argentina":    "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Argentina_football_team_badge.png/200px-Argentina_football_team_badge.png",
@@ -93,6 +104,7 @@ const CREST_IMAGES: Record<string, string> = {
 const NORMALIZED_STADIUM_IMAGES = normalizedLookup(STADIUM_IMAGES);
 const NORMALIZED_CITY_IMAGES = normalizedLookup(CITY_IMAGES);
 const NORMALIZED_COACH_IMAGES = normalizedLookup(COACH_IMAGES);
+const NORMALIZED_REFEREE_IMAGES = normalizedLookup(REFEREE_IMAGES);
 const NORMALIZED_CREST_IMAGES = normalizedLookup(CREST_IMAGES);
 
 // -- Wikipedia lookup for unknown entities -------------------------------------
@@ -146,38 +158,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ url });
   }
 
-  // -- Coaches / DT --
-  if (category === "coach" || category === "manager" || category === "dt") {
-    if (NORMALIZED_COACH_IMAGES[normalizedName]) {
-      return NextResponse.json({ url: proxied(NORMALIZED_COACH_IMAGES[normalizedName]) });
-    }
-    const url = await wikiLookup([
-      name,
-      `${name} football manager`,
-      `${name} soccer coach`,
-    ]);
-    return NextResponse.json({ url });
-  }
-
-  // -- Team Crests --
-  if (category === "crest" || category === "team" || category === "badge") {
-    if (NORMALIZED_CREST_IMAGES[normalizedName]) {
-      return NextResponse.json({ url: proxied(NORMALIZED_CREST_IMAGES[normalizedName]) });
-    }
-    const url = await wikiLookup([
-      `${name} national football team`,
-      `${name} football federation`,
-    ]);
-    return NextResponse.json({ url });
-  }
-
-  // -- Moments / Special stickers (Wikipedia article thumbnail) --
-  if (category === "moment" || category === "special") {
-    const url = await wikiLookup([name, `${name} FIFA World Cup`]);
-    return NextResponse.json({ url });
-  }
-
-  // -- Default fallback: try Wikipedia directly --
+  // -- Fallback: generic wiki lookup --
   const url = await wikiLookup([name]);
   return NextResponse.json({ url });
 }

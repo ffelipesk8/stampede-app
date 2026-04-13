@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import MarketplaceClient from "@/components/marketplace/MarketplaceClient";
+import { normalizeStickerDisplay } from "@/lib/sticker-display";
 
 export const metadata = {
   title: "Marketplace — STAMPEDE",
@@ -24,7 +25,7 @@ export default async function MarketplacePage() {
     where: { status: "ACTIVE", expiresAt: { gt: new Date() } },
     include: {
       sticker: {
-        select: { id: true, name: true, team: true, rarity: true, number: true },
+        select: { id: true, name: true, team: true, rarity: true, number: true, category: true },
       },
       seller: { select: { id: true, username: true, avatarUrl: true } },
     },
@@ -41,7 +42,7 @@ export default async function MarketplacePage() {
     },
     include: {
       sticker: {
-        select: { id: true, name: true, team: true, rarity: true, number: true },
+        select: { id: true, name: true, team: true, rarity: true, number: true, category: true },
       },
       seller: { select: { id: true, username: true, avatarUrl: true } },
     },
@@ -54,7 +55,7 @@ export default async function MarketplacePage() {
     where: { sellerId: user.id, status: "ACTIVE" },
     include: {
       sticker: {
-        select: { id: true, name: true, team: true, rarity: true, number: true },
+        select: { id: true, name: true, team: true, rarity: true, number: true, category: true },
       },
     },
     orderBy: { createdAt: "desc" },
@@ -75,7 +76,7 @@ export default async function MarketplacePage() {
         quantity: l.quantity,
         isDrop: l.isDrop,
         dropEndsAt: l.dropEndsAt?.toISOString() ?? null,
-        sticker: l.sticker,
+        sticker: normalizeStickerDisplay(l.sticker),
         seller: l.seller,
         createdAt: l.createdAt.toISOString(),
       }))}
@@ -85,7 +86,7 @@ export default async function MarketplacePage() {
         quantity: d.quantity,
         isDrop: d.isDrop,
         dropEndsAt: d.dropEndsAt?.toISOString() ?? null,
-        sticker: d.sticker,
+        sticker: normalizeStickerDisplay(d.sticker),
         seller: d.seller,
         createdAt: d.createdAt.toISOString(),
       }))}
@@ -93,10 +94,10 @@ export default async function MarketplacePage() {
         id: l.id,
         priceCoins: l.priceCoins,
         quantity: l.quantity,
-        sticker: l.sticker,
+        sticker: normalizeStickerDisplay(l.sticker),
         createdAt: l.createdAt.toISOString(),
       }))}
-      userCoins={user.coins}
+      userCoins={user.coins ?? 0}
       userId={user.id}
       canSell={canSell}
       daysUntilSell={daysUntilSell}

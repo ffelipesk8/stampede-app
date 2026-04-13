@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { AlbumClient } from "@/components/album/AlbumClient";
+import { normalizeStickerDisplay, REFEREE_DISPLAY_STICKERS } from "@/lib/sticker-display";
 
 export const metadata = { title: "My Album — STAMPEDE" };
 
@@ -24,11 +25,22 @@ export default async function AlbumPage() {
     orderBy: [{ team: "asc" }, { rarity: "asc" }],
   });
 
-  const ownedIds = new Set(userStickers.map((us) => us.stickerId));
-  const teams = [...new Set(allStickers.map((s) => s.team))].sort();
+  const normalizedUserStickers = userStickers.map((entry) => ({
+    ...entry,
+    sticker: normalizeStickerDisplay(entry.sticker),
+  }));
 
-  const stickersWithOwnership = allStickers.map((s) => {
-    const owned = userStickers.find((us) => us.stickerId === s.id);
+  const baseStickers = allStickers.map((sticker) => normalizeStickerDisplay(sticker));
+  const hasRefereesInDb = baseStickers.some((sticker) => sticker.category === "referee");
+  const normalizedAllStickers = hasRefereesInDb
+    ? baseStickers
+    : [...baseStickers, ...REFEREE_DISPLAY_STICKERS];
+
+  const ownedIds = new Set(normalizedUserStickers.map((us) => us.stickerId));
+  const teams = [...new Set(normalizedAllStickers.map((s) => s.team))].sort();
+
+  const stickersWithOwnership = normalizedAllStickers.map((s) => {
+    const owned = normalizedUserStickers.find((us) => us.stickerId === s.id);
     return {
       ...s,
       rarity: s.rarity as string,
@@ -40,7 +52,7 @@ export default async function AlbumPage() {
   });
 
   const totalOwned = ownedIds.size;
-  const totalStickers = allStickers.length || 800;
+  const totalStickers = normalizedAllStickers.length || 800;
 
   return (
     <AlbumClient
@@ -51,3 +63,5 @@ export default async function AlbumPage() {
     />
   );
 }
+
+   
