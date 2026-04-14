@@ -933,30 +933,29 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
   const rarityKey = RARITY_KEYS[sticker.rarity] ?? "rarity.common";
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    /* Backdrop — visible immediately, no opacity animation to avoid "black screen" */
+    <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: "rgba(4,4,10,0.92)" }}
+      style={{ background: "rgba(4,4,10,0.88)" }}
       onClick={onClose}
     >
-      {/* Rarity ambient glow behind the card */}
+      {/* Rarity ambient glow */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse 60% 50% at 50% 50%, ${color}18 0%, transparent 65%)` }}
+        style={{ background: `radial-gradient(ellipse 60% 50% at 50% 50%, ${color}20 0%, transparent 65%)` }}
       />
 
+      {/* Card panel — only position+scale animate, opacity stays at 1 so it's always visible */}
       <motion.div
-        initial={{ y: 60, opacity: 0, scale: 0.96 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 60, opacity: 0, scale: 0.96 }}
-        transition={{ type: "spring", stiffness: 260, damping: 28 }}
+        initial={{ y: 48, scale: 0.97 }}
+        animate={{ y: 0, scale: 1 }}
+        exit={{ y: 48, scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 320, damping: 30 }}
         className="w-full max-w-md rounded-t-3xl sm:rounded-2xl relative z-10"
         style={{
           background: "linear-gradient(160deg, #0e0e1c 0%, #080810 100%)",
-          border: `1px solid ${color}30`,
-          boxShadow: `0 0 60px ${color}25, 0 24px 64px rgba(0,0,0,0.8)`,
+          border: `1px solid ${color}35`,
+          boxShadow: `0 0 60px ${color}28, 0 24px 64px rgba(0,0,0,0.8)`,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -1175,6 +1174,6 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
           </button>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
