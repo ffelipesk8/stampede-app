@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, LayoutGrid, LayoutList, Lock, ChevronDown, ChevronUp, Star } from "lucide-react";
+import { AlbumStickerModal } from "@/components/album/AlbumStickerModal";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { useStickerImage } from "@/hooks/useStickerImage";
 import { getStickerFrameStyles, getTeamPalette } from "@/lib/sticker-frame";
@@ -470,7 +471,11 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
       {/* ---- Detail Modal ---- */}
       <AnimatePresence>
         {selectedSticker && (
-          <StickerModal key={selectedSticker.id} sticker={selectedSticker} onClose={() => setSelectedSticker(null)} />
+          <AlbumStickerModal
+            key={selectedSticker.id}
+            sticker={selectedSticker}
+            onClose={() => setSelectedSticker(null)}
+          />
         )}
       </AnimatePresence>
     </div>
