@@ -113,14 +113,19 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-end justify-center bg-black/80 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/82 p-3 backdrop-blur-sm sm:p-6"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-3xl overflow-hidden rounded-t-[28px] border border-white/10 bg-[#0A0B14] shadow-[0_30px_80px_rgba(0,0,0,0.65)] sm:rounded-[28px]"
+        className="relative w-full max-w-4xl overflow-auto rounded-[28px] border-2 bg-[#101426] shadow-[0_36px_120px_rgba(0,0,0,0.72)]"
         onClick={(event) => event.stopPropagation()}
+        style={{
+          maxHeight: "min(90vh, 880px)",
+          borderColor: `${color}55`,
+          boxShadow: `0 0 0 1px rgba(255,255,255,0.06), 0 0 36px ${color}18, 0 36px 120px rgba(0,0,0,0.72)`,
+        }}
       >
-        <div className="flex items-center justify-between border-b border-white/8 px-4 py-3 sm:px-6">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[linear-gradient(180deg,rgba(16,20,38,0.98),rgba(16,20,38,0.94))] px-4 py-3 backdrop-blur sm:px-6">
           <div className="min-w-0">
             <p className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color }}>
               {t(rarityKey)}
@@ -139,7 +144,7 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
         </div>
 
         <div className="grid gap-0 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <div className="border-b border-white/8 p-5 lg:border-b-0 lg:border-r">
+          <div className="border-b border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] p-5 lg:border-b-0 lg:border-r">
             <div
               className="mx-auto overflow-hidden rounded-[26px] border p-[3px]"
               style={{
@@ -149,7 +154,7 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
                 maxWidth: 260,
               }}
             >
-              <div className="overflow-hidden rounded-[22px] bg-[#0E1020]">
+              <div className="overflow-hidden rounded-[22px] bg-[#0D1222]">
                 <div className="h-2.5" style={frame.flagBar} />
 
                 <div className="flex items-start justify-between px-4 pb-2 pt-3">
@@ -208,7 +213,7 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
             </div>
           </div>
 
-          <div className="p-5 sm:p-6">
+          <div className="bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] p-5 sm:p-6">
             <div className="grid gap-3 sm:grid-cols-2">
               <InfoBox label={labels.card} value={`#${sticker.number}`} />
               <InfoBox label={labels.position} value={posLabel} />
