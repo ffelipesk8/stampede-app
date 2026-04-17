@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Lock, Star, X } from "lucide-react";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -89,6 +91,7 @@ const FLAGS: Record<string, string> = {
 
 export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: () => void }) {
   const { t, locale } = useLanguage();
+  const [mounted, setMounted] = useState(false);
   const color = rarityColor(sticker.rarity);
   const frame = getStickerFrameStyles(sticker.team, color, sticker.category);
   const rarityKey = RARITY_KEYS[sticker.rarity] ?? "rarity.common";
@@ -111,7 +114,14 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
     sticker.customImageUrl ?? sticker.imageUrl,
   );
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/82 p-3 backdrop-blur-sm sm:p-6"
       onClick={onClose}
@@ -277,7 +287,8 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
