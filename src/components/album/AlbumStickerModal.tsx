@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Lock, Star } from "lucide-react";
+import { Lock, Star, X } from "lucide-react";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useStickerImage } from "@/hooks/useStickerImage";
@@ -26,29 +25,22 @@ interface AlbumSticker {
 }
 
 const POSITION_LABEL: Record<string, string> = {
-  GK: "PORTERO",
-  CB: "DEFENSA",
-  LB: "DEFENSA",
-  RB: "DEFENSA",
-  CM: "VOLANTE",
-  CDM: "VOLANTE",
-  CAM: "VOLANTE",
-  LM: "VOLANTE",
-  RM: "VOLANTE",
-  ST: "DELANT.",
-  CF: "DELANT.",
-  LW: "DELANT.",
-  RW: "DELANT.",
-  COACH: "D.T.",
+  GK: "GK",
+  CB: "DEF",
+  LB: "DEF",
+  RB: "DEF",
+  CM: "MID",
+  CDM: "MID",
+  CAM: "MID",
+  LM: "MID",
+  RM: "MID",
+  ST: "ATT",
+  CF: "ATT",
+  LW: "ATT",
+  RW: "ATT",
+  COACH: "DT",
+  REF: "REF",
   "?": "PLY",
-};
-
-const RARITY_META: Record<string, { color: string; bg: string; tier: string }> = {
-  COMMON: { color: "#9090B8", bg: "linear-gradient(160deg,#1C1C30 0%,#12121E 100%)", tier: "Bronze" },
-  UNCOMMON: { color: "#4A6FFF", bg: "linear-gradient(160deg,#0E1828 0%,#07101A 100%)", tier: "Silver" },
-  RARE: { color: "#00D97E", bg: "linear-gradient(160deg,#082818 0%,#040E09 100%)", tier: "Gold" },
-  EPIC: { color: "#FFB800", bg: "linear-gradient(160deg,#1A1000 0%,#0A0800 100%)", tier: "Epic" },
-  LEGENDARY: { color: "#E8003D", bg: "linear-gradient(160deg,#1E0008 0%,#0A0004 100%)", tier: "Elite" },
 };
 
 const RARITY_KEYS: Record<string, "rarity.common" | "rarity.uncommon" | "rarity.rare" | "rarity.epic" | "rarity.legendary"> = {
@@ -60,26 +52,58 @@ const RARITY_KEYS: Record<string, "rarity.common" | "rarity.uncommon" | "rarity.
 };
 
 const FLAGS: Record<string, string> = {
-  ARG: "🇦🇷", AUS: "🇦🇺", BEL: "🇧🇪", BRA: "🇧🇷", CAN: "🇨🇦", CHE: "🇨🇭", CMR: "🇨🇲",
-  COL: "🇨🇴", CRI: "🇨🇷", DEU: "🇩🇪", DNK: "🇩🇰", ECU: "🇪🇨", EGY: "🇪🇬", ENG: "🏴",
-  ESP: "🇪🇸", FRA: "🇫🇷", GHA: "🇬🇭", HRV: "🇭🇷", IRN: "🇮🇷", ITA: "🇮🇹", JPN: "🇯🇵",
-  KOR: "🇰🇷", MAR: "🇲🇦", MEX: "🇲🇽", NGA: "🇳🇬", NLD: "🇳🇱", PAN: "🇵🇦", POR: "🇵🇹",
-  QAT: "🇶🇦", SAU: "🇸🇦", SEN: "🇸🇳", USA: "🇺🇸", URY: "🇺🇾",
+  ARG: "ARG",
+  AUS: "AUS",
+  BEL: "BEL",
+  BRA: "BRA",
+  CAN: "CAN",
+  CHE: "CHE",
+  CMR: "CMR",
+  COL: "COL",
+  CRI: "CRI",
+  DEU: "DEU",
+  DNK: "DNK",
+  ECU: "ECU",
+  EGY: "EGY",
+  ENG: "ENG",
+  ESP: "ESP",
+  FRA: "FRA",
+  GHA: "GHA",
+  HRV: "HRV",
+  IRN: "IRN",
+  ITA: "ITA",
+  JPN: "JPN",
+  KOR: "KOR",
+  MAR: "MAR",
+  MEX: "MEX",
+  NGA: "NGA",
+  NLD: "NLD",
+  PAN: "PAN",
+  POR: "POR",
+  QAT: "QAT",
+  SAU: "SAU",
+  SEN: "SEN",
+  USA: "USA",
+  URY: "URY",
 };
 
 export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: () => void }) {
   const { t, locale } = useLanguage();
-  const meta = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
   const color = rarityColor(sticker.rarity);
   const frame = getStickerFrameStyles(sticker.team, color, sticker.category);
   const rarityKey = RARITY_KEYS[sticker.rarity] ?? "rarity.common";
   const posLabel = POSITION_LABEL[sticker.position] ?? sticker.position;
-  const flagEmoji = sticker.teamFlag || FLAGS[sticker.team] || "⚽";
-  const initials = sticker.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const badge = sticker.teamFlag || FLAGS[sticker.team] || sticker.team || "WC";
+  const initials = (sticker.name || "WC")
+    .split(" ")
+    .map((word) => word[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const labels = locale === "es"
-    ? { position: "Posicion", card: "Carta", status: "Estado", tier: "Tier", custom: "Custom" }
-    : { position: "Position", card: "Card", status: "Status", tier: "Tier", custom: "Custom" };
+    ? { status: "Estado", card: "Carta", position: "Posicion", collection: "Coleccion", quantity: "Copias" }
+    : { status: "Status", card: "Card", position: "Position", collection: "Collection", quantity: "Copies" };
 
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.playerName ?? sticker.name,
@@ -89,210 +113,174 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
-      style={{ background: "rgba(4,4,10,0.88)" }}
+      className="fixed inset-0 z-[120] flex items-end justify-center bg-black/80 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
     >
       <div
-        className="pointer-events-none absolute inset-0"
-        style={{ background: `radial-gradient(ellipse 60% 50% at 50% 50%, ${color}18 0%, transparent 65%)` }}
-      />
-
-      <motion.div
-        initial={{ y: 40, scale: 0.98 }}
-        animate={{ y: 0, scale: 1 }}
-        exit={{ y: 40, scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 320, damping: 30 }}
-        className="relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-2xl"
-        style={{
-          background: "linear-gradient(160deg, #0e0e1c 0%, #080810 100%)",
-          border: `1px solid ${color}35`,
-          boxShadow: `0 0 50px ${color}24, 0 24px 64px rgba(0,0,0,0.8)`,
-        }}
-        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-3xl overflow-hidden rounded-t-[28px] border border-white/10 bg-[#0A0B14] shadow-[0_30px_80px_rgba(0,0,0,0.65)] sm:rounded-[28px]"
+        onClick={(event) => event.stopPropagation()}
       >
-        <div className="mx-auto mb-0 mt-3 h-1 w-10 rounded-full bg-white/10 sm:hidden" />
+        <div className="flex items-center justify-between border-b border-white/8 px-4 py-3 sm:px-6">
+          <div className="min-w-0">
+            <p className="text-[11px] font-black uppercase tracking-[0.28em]" style={{ color }}>
+              {t(rarityKey)}
+            </p>
+            <h2 className="truncate font-condensed text-2xl font-black text-white sm:text-3xl">
+              {sticker.name}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 transition hover:bg-white/10 hover:text-white"
+            aria-label={t("common.close")}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
-        <div className="relative overflow-hidden rounded-t-2xl">
-          <div
-            className="absolute inset-0"
-            style={{
-              background: [
-                `radial-gradient(ellipse 100% 80% at 50% 0%, ${color}14 0%, transparent 60%)`,
-                "radial-gradient(ellipse 60% 40% at 20% 100%, rgba(255,255,255,0.05) 0%, transparent 50%)",
-                "linear-gradient(160deg, #0d0d1e 0%, #060609 100%)",
-              ].join(", "),
-            }}
-          />
-
-          <div className="relative z-10 flex flex-col gap-5 px-5 pb-5 pt-6 sm:flex-row sm:items-start sm:px-6 sm:pb-6 sm:pt-7">
+        <div className="grid gap-0 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <div className="border-b border-white/8 p-5 lg:border-b-0 lg:border-r">
             <div
-              className="mx-auto shrink-0 overflow-hidden rounded-xl sm:mx-0"
+              className="mx-auto overflow-hidden rounded-[26px] border p-[3px]"
               style={{
-                width: 130,
-                height: 182,
-                background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-                padding: "2.5px",
-                boxShadow: `0 0 20px ${color}35, 0 8px 32px rgba(0,0,0,0.7)`,
+                borderColor: `${color}55`,
+                background: frame.shell.background,
+                boxShadow: `0 0 0 1px ${color}22, 0 18px 50px rgba(0,0,0,0.45)`,
+                maxWidth: 260,
               }}
             >
-              <div
-                className="flex h-full w-full flex-col overflow-hidden rounded-[9px]"
-                style={{
-                  background: [
-                    `radial-gradient(ellipse 120% 60% at 50% 0%, ${color}22 0%, transparent 55%)`,
-                    "radial-gradient(ellipse 80% 50% at 80% 100%, rgba(255,255,255,0.08) 0%, transparent 50%)",
-                    meta.bg,
-                  ].join(", "),
-                }}
-              >
-                <div className="shrink-0" style={frame.flagBar} />
+              <div className="overflow-hidden rounded-[22px] bg-[#0E1020]">
+                <div className="h-2.5" style={frame.flagBar} />
 
-                <div className="flex shrink-0 items-start justify-between px-2 pb-0 pt-1.5">
+                <div className="flex items-start justify-between px-4 pb-2 pt-3">
                   <div>
-                    <span className="block rounded px-1 py-0.5 font-black leading-none" style={{ fontSize: 8, background: `${color}30`, color }}>
-                      WC26
-                    </span>
-                    <span className="mt-0.5 block font-black text-white/60" style={{ fontSize: 8 }}>{sticker.team}</span>
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/45">WC26</p>
+                    <p className="mt-1 text-xs font-bold text-white/65">{badge}</p>
                   </div>
                   <div className="text-right">
-                    <p className="mb-0.5 font-black leading-none" style={{ fontSize: 7, color: `${color}CC` }}>{posLabel}</p>
-                    <p className="font-condensed text-[26px] font-black leading-none text-white">{sticker.number}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em]" style={{ color }}>
+                      {posLabel}
+                    </p>
+                    <p className="font-condensed text-4xl font-black leading-none text-white">
+                      {sticker.number}
+                    </p>
                   </div>
                 </div>
 
-                <div className="relative flex-1 overflow-hidden" style={frame.imagePanel}>
-                  {sticker.owned ? (
-                    showPhoto ? (
-                      <img
-                        src={photoUrl ?? ""}
-                        alt={sticker.name}
-                        className="h-full w-full object-cover object-top"
-                        onLoad={() => setLoaded(true)}
-                        onError={() => setError(true)}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                        <div style={{ fontSize: 28 }}>{flagEmoji}</div>
-                        <div
-                          className="flex items-center justify-center rounded-full font-black"
-                          style={{ width: 36, height: 36, fontSize: 13, background: "rgba(0,0,0,0.5)", color: "#fff", border: `2px solid ${color}60` }}
-                        >
-                          {initials}
-                        </div>
-                      </div>
-                    )
+                <div className="relative mx-3 mb-3 h-[250px] overflow-hidden rounded-[18px]" style={frame.imagePanel}>
+                  {sticker.owned && showPhoto ? (
+                    <img
+                      src={photoUrl ?? ""}
+                      alt={sticker.name}
+                      className="h-full w-full object-cover object-top"
+                      onLoad={() => setLoaded(true)}
+                      onError={() => setError(true)}
+                    />
                   ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                      <div style={{ fontSize: 32, opacity: 0.18 }}>{flagEmoji}</div>
-                      <Lock className="h-7 w-7" style={{ color: `${color}55` }} />
+                    <div className="flex h-full flex-col items-center justify-center gap-3 bg-black/15 px-4 text-center">
+                      <div
+                        className="flex h-16 w-16 items-center justify-center rounded-full border text-lg font-black text-white"
+                        style={{ borderColor: `${color}66`, background: "rgba(0,0,0,0.35)" }}
+                      >
+                        {sticker.owned ? initials : <Lock className="h-6 w-6" />}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-white">{badge}</p>
+                        <p className="mt-1 text-xs text-white/55">
+                          {sticker.owned ? (sticker.playerName ?? sticker.name) : t("album.notOwned")}
+                        </p>
+                      </div>
                     </div>
                   )}
 
-                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)" }} />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent" />
                 </div>
 
-                <div className="shrink-0 border-t px-2 pb-2 pt-1" style={{ borderTopColor: `${color}20` }}>
-                  <div className="flex items-end justify-between gap-0.5">
-                    <p className="flex-1 truncate font-condensed text-[10px] font-black uppercase leading-tight text-white">
-                      {sticker.name}
-                    </p>
-                    <span style={{ fontSize: 12 }}>{flagEmoji}</span>
-                  </div>
-                  <p className="mt-0.5 text-[8px] font-black leading-none" style={{ color }}>
-                    {meta.tier}
+                <div className="border-t border-white/8 px-4 py-3">
+                  <p className="truncate font-condensed text-xl font-black uppercase text-white">
+                    {sticker.name}
+                  </p>
+                  <p className="mt-1 text-sm font-bold" style={{ color }}>
+                    {sticker.team}
                   </p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="min-w-0 flex-1 pt-1">
-              <div className="mb-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1" style={{ background: `${color}18`, border: `1px solid ${color}40` }}>
-                <span className="h-2 w-2 rounded-full" style={{ background: color }} />
-                <span className="text-[10px] font-black uppercase tracking-widest" style={{ color }}>{t(rarityKey)}</span>
-              </div>
+          <div className="p-5 sm:p-6">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <InfoBox label={labels.card} value={`#${sticker.number}`} />
+              <InfoBox label={labels.position} value={posLabel} />
+              <InfoBox label={labels.status} value={sticker.owned ? t("album.inCollection") : t("album.notOwned")} />
+              <InfoBox label={labels.quantity} value={sticker.owned ? `x${sticker.quantity}` : "-"} />
+            </div>
 
-              <h2 className="font-condensed text-2xl font-black leading-tight text-white">{sticker.name}</h2>
-              <div className="mb-4 mt-1 flex items-center gap-2">
-                <span style={{ fontSize: 16 }}>{flagEmoji}</span>
-                <span className="text-sm font-bold text-white/45">{sticker.team}</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: labels.position, value: posLabel },
-                  { label: labels.card, value: `#${sticker.number}` },
-                  { label: labels.status, value: sticker.owned ? `x${sticker.quantity}` : "-" },
-                  { label: labels.tier, value: meta.tier },
-                ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="rounded-xl border px-3 py-2"
-                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.06)" }}
-                  >
-                    <p className="mb-0.5 text-[10px] text-white/35">{label}</p>
-                    <p className="text-xs font-black text-white">{value}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-3">
-                {sticker.owned ? (
-                  <div
-                    className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black"
-                    style={{ background: "rgba(0,217,126,0.1)", border: "1px solid rgba(0,217,126,0.25)", color: "#00D97E" }}
-                  >
-                    ✓ {t("album.inCollection")}
-                  </div>
-                ) : (
-                  <div
-                    className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.35)" }}
-                  >
-                    <Lock className="h-3 w-3" /> {t("album.notOwned")}
-                  </div>
-                )}
-              </div>
+            <div className="mt-4 rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
+              <p className="text-[11px] font-black uppercase tracking-[0.26em] text-white/40">
+                {labels.collection}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/72">
+                {sticker.owned
+                  ? locale === "es"
+                    ? "La carta ya esta en tu album y puedes compartirla o usar duplicados para intercambio."
+                    : "This sticker is already in your album and duplicate copies can be used for trading."
+                  : locale === "es"
+                    ? "Aun no tienes esta carta. Sigue abriendo sobres y revisa el marketplace para completarla."
+                    : "You do not own this sticker yet. Keep opening packs or check the marketplace to complete it."}
+              </p>
 
               {sticker.isCustom && (
-                <div className="mt-2 flex items-center gap-1.5 text-xs font-bold" style={{ color: "#E8650A" }}>
-                  <Star className="h-3 w-3" /> {labels.custom}
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-orange/30 bg-orange/10 px-3 py-1.5 text-xs font-black text-orange">
+                  <Star className="h-3.5 w-3.5" />
+                  CUSTOM
                 </div>
               )}
             </div>
+
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              {sticker.owned && (
+                <ShareButton
+                  data={{
+                    title: `${sticker.name} - ${t(rarityKey)}`,
+                    text: `Just collected ${sticker.name} on STAMPEDE`,
+                    hashtags: ["WorldCup2026", "Stampede", "FanAlbum"],
+                  }}
+                  className="flex-1 justify-center rounded-2xl border-white/10 bg-white/[0.04] py-3 text-sm font-black text-white hover:border-orange hover:text-orange"
+                >
+                  {t("album.share")}
+                </ShareButton>
+              )}
+
+              {sticker.owned && sticker.quantity > 1 && (
+                <button
+                  className="flex-1 rounded-2xl border border-[#00D97E]/25 bg-[#00D97E]/10 py-3 text-sm font-black text-[#00D97E]"
+                  type="button"
+                >
+                  {t("album.trade")}
+                </button>
+              )}
+
+              <button
+                onClick={onClose}
+                className="flex-1 rounded-2xl border border-white/10 bg-white/[0.04] py-3 text-sm font-black text-white/72 transition hover:bg-white/[0.08] hover:text-white"
+                type="button"
+              >
+                {t("common.close")}
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
 
-        <div className="flex gap-2 p-4 pt-3">
-          {sticker.owned && (
-            <ShareButton
-              data={{
-                title: `${sticker.name} - ${t(rarityKey)}`,
-                text: `Just collected a ${t(rarityKey)} ${sticker.name} on FANPACK 26!`,
-                hashtags: ["WorldCup2026", "FANPACK26", "FanAlbum"],
-              }}
-              className="flex-1 justify-center rounded-xl py-2.5 text-sm font-bold"
-            >
-              {t("album.share")}
-            </ShareButton>
-          )}
-          {sticker.owned && sticker.quantity > 1 && (
-            <button
-              className="flex-1 rounded-xl py-2.5 text-sm font-bold transition-all"
-              style={{ background: "rgba(0,217,126,0.08)", border: "1px solid rgba(0,217,126,0.2)", color: "#00D97E" }}
-            >
-              {t("album.trade")}
-            </button>
-          )}
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-xl py-2.5 text-sm font-bold transition-all"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}
-          >
-            {t("common.close")}
-          </button>
-        </div>
-      </motion.div>
+function InfoBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[18px] border border-white/8 bg-white/[0.035] px-4 py-3">
+      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-white/35">{label}</p>
+      <p className="mt-2 text-sm font-black text-white">{value}</p>
     </div>
   );
 }
