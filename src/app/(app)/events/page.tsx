@@ -2,7 +2,7 @@ import { EventsClient } from "@/components/events/EventsClient";
 import { getAuthUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-export const metadata = { title: "Fan Events Hub - STAMPEDE" };
+export const metadata = { title: "Fan Events Hub - KARTAZO" };
 
 export default async function EventsPage() {
   const authUser = await getAuthUser();

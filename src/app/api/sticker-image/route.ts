@@ -115,7 +115,7 @@ async function wikiLookup(searchTerms: string[]): Promise<string | null> {
       const res  = await fetch(
         `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(slug)}`,
       {
-          headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+          headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
           signal: AbortSignal.timeout(2500),
       }
       );

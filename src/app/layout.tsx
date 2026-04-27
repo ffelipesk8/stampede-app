@@ -4,9 +4,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://stampede-app.vercel.app"
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://kartazo.com"
   ),
-  title: "STAMPEDE — World Cup 2026 Fan Platform",
+  title: "KARTAZO — World Cup 2026 Fan Platform",
   description:
     "The official fan platform for FIFA World Cup 2026. Digital sticker album, fan events, AI coach, and more.",
   keywords: ["World Cup 2026", "FIFA", "sticker album", "football", "fan platform"],
@@ -17,17 +17,17 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "STAMPEDE",
+    title: "KARTAZO",
     description: "Don't just watch the World Cup. Play it.",
-    url: "https://stampede-app.vercel.app",
-    siteName: "STAMPEDE",
+    url: "https://kartazo.com",
+    siteName: "KARTAZO",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "STAMPEDE",
+    title: "KARTAZO",
     description: "Don't just watch the World Cup. Play it.",
     images: ["/og-image.jpg"],
   },

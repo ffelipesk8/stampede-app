@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { PacksClient } from "@/components/packs/PacksClient";
 
-export const metadata = { title: "Packs — STAMPEDE" };
+export const metadata = { title: "Packs — KARTAZO" };
 
 export default async function PacksPage() {
   const { userId: clerkId } = auth();

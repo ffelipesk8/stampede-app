@@ -43,7 +43,7 @@ export function OnboardingFrame({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
           <div className="min-w-0">
             <span className="bg-gradient-to-r from-[#E8003D] via-[#FF5E00] to-[#FFB800] bg-clip-text text-2xl font-black tracking-tight text-transparent">
-              STAMPEDE
+              KARTAZO
             </span>
             <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-white/30">
               {copy.label}

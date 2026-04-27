@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import RankingClient from "@/components/ranking/RankingClient";
 
 export const metadata = {
-  title: "Global Ranking — STAMPEDE",
+  title: "Global Ranking — KARTAZO",
   description: "See where you stand among World Cup fans worldwide",
 };
 

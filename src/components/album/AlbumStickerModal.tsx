@@ -258,8 +258,8 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
                 <ShareButton
                   data={{
                     title: `${sticker.name} - ${t(rarityKey)}`,
-                    text: `Just collected ${sticker.name} on STAMPEDE`,
-                    hashtags: ["WorldCup2026", "Stampede", "FanAlbum"],
+                    text: `Just collected ${sticker.name} on KARTAZO`,
+                    hashtags: ["WorldCup2026", "Kartazo", "FanAlbum"],
                   }}
                   className="flex-1 justify-center rounded-2xl border-white/10 bg-white/[0.04] py-3 text-sm font-black text-white hover:border-orange hover:text-orange"
                 >

@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // STAMPEDE brand palette
+        // KARTAZO brand palette
         bg:     "#07070F",
         card1:  "#141425",
         card2:  "#1C1C32",

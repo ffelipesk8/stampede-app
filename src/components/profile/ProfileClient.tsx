@@ -73,7 +73,7 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
 
   const handleCopyReferral = async () => {
     await navigator.clipboard.writeText(
-      `https://stampede.app/join?ref=${user.referralCode}`
+      `https://kartazo.app/join?ref=${user.referralCode}`
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -294,7 +294,7 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
         </p>
         <div className="flex items-center gap-2">
           <code className="flex-1 text-[#FFB800] text-sm bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 font-mono truncate">
-            stampede.app/join?ref={user.referralCode}
+            kartazo.app/join?ref={user.referralCode}
           </code>
           <button
             onClick={handleCopyReferral}

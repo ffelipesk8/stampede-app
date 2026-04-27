@@ -5,7 +5,7 @@ import { getFanTitle, xpForLevel } from "@/lib/xp";
 import ProfileClient from "@/components/profile/ProfileClient";
 
 export const metadata = {
-  title: "My Profile — STAMPEDE",
+  title: "My Profile — KARTAZO",
 };
 
 export default async function ProfilePage() {

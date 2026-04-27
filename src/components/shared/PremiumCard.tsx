@@ -136,7 +136,7 @@ function CardBack({ size, tapLabel }: { size: "sm" | "md" | "lg"; tapLabel: stri
       <div className="relative z-10 flex flex-col items-center gap-1">
         <div style={{ fontSize: large ? 36 : 24, filter: "drop-shadow(0 0 8px rgba(255,184,0,0.55))" }}>⚽</div>
         <p className="font-condensed font-black tracking-[0.2em] text-[#FFB800]" style={{ fontSize: large ? 11 : 8 }}>
-          STAMPEDE
+          KARTAZO
         </p>
         <p className="font-bold tracking-[0.14em] text-[#555880]" style={{ fontSize: large ? 8 : 6 }}>
           WORLD CUP 2026

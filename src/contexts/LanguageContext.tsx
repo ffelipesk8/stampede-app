@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { Locale, TranslationKey, t as translate, LOCALES } from "@/lib/i18n/translations";
 
-const STORAGE_KEY = "stampede_locale";
+const STORAGE_KEY = "kartazo_locale";
 
 // -- Detect browser language on first visit ------------------------------------
 function detectBrowserLocale(): Locale {

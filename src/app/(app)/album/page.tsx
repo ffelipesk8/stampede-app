@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { AlbumClient } from "@/components/album/AlbumClient";
 import { normalizeStickerDisplay, REFEREE_DISPLAY_STICKERS } from "@/lib/sticker-display";
 
-export const metadata = { title: "My Album — STAMPEDE" };
+export const metadata = { title: "My Album — KARTAZO" };
 
 export default async function AlbumPage() {
   const { userId: clerkId } = auth();

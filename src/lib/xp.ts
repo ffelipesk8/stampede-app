@@ -77,7 +77,7 @@ export const FAN_TITLES: Record<number, string> = {
   60: "Legend of the Terraces",
   75: "World Cup Icon",
   90: "GOAT Fan",
-  100: "STAMPEDE Legend",
+  100: "KARTAZO Legend",
 };
 
 export function getFanTitle(level: number): string {

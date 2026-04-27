@@ -108,7 +108,7 @@ export default function SignedOutPage() {
         {/* Divider */}
         <div className="mt-10 pt-6 border-t border-[#1a1a2e]">
           <p className="text-[10px] text-[#444466] uppercase tracking-widest font-bold">
-            FANPACK 26 -- World Cup 2026 Fan Album
+            KARTAZO -- World Cup 2026 Fan Album
           </p>
         </div>
       </div>

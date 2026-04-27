@@ -20,13 +20,13 @@ const COPY = {
     notificationsBody: "Get notified about new drops, trades and match alerts.",
     enable: "Enable",
     enabled: "Notifications enabled!",
-    enter: "Enter STAMPEDE",
+    enter: "Enter KARTAZO",
     skip: "Skip for now",
     loading: "Loading...",
-    shareTitle: "Join me on STAMPEDE",
-    shareText: "I'm collecting World Cup 2026 stickers on STAMPEDE. Join me and we both get a free pack.",
+    shareTitle: "Join me on KARTAZO",
+    shareText: "I'm collecting World Cup 2026 stickers on KARTAZO. Join me and we both get a free pack.",
     whatsappText: (link: string) =>
-      `Join me on STAMPEDE - the World Cup 2026 fan platform.\n\n${link}`,
+      `Join me on KARTAZO - the World Cup 2026 fan platform.\n\n${link}`,
     perks: [
       {
         icon: "🎁",
@@ -59,13 +59,13 @@ const COPY = {
     notificationsBody: "Recibe avisos de nuevos drops, trades y alertas de partidos.",
     enable: "Activar",
     enabled: "Notificaciones activadas!",
-    enter: "Entrar a STAMPEDE",
+    enter: "Entrar a KARTAZO",
     skip: "Ahora no",
     loading: "Cargando...",
-    shareTitle: "Unete a STAMPEDE",
-    shareText: "Estoy coleccionando estampas del Mundial 2026 en STAMPEDE. Unete y los dos recibimos un sobre gratis.",
+    shareTitle: "Unete a KARTAZO",
+    shareText: "Estoy coleccionando estampas del Mundial 2026 en KARTAZO. Unete y los dos recibimos un sobre gratis.",
     whatsappText: (link: string) =>
-      `Unete a STAMPEDE, la plataforma fan del Mundial 2026.\n\n${link}`,
+      `Unete a KARTAZO, la plataforma fan del Mundial 2026.\n\n${link}`,
     perks: [
       {
         icon: "🎁",
@@ -114,8 +114,8 @@ export default function InvitePage() {
   }, []);
 
   const referralLink = referralCode
-    ? `https://stampede.app/join?ref=${referralCode}`
-    : "https://stampede.app/join";
+    ? `https://kartazo.app/join?ref=${referralCode}`
+    : "https://kartazo.app/join";
 
   const handleCopy = async () => {
     try {
@@ -209,7 +209,7 @@ export default function InvitePage() {
           <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/40">{copy.linkLabel}</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 truncate rounded-lg bg-white/5 px-3 py-2 font-mono text-sm text-[#FFB800]">
-              {referralCode ? `stampede.app/join?ref=${referralCode}` : copy.loadingLink}
+              {referralCode ? `kartazo.app/join?ref=${referralCode}` : copy.loadingLink}
             </code>
             <button
               onClick={handleCopy}

@@ -314,7 +314,7 @@ export default function WelcomePackPage() {
                         <Sparkles className="h-12 w-12 text-white" />
                       </div>
                       <div className="text-center">
-                        <p className="font-condensed text-2xl font-black uppercase text-white">STAMPEDE</p>
+                        <p className="font-condensed text-2xl font-black uppercase text-white">KARTAZO</p>
                         <p className="mt-2 text-[11px] font-black uppercase tracking-[0.28em] text-[#FFB800]">
                           {copy.starter}
                         </p>

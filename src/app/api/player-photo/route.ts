@@ -25,7 +25,7 @@ async function validateImage(url: string | null | undefined): Promise<string | n
   try {
     const res = await fetch(url, {
       method: "HEAD",
-      headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+      headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
       signal: AbortSignal.timeout(2500),
     });
 
@@ -36,7 +36,7 @@ async function validateImage(url: string | null | undefined): Promise<string | n
 
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+      headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
       signal: AbortSignal.timeout(2500),
     });
 
@@ -232,7 +232,7 @@ async function fromWikiRest(name: string): Promise<string | null> {
       const res = await fetch(
         `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(slug)}`,
         {
-          headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+          headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
           signal: AbortSignal.timeout(2500),
         }
       );
@@ -252,7 +252,7 @@ async function fromWikiPageImages(name: string): Promise<string | null> {
       const res = await fetch(
         `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(slug)}&prop=pageimages&format=json&pithumbsize=500&origin=*`,
         {
-          headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+          headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
           signal: AbortSignal.timeout(2500),
         }
       );
@@ -273,7 +273,7 @@ async function fromWikidata(name: string): Promise<string | null> {
     const searchRes = await fetch(
       `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&language=en&type=item&format=json&limit=5&origin=*`,
       {
-        headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+        headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
         signal: AbortSignal.timeout(3000),
       }
     );
@@ -290,7 +290,7 @@ async function fromWikidata(name: string): Promise<string | null> {
     const entityRes = await fetch(
       `https://www.wikidata.org/wiki/Special:EntityData/${item.id}.json`,
       {
-        headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+        headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
         signal: AbortSignal.timeout(3000),
       }
     );
@@ -316,7 +316,7 @@ async function fromCommonsSearch(name: string): Promise<string | null> {
     const res   = await fetch(
       `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrnamespace=6&prop=imageinfo&iiprop=url&format=json&gsrlimit=5&origin=*`,
       {
-        headers: { "User-Agent": "STAMPEDE-WorldCup/1.0 (contact@stampede.app)" },
+        headers: { "User-Agent": "KARTAZO-WorldCup/1.0 (contact@kartazo.com)" },
         signal: AbortSignal.timeout(3000),
       }
     );

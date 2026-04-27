@@ -158,7 +158,7 @@ function FifaCard({
             {/* Center logo */}
             <div className="text-3xl relative z-10" style={{ filter: "drop-shadow(0 0 8px rgba(255,184,0,0.6))" }}>⚽</div>
             <div className="relative z-10 text-center">
-              <p className="text-[9px] text-[#FFB800] font-black tracking-[0.2em]">STAMPEDE</p>
+              <p className="text-[9px] text-[#FFB800] font-black tracking-[0.2em]">KARTAZO</p>
               <p className="text-[7px] text-[#666888] font-bold tracking-[0.15em]">WORLD CUP 2026</p>
             </div>
             {/* Shimmer */}
@@ -823,9 +823,9 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
                     return (
                       <ShareButton
                         data={{
-                          title: `Pack Opened on STAMPEDE! ${openResult.stickers.length} stickers`,
-                          text: `Just opened a ${openingPack?.name ?? "pack"} on STAMPEDE and pulled a ${rarityLabel(best.rarity)} ${best.name}! ⚽🔥`,
-                          hashtags: ["WorldCup2026", "STAMPEDE", "PackOpening"],
+                          title: `Pack Opened on KARTAZO! ${openResult.stickers.length} stickers`,
+                          text: `Just opened a ${openingPack?.name ?? "pack"} on KARTAZO and pulled a ${rarityLabel(best.rarity)} ${best.name}! ⚽🔥`,
+                          hashtags: ["WorldCup2026", "KARTAZO", "PackOpening"],
                         }}
                         className="px-6 py-3 rounded-xl font-display font-bold text-sm bg-[#1a1a2e] border-[#3a3a5c] text-white hover:border-orange hover:text-orange"
                       >

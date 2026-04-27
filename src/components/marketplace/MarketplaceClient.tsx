@@ -400,7 +400,7 @@ export default function MarketplaceClient({
               <div className="text-5xl mb-4">🔥</div>
               <h3 className="text-white font-black text-xl mb-2">No drops active</h3>
               <p className="text-white/40 text-sm max-w-xs">
-                Limited drops appear here. Follow STAMPEDE on socials to get notified!
+                Limited drops appear here. Follow KARTAZO on socials to get notified!
               </p>
             </div>
           ) : (

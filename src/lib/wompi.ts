@@ -1,4 +1,4 @@
-// STAMPEDE -- Wompi Payment Integration
+// KARTAZO -- Wompi Payment Integration
 // Colombian payment gateway for World Cup 2026
 
 import crypto from "crypto";

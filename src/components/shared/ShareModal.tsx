@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 // -- Types ---------------------------------------------------------------------
 export interface ShareData {
   title: string;       // e.g. "Lionel Messi — LEGENDARY"
-  text: string;        // e.g. "I just pulled a LEGENDARY Messi sticker on STAMPEDE! 🔥"
+  text: string;        // e.g. "I just pulled a LEGENDARY Messi sticker on KARTAZO! 🔥"
   url?: string;        // defaults to current page
   imageUrl?: string;   // optional card image for platforms that support og
-  hashtags?: string[]; // e.g. ["WorldCup2026", "STAMPEDE"]
+  hashtags?: string[]; // e.g. ["WorldCup2026", "KARTAZO"]
 }
 
 interface ShareModalProps {
@@ -219,7 +219,7 @@ export function ShareModal({ isOpen, onClose, data }: ShareModalProps) {
   const [instaCopied, setInstaCopied] = useState(false);
   const [tiktokCopied, setTiktokCopied] = useState(false);
 
-  const pageUrl = (data.url ?? (typeof window !== "undefined" ? window.location.href : "https://stampede.app"));
+  const pageUrl = (data.url ?? (typeof window !== "undefined" ? window.location.href : "https://kartazo.app"));
   const shareText = data.text;
 
   // Web Share API (mobile native share sheet)

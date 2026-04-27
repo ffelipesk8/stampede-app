@@ -227,7 +227,7 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
                 className="text-[10px] font-black uppercase tracking-[0.25em] px-2.5 py-0.5 rounded-full"
                 style={{ background: "rgba(232,101,10,0.15)", color: "#E8650A", border: "1px solid rgba(232,101,10,0.3)" }}
               >
-                FANPACK 26
+                KARTAZO
               </span>
             </div>
             <h1 className="font-condensed text-5xl font-black text-white tracking-tight leading-none drop-shadow-lg">
@@ -1146,8 +1146,8 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
             <ShareButton
               data={{
                 title: `${sticker.name} — ${t(rarityKey)}`,
-                text: `Just collected a ${t(rarityKey)} ${sticker.name} on FANPACK 26! ⚽`,
-                hashtags: ["WorldCup2026", "FANPACK26", "FanAlbum"],
+                text: `Just collected a ${t(rarityKey)} ${sticker.name} on KARTAZO! ⚽`,
+                hashtags: ["WorldCup2026", "KARTAZO", "FanAlbum"],
               }}
               className="flex-1 justify-center py-2.5 rounded-xl text-sm font-bold"
             >

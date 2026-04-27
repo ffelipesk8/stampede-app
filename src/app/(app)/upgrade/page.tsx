@@ -80,12 +80,12 @@ export default function UpgradePage() {
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
         <div className="inline-flex items-center gap-2 bg-[#FFB800]/10 border border-[#FFB800]/20 rounded-full px-4 py-2 mb-4">
-          <span className="text-[#FFB800] text-sm font-bold">STAMPEDE PRO</span>
+          <span className="text-[#FFB800] text-sm font-bold">KARTAZO PRO</span>
         </div>
         <h1 className="text-4xl font-black text-white mb-3">
           Unlock the full{" "}
           <span className="bg-gradient-to-r from-[#E8003D] via-[#FF5E00] to-[#FFB800] bg-clip-text text-transparent">
-            STAMPEDE
+            KARTAZO
           </span>{" "}
           experience
         </h1>

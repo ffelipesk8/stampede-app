@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import CoachClient from "@/components/coach/CoachClient";
 
 export const metadata = {
-  title: "AI Fan Coach — STAMPEDE",
+  title: "AI Fan Coach — KARTAZO",
   description: "Your personal World Cup AI assistant",
 };
 

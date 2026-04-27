@@ -1,4 +1,4 @@
-// --- STAMPEDE · Translation Strings ------------------------------------------
+// --- KARTAZO · Translation Strings ------------------------------------------
 // Languages: EN · ES · PT · FR · DE · AR
 // Add new keys here first, then fill all languages.
 

@@ -5,7 +5,7 @@ import MarketplaceClient from "@/components/marketplace/MarketplaceClient";
 import { normalizeStickerDisplay } from "@/lib/sticker-display";
 
 export const metadata = {
-  title: "Marketplace — STAMPEDE",
+  title: "Marketplace — KARTAZO",
   description: "Buy, sell and trade World Cup stickers",
 };
 

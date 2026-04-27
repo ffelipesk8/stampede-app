@@ -6,7 +6,7 @@ import { LandingStickerPreview } from "@/components/landing/LandingStickerPrevie
 import { LanguageSwitcher } from "@/components/landing/LanguageSwitcher";
 import { T, LANGUAGES, type LangCode } from "@/i18n/landing";
 
-const LANG_STORAGE_KEY = "stampede_lang";
+const LANG_STORAGE_KEY = "kartazo_lang";
 
 const RARITY_COLORS = {
   Common:    "#9090B8",
@@ -309,10 +309,10 @@ export function LandingPage() {
       <section className="py-20 px-6" style={{ background: "rgba(255,255,255,0.015)" }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="font-condensed text-3xl md:text-4xl font-black text-white text-center mb-12">
-            {t.socialTitle.split("STAMPEDE").map((part, i, arr) => (
+            {t.socialTitle.split("KARTAZO").map((part, i, arr) => (
               <span key={i}>
                 {part}
-                {i < arr.length - 1 && <span style={{ color: "#FF5E00" }}>STAMPEDE</span>}
+                {i < arr.length - 1 && <span style={{ color: "#FF5E00" }}>KARTAZO</span>}
               </span>
             ))}
           </h2>

@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   try {
     const upstream = await fetch(target.toString(), {
       headers: {
-        "User-Agent": "STAMPEDE-WorldCup/1.0 (image-proxy)",
+        "User-Agent": "KARTAZO-WorldCup/1.0 (image-proxy)",
       },
       signal: AbortSignal.timeout(8000),
     });
