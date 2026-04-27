@@ -50,10 +50,10 @@ export function AppSidebar({ user, xpProgress }: AppSidebarProps) {
       {/* Logo */}
       <div className="h-14 flex items-center px-5 border-b border-border">
         <Link href="/dashboard" className="font-condensed text-2xl font-black tracking-widest">
-          <span className="text-red">S</span>
-          <span className="text-orange">T</span>
-          <span className="text-gold">A</span>
-          <span className="text-t1">MPEDE</span>
+          <span className="text-red">K</span>
+          <span className="text-orange">A</span>
+          <span className="text-gold">R</span>
+          <span className="text-t1">TAZO</span>
         </Link>
       </div>
 

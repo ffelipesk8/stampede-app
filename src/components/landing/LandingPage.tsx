@@ -86,10 +86,10 @@ export function LandingPage() {
         style={{ background: "rgba(7,7,15,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
         <div className="font-condensed text-2xl font-black tracking-widest select-none">
-          <span style={{ color: "#E8003D" }}>S</span>
-          <span style={{ color: "#FF5E00" }}>T</span>
-          <span style={{ color: "#FFB800" }}>A</span>
-          <span className="text-white">MPEDE</span>
+          <span style={{ color: "#E8003D" }}>K</span>
+          <span style={{ color: "#FF5E00" }}>A</span>
+          <span style={{ color: "#FFB800" }}>R</span>
+          <span className="text-white">TAZO</span>
         </div>
         <div className="flex items-center gap-2 md:gap-3">
           {/* Language switcher */}
@@ -385,10 +385,10 @@ export function LandingPage() {
       {/* -- FOOTER ------------------------------------------------------------ */}
       <footer className="border-t border-white/5 px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="font-condensed text-xl font-black tracking-widest">
-          <span style={{ color: "#E8003D" }}>S</span>
-          <span style={{ color: "#FF5E00" }}>T</span>
-          <span style={{ color: "#FFB800" }}>A</span>
-          <span className="text-white">MPEDE</span>
+          <span style={{ color: "#E8003D" }}>K</span>
+          <span style={{ color: "#FF5E00" }}>A</span>
+          <span style={{ color: "#FFB800" }}>R</span>
+          <span className="text-white">TAZO</span>
         </div>
         <p className="text-[#333355] text-xs text-center">{t.footerCopy}</p>
         <div className="flex gap-6 text-[#333355] text-xs">
