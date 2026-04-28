@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Loader2, Plus, Sparkles, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -51,6 +52,7 @@ export function CustomCardCreator({
   onCreated: (card: AlbumSticker) => void;
 }) {
   const { locale } = useLanguage();
+  const [mounted, setMounted] = useState(false);
   const [title, setTitle] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState(teams[0] ?? "FIFA");
@@ -59,7 +61,13 @@ export function CustomCardCreator({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
   if (!isOpen) return null;
+  if (!mounted) return null;
 
   const labels = locale === "es"
     ? {
@@ -145,10 +153,10 @@ export function CustomCardCreator({
     }
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-2xl rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,#0f1020_0%,#0a0b14_100%)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+        className="relative z-[9999] w-full max-w-2xl rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,#0f1020_0%,#0a0b14_100%)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-start justify-between border-b border-white/8 px-5 py-5 sm:px-6">
@@ -262,6 +270,7 @@ export function CustomCardCreator({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
