@@ -48,8 +48,15 @@ export default async function ProfilePage() {
   const globalRank = higherXpCount + 1;
 
   // Sticker completion stats
-  const totalStickers = await db.sticker.count();
-  const ownedStickers = user._count.stickers;
+  const totalStickers = await db.sticker.count({
+    where: { season: { not: "KZ_USER" } },
+  });
+  const ownedStickers = await db.userSticker.count({
+    where: {
+      userId: user.id,
+      isCustom: false,
+    },
+  });
   const completionPct = totalStickers > 0
     ? Math.round((ownedStickers / totalStickers) * 100)
     : 0;

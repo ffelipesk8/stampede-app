@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, LayoutGrid, LayoutList, Lock, ChevronDown, ChevronUp, Star } from "lucide-react";
+import { Search, LayoutGrid, LayoutList, Lock, ChevronDown, ChevronUp, Plus, Sparkles, Star } from "lucide-react";
 import { AlbumStickerModal } from "@/components/album/AlbumStickerModal";
+import { CustomCardCreator } from "@/components/album/CustomCardCreator";
 import { ShareButton } from "@/components/shared/ShareModal";
 import { useStickerImage } from "@/hooks/useStickerImage";
 import { getStickerFrameStyles, getTeamPalette } from "@/lib/sticker-frame";
@@ -42,6 +43,7 @@ const POSITION_LABEL: Record<string, string> = {
 
 interface AlbumClientProps {
   stickers: AlbumSticker[];
+  customCards: AlbumSticker[];
   teams: string[];
   totalOwned: number;
   totalStickers: number;
@@ -122,8 +124,8 @@ const RARITY_KEYS: Record<string, "rarity.common"|"rarity.uncommon"|"rarity.rare
   LEGENDARY: "rarity.legendary",
 };
 
-export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: AlbumClientProps) {
-  const { t } = useLanguage();
+export function AlbumClient({ stickers, customCards, teams, totalOwned, totalStickers }: AlbumClientProps) {
+  const { t, locale } = useLanguage();
   const [activeTeam,    setActiveTeam]    = useState("ALL");
   const [activeRarity,  setActiveRarity]  = useState("ALL");
   const [search,        setSearch]        = useState("");
@@ -131,8 +133,25 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
   const [viewMode,      setViewMode]      = useState<"grid"|"list">("grid");
   const [groupByTeam,   setGroupByTeam]   = useState(false);
   const [selectedSticker, setSelectedSticker] = useState<AlbumSticker | null>(null);
+  const [customCardsState, setCustomCardsState] = useState(customCards);
+  const [showCustomCreator, setShowCustomCreator] = useState(false);
 
   const pct = totalStickers > 0 ? Math.round((totalOwned / totalStickers) * 100) : 0;
+  const customLabels = locale === "es"
+    ? {
+        eyebrow: "SOCIAL CARDS",
+        title: "Tus fotos tambien pueden ser cartas",
+        subtitle: "Agrega una foto tuya con un jugador desde un link externo y conviertela en una carta premium para presumirla y compartirla.",
+        cta: "Crear carta social",
+        empty: "Todavia no has creado ninguna carta social.",
+      }
+    : {
+        eyebrow: "SOCIAL CARDS",
+        title: "Your photos can become cards too",
+        subtitle: "Add a photo with a player from an external URL and turn it into a premium card you can show off and share.",
+        cta: "Create social card",
+        empty: "You have not created any social cards yet.",
+      };
 
   const filtered = useMemo(() => stickers.filter((s) => {
     if (activeTeam !== "ALL" && s.team !== activeTeam) return false;
@@ -281,6 +300,55 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
             <span className="text-[10px] font-bold text-[#E8650A]">XP</span>
           </div>
         </div>
+      </div>
+
+      {/* ====== CUSTOM SOCIAL CARDS ====== */}
+      <div
+        className="rounded-2xl border p-5"
+        style={{
+          background: "linear-gradient(145deg, rgba(14,10,30,0.92) 0%, rgba(7,7,15,0.96) 100%)",
+          borderColor: "rgba(255,255,255,0.08)",
+          boxShadow: "0 18px 50px rgba(0,0,0,0.25)",
+        }}
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#E8650A]/25 bg-[#E8650A]/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] text-[#E8650A]">
+              <Sparkles className="h-3.5 w-3.5" />
+              {customLabels.eyebrow}
+            </div>
+            <h2 className="mt-3 font-condensed text-3xl font-black text-white">
+              {customLabels.title}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">
+              {customLabels.subtitle}
+            </p>
+          </div>
+
+          <button
+            onClick={() => setShowCustomCreator(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(90deg,#E8650A,#FF5E00)] px-5 py-3 text-sm font-black text-white shadow-[0_0_22px_rgba(232,101,10,0.25)] transition hover:brightness-110"
+          >
+            <Plus className="h-4 w-4" />
+            {customLabels.cta}
+          </button>
+        </div>
+
+        {customCardsState.length > 0 ? (
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+            {customCardsState.map((card) => (
+              <FifaCard
+                key={card.id}
+                sticker={card}
+                onClick={() => setSelectedSticker(card)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5 rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-white/55">
+            {customLabels.empty}
+          </div>
+        )}
       </div>
 
       {/* ====== FILTERS (glassmorphism panel) ====== */}
@@ -478,6 +546,16 @@ export function AlbumClient({ stickers, teams, totalOwned, totalStickers }: Albu
           />
         )}
       </AnimatePresence>
+
+      <CustomCardCreator
+        isOpen={showCustomCreator}
+        teams={teams}
+        onClose={() => setShowCustomCreator(false)}
+        onCreated={(card) => {
+          setCustomCardsState((current) => [card, ...current]);
+          setSelectedSticker(card);
+        }}
+      />
     </div>
   );
 }

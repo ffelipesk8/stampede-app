@@ -14,14 +14,20 @@ export default async function AlbumPage() {
   if (!user) redirect("/sign-in");
 
   const userStickers = await db.userSticker.findMany({
-    where: { userId: user.id },
+    where: { userId: user.id, isCustom: false },
     include: { sticker: true },
     orderBy: [{ sticker: { team: "asc" } }, { sticker: { rarity: "asc" } }],
   });
 
+  const customStickers = await db.userSticker.findMany({
+    where: { userId: user.id, isCustom: true },
+    include: { sticker: true },
+    orderBy: [{ acquiredAt: "desc" }],
+  });
+
   // All stickers in the game (for showing empty slots)
   const allStickers = await db.sticker.findMany({
-    where: { isActive: true },
+    where: { isActive: true, season: { not: "KZ_USER" } },
     orderBy: [{ team: "asc" }, { rarity: "asc" }],
   });
 
@@ -53,10 +59,19 @@ export default async function AlbumPage() {
 
   const totalOwned = ownedIds.size;
   const totalStickers = normalizedAllStickers.length || 800;
+  const customCards = customStickers.map((entry) => ({
+    ...normalizeStickerDisplay(entry.sticker),
+    rarity: entry.sticker.rarity as string,
+    owned: true,
+    quantity: entry.quantity,
+    isCustom: true,
+    customImageUrl: entry.customImageUrl,
+  }));
 
   return (
     <AlbumClient
       stickers={stickersWithOwnership}
+      customCards={customCards}
       teams={teams}
       totalOwned={totalOwned}
       totalStickers={totalStickers}

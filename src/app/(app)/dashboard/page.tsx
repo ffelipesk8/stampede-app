@@ -40,6 +40,13 @@ export default async function DashboardPage({
     take: 8,
   });
 
+  const officialStickerCount = await db.userSticker.count({
+    where: {
+      userId: user.id,
+      isCustom: false,
+    },
+  });
+
   const fanTitle = getFanTitle(user.level);
   const missionCompletion = user.missions.length
     ? Math.round(
@@ -65,7 +72,7 @@ export default async function DashboardPage({
         level={user.level}
         xp={user.xp}
         fanTitle={fanTitle}
-        stickerCount={user._count.stickers}
+        stickerCount={officialStickerCount}
         streakDays={user.streakDays}
         missionCompletion={missionCompletion}
         missions={user.missions.map((mission) => ({
