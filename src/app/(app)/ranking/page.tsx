@@ -60,6 +60,24 @@ export default async function RankingPage() {
     }),
   ]);
 
+  const userIds = [...new Set([...topUsers, ...recentUsers].map((entry) => entry.id))];
+  const officialStickerCounts = userIds.length
+    ? await db.userSticker.groupBy({
+        by: ["userId"],
+        where: {
+          userId: { in: userIds },
+          isCustom: false,
+        },
+        _sum: {
+          quantity: true,
+        },
+      })
+    : [];
+
+  const stickerCountMap = new Map(
+    officialStickerCounts.map((entry) => [entry.userId, entry._sum.quantity ?? 0]),
+  );
+
   const enriched = topUsers.map((u, i) => ({
     rank: i + 1,
     id: u.id,
@@ -69,7 +87,7 @@ export default async function RankingPage() {
     xp: u.xp,
     favoriteTeam: u.favoriteTeam,
     countryCode: u.countryCode,
-    stickerCount: u._count.stickers,
+    stickerCount: stickerCountMap.get(u.id) ?? 0,
     isMe: u.id === user.id,
   }));
 
@@ -81,7 +99,7 @@ export default async function RankingPage() {
     xp: u.xp,
     streakDays: u.streakDays,
     favoriteTeam: u.favoriteTeam,
-    stickerCount: u._count.stickers,
+    stickerCount: stickerCountMap.get(u.id) ?? 0,
     createdAt: u.createdAt.toISOString(),
     isMe: u.id === user.id,
   }));

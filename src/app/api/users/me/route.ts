@@ -17,6 +17,13 @@ export async function GET() {
 
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+  const officialStickerCount = await db.userSticker.count({
+    where: {
+      userId: user.id,
+      isCustom: false,
+    },
+  });
+
   const currentLevelXp = xpForLevel(user.level);
   const prevLevelXp = user.level > 1 ? xpForLevel(user.level - 1) : 0;
   const xpInLevel = user.xp - (user.level > 1 ? Array.from({ length: user.level - 1 }, (_, i) => xpForLevel(i + 1)).reduce((a, b) => a + b, 0) : 0);
@@ -25,7 +32,7 @@ export async function GET() {
     ...user,
     fanTitle: getFanTitle(user.level),
     xpProgress: { current: xpInLevel, needed: currentLevelXp, pct: Math.round((xpInLevel / currentLevelXp) * 100) },
-    stickerCount: user._count.stickers,
+    stickerCount: officialStickerCount,
     eventCount: user._count.events,
   });
 }

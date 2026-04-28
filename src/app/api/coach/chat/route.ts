@@ -79,7 +79,12 @@ export async function POST(req: NextRequest) {
       include: { mission: true },
       take: 3,
     }),
-    db.userSticker.count({ where: { userId: user.id } }),
+    db.userSticker.count({
+      where: {
+        userId: user.id,
+        isCustom: false,
+      },
+    }),
   ]);
 
   const systemPrompt = buildCoachPrompt(user, stickersCount, missions);
