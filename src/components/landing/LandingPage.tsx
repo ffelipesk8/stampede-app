@@ -6,7 +6,7 @@ import { LandingStickerPreview } from "@/components/landing/LandingStickerPrevie
 import { LanguageSwitcher } from "@/components/landing/LanguageSwitcher";
 import { T, LANGUAGES, type LangCode } from "@/i18n/landing";
 
-const LANG_STORAGE_KEY = "kartazo_lang";
+const LANG_STORAGE_KEY = "kartazo_locale";
 
 const RARITY_COLORS = {
   Common:    "#9090B8",
@@ -49,14 +49,18 @@ const SAMPLE_STICKERS = [
 ];
 
 export function LandingPage() {
-  const [lang, setLang] = useState<LangCode>("en");
+  const [lang, setLang] = useState<LangCode>("es");
 
   // Load saved language on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(LANG_STORAGE_KEY) as LangCode | null;
       const langCodes = LANGUAGES.map((l) => l.code);
-      if (saved && langCodes.includes(saved)) setLang(saved);
+      if (saved && langCodes.includes(saved)) {
+        setLang(saved);
+      } else {
+        setLang("es");
+      }
     } catch {
       // localStorage not available
     }
