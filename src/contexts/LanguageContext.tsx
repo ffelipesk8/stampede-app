@@ -7,18 +7,18 @@ const STORAGE_KEY = "kartazo_locale";
 
 // -- Detect browser language on first visit ------------------------------------
 function detectBrowserLocale(): Locale {
-  if (typeof window === "undefined") return "en";
+  if (typeof window === "undefined") return "es";
   const lang = navigator.language?.toLowerCase() ?? "";
   if (lang.startsWith("es")) return "es";
   if (lang.startsWith("pt")) return "pt";
   if (lang.startsWith("fr")) return "fr";
   if (lang.startsWith("de")) return "de";
   if (lang.startsWith("ar")) return "ar";
-  return "en";
+  return "es";
 }
 
 function loadLocale(): Locale {
-  if (typeof window === "undefined") return "en";
+  if (typeof window === "undefined") return "es";
   const stored = localStorage.getItem(STORAGE_KEY) as Locale | null;
   if (stored && LOCALES.some((l) => l.code === stored)) return stored;
   return detectBrowserLocale();
@@ -34,15 +34,15 @@ interface LanguageContextValue {
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
-  locale: "en",
+  locale: "es",
   setLocale: () => {},
   t: (key) => key,
   isRTL: false,
-  currentLocaleInfo: LOCALES[0],
+  currentLocaleInfo: LOCALES[1],
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("es");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -67,13 +67,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     [locale]
   );
 
-  const currentLocaleInfo = LOCALES.find((l) => l.code === locale) ?? LOCALES[0];
+  const currentLocaleInfo = LOCALES.find((l) => l.code === locale) ?? LOCALES[1];
   const isRTL = currentLocaleInfo.rtl ?? false;
 
   // Avoid hydration mismatch — render with default "en" on server
   if (!mounted) {
     return (
-      <LanguageContext.Provider value={{ locale: "en", setLocale, t: (key) => translate("en", key), isRTL: false, currentLocaleInfo: LOCALES[0] }}>
+      <LanguageContext.Provider value={{ locale: "es", setLocale, t: (key) => translate("es", key), isRTL: false, currentLocaleInfo: LOCALES[1] }}>
         {children}
       </LanguageContext.Provider>
     );
