@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { Locale } from "@/lib/i18n/translations";
 
 type Rarity = "COMMON" | "UNCOMMON" | "RARE" | "EPIC" | "LEGENDARY";
 
@@ -96,16 +98,37 @@ function ListingCard({
   userCoins,
   onBuy,
   isLoading,
+  locale,
 }: {
   listing: Listing;
   userId: string;
   userCoins: number;
   onBuy: (id: string) => void;
   isLoading: boolean;
+  locale: Locale;
 }) {
+  const { t } = useLanguage();
   const rarity = RARITY_CONFIG[listing.sticker.rarity];
   const isOwn = listing.seller.id === userId;
   const canAfford = userCoins >= listing.priceCoins;
+  const copy =
+    locale === "es"
+      ? {
+          quantity: "disponibles",
+          sellerYou: "Tu",
+          coins: "monedas",
+          yourListing: "Tu venta",
+          buy: "Comprar",
+          lowCoins: "Sin monedas",
+        }
+      : {
+          quantity: "available",
+          sellerYou: "You",
+          coins: "coins",
+          yourListing: "Your listing",
+          buy: "Buy",
+          lowCoins: "Low coins",
+        };
 
   return (
     <motion.div
@@ -138,7 +161,7 @@ function ListingCard({
                 className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded"
                 style={{ color: rarity.color, backgroundColor: rarity.color + "20" }}
               >
-                {rarity.label}
+                {t(`rarity.${listing.sticker.rarity.toLowerCase()}` as never)}
               </span>
               <span className="text-white/30 text-[10px]">#{listing.sticker.number}</span>
             </div>
@@ -148,7 +171,7 @@ function ListingCard({
         {/* Quantity */}
         {listing.quantity > 1 && (
           <div className="bg-white/5 rounded-lg px-2 py-1 text-center">
-            <span className="text-white/50 text-xs">× {listing.quantity} available</span>
+            <span className="text-white/50 text-xs">× {listing.quantity} {copy.quantity}</span>
           </div>
         )}
 
@@ -158,7 +181,7 @@ function ListingCard({
             {listing.seller.username.slice(0, 2).toUpperCase()}
           </div>
           <span className="text-white/40 text-xs truncate">
-            {isOwn ? "You" : listing.seller.username}
+            {isOwn ? copy.sellerYou : listing.seller.username}
           </span>
         </div>
       </div>
@@ -169,11 +192,11 @@ function ListingCard({
           <p className="text-white font-black text-lg leading-none">
             {listing.priceCoins.toLocaleString()}
           </p>
-          <p className="text-white/40 text-[10px]">coins</p>
+          <p className="text-white/40 text-[10px]">{copy.coins}</p>
         </div>
         {isOwn ? (
           <span className="text-xs text-white/30 border border-white/10 rounded-lg px-3 py-1.5">
-            Your listing
+            {copy.yourListing}
           </span>
         ) : (
           <button
@@ -185,7 +208,7 @@ function ListingCard({
                 : "bg-white/5 text-white/30 cursor-not-allowed"
             }`}
           >
-            {isLoading ? "…" : canAfford ? "Buy" : "Low coins"}
+            {isLoading ? "…" : canAfford ? copy.buy : copy.lowCoins}
           </button>
         )}
       </div>
@@ -202,6 +225,7 @@ export default function MarketplaceClient({
   canSell,
   daysUntilSell,
 }: MarketplaceClientProps) {
+  const { locale, t } = useLanguage();
   const [tab, setTab] = useState<Tab>("browse");
   const [rarityFilter, setRarityFilter] = useState<RarityFilter>("ALL");
   const [search, setSearch] = useState("");
@@ -211,6 +235,65 @@ export default function MarketplaceClient({
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [ownListings, setOwnListings] = useState<MyListing[]>(myListings);
+  const copy = locale === "es"
+    ? {
+        purchaseFailed: "La compra no se pudo completar.",
+        purchaseSuccess: "Carta agregada a tu coleccion.",
+        networkError: "Error de red. Intenta otra vez.",
+        cancelFailed: "No pudimos cancelar la venta.",
+        cancelSuccess: "Venta cancelada. La carta regreso a tu album.",
+        title: "Mercado",
+        subtitle: "Compra, vende e intercambia cartas con fans de todo el mundo",
+        yourCoins: "tus monedas",
+        browseAll: "Explorar",
+        drops: "Drops",
+        myListings: "Mis ventas",
+        search: "Buscar carta, equipo o vendedor...",
+        all: "Todos",
+        noListings: "No encontramos ventas activas",
+        noResults: (value: string) => `No hay resultados para "${value}"`,
+        firstToList: "Se el primero en publicar una carta.",
+        noDrops: "No hay drops activos",
+        noDropsHint: "Los drops limitados apareceran aqui. Sigue a KARTAZO para enterarte primero.",
+        limitedDrops: "Drops por tiempo limitado",
+        limitedDropsHint: "Estas cartas exclusivas vencen pronto. No las dejes pasar.",
+        unlocksIn: (days: number) => `La venta se desbloquea en ${days} dias`,
+        unlocksHint: "Las cuentas deben tener 7 dias de antiguedad para vender cartas.",
+        noOwnListings: "No tienes ventas activas",
+        listFromAlbum: 'Ve a tu album, abre una carta y toca "Vender en mercado".',
+        listInDays: (days: number) => `Podras vender en ${days} dias`,
+        goToAlbum: "Ir al album →",
+        cancel: "Cancelar",
+      }
+    : {
+        purchaseFailed: "Purchase failed.",
+        purchaseSuccess: "Sticker added to your collection.",
+        networkError: "Network error. Try again.",
+        cancelFailed: "Could not cancel listing.",
+        cancelSuccess: "Listing cancelled. Sticker returned.",
+        title: "Marketplace",
+        subtitle: "Buy, sell and trade stickers with fans worldwide",
+        yourCoins: "your coins",
+        browseAll: "Browse All",
+        drops: "Drops",
+        myListings: "My Listings",
+        search: "Search sticker, team, or seller...",
+        all: "All",
+        noListings: "No listings found",
+        noResults: (value: string) => `No results for "${value}"`,
+        firstToList: "Be the first to list a sticker!",
+        noDrops: "No drops active",
+        noDropsHint: "Limited drops appear here. Follow KARTAZO on socials to get notified!",
+        limitedDrops: "Limited-time drops",
+        limitedDropsHint: "These exclusive stickers expire soon. Don't miss them!",
+        unlocksIn: (days: number) => `Selling unlocks in ${days} days`,
+        unlocksHint: "Accounts need to be 7 days old to list stickers.",
+        noOwnListings: "No active listings",
+        listFromAlbum: 'Go to your album, open a sticker, and tap "List on Market".',
+        listInDays: (days: number) => `You can start listing in ${days} days`,
+        goToAlbum: "Go to Album →",
+        cancel: "Cancel",
+      };
 
   const showToast = (type: "success" | "error", msg: string) => {
     setToast({ type, msg });
@@ -225,18 +308,18 @@ export default function MarketplaceClient({
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast("error", data.error ?? "Purchase failed");
+        showToast("error", data.error ?? copy.purchaseFailed);
         return;
       }
       setCoins((c) => c - (data.coinsSpent ?? 0));
       setListings((prev) => prev.filter((l) => l.id !== listingId));
-      showToast("success", `🎉 Sticker added to your collection!`);
+      showToast("success", `🎉 ${copy.purchaseSuccess}`);
     } catch {
-      showToast("error", "Network error. Try again.");
+      showToast("error", copy.networkError);
     } finally {
       setBuyingId(null);
     }
-  }, []);
+  }, [copy]);
 
   const handleCancel = useCallback(async (listingId: string) => {
     setCancellingId(listingId);
@@ -245,17 +328,17 @@ export default function MarketplaceClient({
         method: "POST",
       });
       if (!res.ok) {
-        showToast("error", "Could not cancel listing.");
+        showToast("error", copy.cancelFailed);
         return;
       }
       setOwnListings((prev) => prev.filter((l) => l.id !== listingId));
-      showToast("success", "Listing cancelled. Sticker returned.");
+      showToast("success", copy.cancelSuccess);
     } catch {
-      showToast("error", "Network error. Try again.");
+      showToast("error", copy.networkError);
     } finally {
       setCancellingId(null);
     }
-  }, []);
+  }, [copy]);
 
   const rarities: RarityFilter[] = ["ALL", "LEGENDARY", "EPIC", "RARE", "UNCOMMON", "COMMON"];
 
@@ -274,9 +357,9 @@ export default function MarketplaceClient({
       {/* Header */}
       <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-black text-white">Marketplace 🏪</h1>
+          <h1 className="text-3xl font-black text-white">{copy.title} 🏪</h1>
           <p className="text-white/40 text-sm mt-1">
-            Trade stickers with fans worldwide
+            {copy.subtitle}
           </p>
         </div>
         {/* Coins balance */}
@@ -286,7 +369,7 @@ export default function MarketplaceClient({
             <p className="text-[#FFB800] font-black text-lg leading-none">
               {coins.toLocaleString()}
             </p>
-            <p className="text-[#FFB800]/60 text-[10px]">your coins</p>
+            <p className="text-[#FFB800]/60 text-[10px]">{copy.yourCoins}</p>
           </div>
         </div>
       </div>
@@ -294,9 +377,9 @@ export default function MarketplaceClient({
       {/* Tabs */}
       <div className="flex gap-1 bg-white/5 rounded-xl p-1 mb-6">
         {([
-          { key: "browse", label: "Browse All", count: listings.length },
-          { key: "drops", label: "🔥 Drops", count: drops.length },
-          { key: "my-listings", label: "My Listings", count: ownListings.length },
+          { key: "browse", label: copy.browseAll, count: listings.length },
+          { key: "drops", label: `🔥 ${copy.drops}`, count: drops.length },
+          { key: "my-listings", label: copy.myListings, count: ownListings.length },
         ] as const).map(({ key, label, count }) => (
           <button
             key={key}
@@ -332,7 +415,7 @@ export default function MarketplaceClient({
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 text-sm">🔍</span>
               <input
                 type="text"
-                placeholder="Search sticker, team, or seller…"
+                placeholder={copy.search}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FF5E00]/50 transition-colors"
@@ -358,7 +441,7 @@ export default function MarketplaceClient({
                         : {}
                     }
                   >
-                    {r === "ALL" ? "All" : cfg?.label}
+                    {r === "ALL" ? copy.all : t(`rarity.${r.toLowerCase()}` as never)}
                   </button>
                 );
               })}
@@ -368,11 +451,11 @@ export default function MarketplaceClient({
           {filteredListings.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="text-5xl mb-4">🏪</div>
-              <h3 className="text-white font-black text-xl mb-2">No listings found</h3>
+              <h3 className="text-white font-black text-xl mb-2">{copy.noListings}</h3>
               <p className="text-white/40 text-sm">
                 {search
-                  ? `No results for "${search}"`
-                  : "Be the first to list a sticker!"}
+                  ? copy.noResults(search)
+                  : copy.firstToList}
               </p>
             </div>
           ) : (
@@ -385,6 +468,7 @@ export default function MarketplaceClient({
                   userCoins={coins}
                   onBuy={handleBuy}
                   isLoading={buyingId === listing.id}
+                  locale={locale}
                 />
               ))}
             </div>
@@ -398,9 +482,9 @@ export default function MarketplaceClient({
           {drops.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="text-5xl mb-4">🔥</div>
-              <h3 className="text-white font-black text-xl mb-2">No drops active</h3>
+              <h3 className="text-white font-black text-xl mb-2">{copy.noDrops}</h3>
               <p className="text-white/40 text-sm max-w-xs">
-                Limited drops appear here. Follow KARTAZO on socials to get notified!
+                {copy.noDropsHint}
               </p>
             </div>
           ) : (
@@ -408,9 +492,9 @@ export default function MarketplaceClient({
               <div className="bg-gradient-to-r from-[#E8003D]/10 to-[#FF5E00]/10 border border-[#FF5E00]/20 rounded-xl p-4 mb-6 flex items-center gap-3">
                 <span className="text-2xl">⚡</span>
                 <div>
-                  <p className="text-white font-bold text-sm">Limited-time drops</p>
+                  <p className="text-white font-bold text-sm">{copy.limitedDrops}</p>
                   <p className="text-white/50 text-xs">
-                    These exclusive stickers expire soon. Don&apos;t miss them!
+                    {copy.limitedDropsHint}
                   </p>
                 </div>
               </div>
@@ -423,6 +507,7 @@ export default function MarketplaceClient({
                     userCoins={coins}
                     onBuy={handleBuy}
                     isLoading={buyingId === d.id}
+                    locale={locale}
                   />
                 ))}
               </div>
@@ -438,9 +523,9 @@ export default function MarketplaceClient({
             <div className="bg-[#FFB800]/10 border border-[#FFB800]/20 rounded-xl p-4 mb-6 flex items-center gap-3">
               <span className="text-2xl">⏳</span>
               <div>
-                <p className="text-white font-bold text-sm">Selling unlocks in {daysUntilSell} days</p>
+                <p className="text-white font-bold text-sm">{copy.unlocksIn(daysUntilSell)}</p>
                 <p className="text-white/50 text-xs">
-                  Accounts need to be 7 days old to list stickers (anti-fraud protection).
+                  {copy.unlocksHint}
                 </p>
               </div>
             </div>
@@ -449,18 +534,18 @@ export default function MarketplaceClient({
           {ownListings.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <div className="text-5xl mb-4">📦</div>
-              <h3 className="text-white font-black text-xl mb-2">No active listings</h3>
+              <h3 className="text-white font-black text-xl mb-2">{copy.noOwnListings}</h3>
               <p className="text-white/40 text-sm mb-6">
                 {canSell
-                  ? "Go to your album, tap a sticker, and hit \"List on Market\""
-                  : `You can start listing in ${daysUntilSell} days`}
+                  ? copy.listFromAlbum
+                  : copy.listInDays(daysUntilSell)}
               </p>
               {canSell && (
                 <a
                   href="/album"
                   className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white font-bold text-sm hover:opacity-90 transition-opacity"
                 >
-                  Go to Album →
+                  {copy.goToAlbum}
                 </a>
               )}
             </div>
@@ -489,7 +574,7 @@ export default function MarketplaceClient({
                             backgroundColor: rarity.color + "20",
                           }}
                         >
-                          {rarity.label}
+                          {t(`rarity.${listing.sticker.rarity.toLowerCase()}` as never)}
                         </span>
                         {listing.quantity > 1 && (
                           <span className="text-white/30 text-[10px]">×{listing.quantity}</span>
@@ -509,7 +594,7 @@ export default function MarketplaceClient({
                       disabled={cancellingId === listing.id}
                       className="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold text-white/50 border border-white/10 hover:border-red-500/40 hover:text-red-400 transition-colors disabled:opacity-40"
                     >
-                      {cancellingId === listing.id ? "…" : "Cancel"}
+                      {cancellingId === listing.id ? "…" : copy.cancel}
                     </button>
                   </div>
                 );

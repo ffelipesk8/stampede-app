@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type BadgeRarity = "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "LEGENDARY";
 
@@ -64,9 +65,61 @@ const TEAM_FLAGS: Record<string, string> = {
 };
 
 export default function ProfileClient({ user }: { user: ProfileUser }) {
+  const { locale } = useLanguage();
   const [copied, setCopied] = useState(false);
+  const copy = locale === "es"
+    ? {
+        memberSince: "Miembro desde",
+        level: "Nivel",
+        proActive: "PRO activo",
+        renews: "Renueva",
+        manageSubscription: "Gestionar suscripcion →",
+        upgrade: "Hazte PRO",
+        globalRank: "Ranking global",
+        stickers: "Estampas",
+        streak: "Racha",
+        events: "Eventos",
+        referrals: "Referidos",
+        coins: "Monedas",
+        albumCompletion: "Progreso del album",
+        collected: (owned: number, total: number) => `${owned} de ${total} estampas coleccionadas`,
+        viewAlbum: "Ver album →",
+        badges: "Insignias ganadas",
+        referralTitle: "Link de referido",
+        referralDesc: "Invita a tus amigos y ambos ganan un sobre gratis + 100 XP",
+        copied: "✓ Copiado",
+        copy: "Copiar",
+        friendsJoined: (count: number) => `${count} amigo${count !== 1 ? "s" : ""} llegaron con tu link`,
+        account: "Cuenta",
+        signOut: "Cerrar sesion",
+      }
+    : {
+        memberSince: "Member since",
+        level: "Level",
+        proActive: "PRO Active",
+        renews: "Renews",
+        manageSubscription: "Manage subscription →",
+        upgrade: "Upgrade to PRO",
+        globalRank: "Global Rank",
+        stickers: "Stickers",
+        streak: "Streak",
+        events: "Events",
+        referrals: "Referrals",
+        coins: "Coins",
+        albumCompletion: "Album Completion",
+        collected: (owned: number, total: number) => `${owned} of ${total} stickers collected`,
+        viewAlbum: "View album →",
+        badges: "Badges earned",
+        referralTitle: "Referral link",
+        referralDesc: "Invite friends and both of you earn a free pack + 100 XP",
+        copied: "✓ Copied!",
+        copy: "Copy",
+        friendsJoined: (count: number) => `${count} friend${count !== 1 ? "s" : ""} joined via your link`,
+        account: "Account",
+        signOut: "Sign out",
+      };
 
-  const memberSince = new Date(user.createdAt).toLocaleDateString("en-US", {
+  const memberSince = new Date(user.createdAt).toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
     month: "long",
     year: "numeric",
   });
@@ -80,12 +133,12 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
   };
 
   const STATS = [
-    { label: "Global Rank",    value: `#${user.globalRank.toLocaleString()}`, icon: "🏆", color: "#FFB800" },
-    { label: "Stickers",       value: `${user.stickerCount}/${user.totalStickers}`, icon: "📎", color: "#60A5FA" },
-    { label: "Streak",         value: `${user.streakDays}d`,  icon: "🔥", color: "#FF5E00" },
-    { label: "Events",         value: user.eventCount,        icon: "📅", color: "#4ADE80" },
-    { label: "Referrals",      value: user.referralCount,     icon: "👥", color: "#A78BFA" },
-    { label: "Coins",          value: user.coins.toLocaleString(), icon: "🪙", color: "#FFB800" },
+    { label: copy.globalRank, value: `#${user.globalRank.toLocaleString()}`, icon: "🏆", color: "#FFB800" },
+    { label: copy.stickers, value: `${user.stickerCount}/${user.totalStickers}`, icon: "📎", color: "#60A5FA" },
+    { label: copy.streak, value: `${user.streakDays}d`,  icon: "🔥", color: "#FF5E00" },
+    { label: copy.events, value: user.eventCount, icon: "📅", color: "#4ADE80" },
+    { label: copy.referrals, value: user.referralCount, icon: "👥", color: "#A78BFA" },
+    { label: copy.coins, value: user.coins.toLocaleString(), icon: "🪙", color: "#FFB800" },
   ];
 
   return (
@@ -134,12 +187,12 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
               )}
             </div>
             <p className="text-[#FF5E00] text-sm font-semibold mt-0.5">{user.fanTitle}</p>
-            <p className="text-white/40 text-xs mt-1">Member since {memberSince}</p>
+            <p className="text-white/40 text-xs mt-1">{copy.memberSince} {memberSince}</p>
 
             {/* Level + XP bar */}
             <div className="mt-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-white text-sm font-bold">Level {user.level}</span>
+                <span className="text-white text-sm font-bold">{copy.level} {user.level}</span>
                 <span className="text-white/40 text-xs">
                   {user.xpProgress.current.toLocaleString()} / {user.xpProgress.needed.toLocaleString()} XP
                 </span>
@@ -160,18 +213,18 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
             {user.isPro ? (
               <div className="text-right">
                 <div className="inline-flex items-center gap-1.5 bg-[#FFB800]/10 border border-[#FFB800]/30 rounded-xl px-3 py-2">
-                  <span className="text-[#FFB800] text-sm font-black">⚡ PRO Active</span>
+                  <span className="text-[#FFB800] text-sm font-black">⚡ {copy.proActive}</span>
                 </div>
                 {user.proExpiresAt && (
                   <p className="text-white/30 text-xs mt-1">
-                    Renews {new Date(user.proExpiresAt).toLocaleDateString()}
+                    {copy.renews} {new Date(user.proExpiresAt).toLocaleDateString(locale === "es" ? "es-ES" : "en-US")}
                   </p>
                 )}
                 <a
                   href="/api/stripe/portal"
                   className="text-white/30 text-xs hover:text-white/60 transition-colors mt-1 block"
                 >
-                  Manage subscription →
+                  {copy.manageSubscription}
                 </a>
               </div>
             ) : (
@@ -179,7 +232,7 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
                 href="/upgrade"
                 className="block bg-gradient-to-r from-[#E8003D] to-[#FF5E00] text-white font-bold text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity text-center"
               >
-                ⚡ Upgrade to PRO
+                ⚡ {copy.upgrade}
               </Link>
             )}
           </div>
@@ -218,7 +271,7 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
         className="bg-white/5 border border-white/10 rounded-2xl p-5"
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-white font-bold">Album Completion</h2>
+          <h2 className="text-white font-bold">{copy.albumCompletion}</h2>
           <span className="text-white font-black text-xl">{user.completionPct}%</span>
         </div>
         <div className="h-3 bg-white/10 rounded-full overflow-hidden mb-2">
@@ -234,13 +287,13 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
         </div>
         <div className="flex items-center justify-between">
           <p className="text-white/40 text-xs">
-            {user.stickerCount} of {user.totalStickers} stickers collected
+            {copy.collected(user.stickerCount, user.totalStickers)}
           </p>
           <Link
             href="/album"
             className="text-[#4ADE80] text-xs font-bold hover:opacity-80 transition-opacity"
           >
-            View album →
+            {copy.viewAlbum}
           </Link>
         </div>
       </motion.div>
@@ -254,7 +307,7 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
           className="bg-white/5 border border-white/10 rounded-2xl p-5"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-bold">Badges earned</h2>
+            <h2 className="text-white font-bold">{copy.badges}</h2>
             <span className="text-white/40 text-sm">{user.badges.length}</span>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
@@ -288,9 +341,9 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
         transition={{ delay: 0.3 }}
         className="bg-white/5 border border-white/10 rounded-2xl p-5"
       >
-        <h2 className="text-white font-bold mb-1">Referral link</h2>
+        <h2 className="text-white font-bold mb-1">{copy.referralTitle}</h2>
         <p className="text-white/40 text-sm mb-4">
-          Invite friends and both of you earn a free pack + 100 XP
+          {copy.referralDesc}
         </p>
         <div className="flex items-center gap-2">
           <code className="flex-1 text-[#FFB800] text-sm bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 font-mono truncate">
@@ -304,11 +357,11 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
                 : "bg-white/10 text-white hover:bg-white/20"
             }`}
           >
-            {copied ? "✓ Copied!" : "Copy"}
+            {copied ? copy.copied : copy.copy}
           </button>
         </div>
         <p className="text-white/30 text-xs mt-2">
-          {user.referralCount} friend{user.referralCount !== 1 ? "s" : ""} joined via your link
+          {copy.friendsJoined(user.referralCount)}
         </p>
       </motion.div>
 
@@ -319,14 +372,14 @@ export default function ProfileClient({ user }: { user: ProfileUser }) {
         transition={{ delay: 0.4 }}
         className="border border-white/5 rounded-2xl p-5"
       >
-        <h3 className="text-white/30 text-xs font-bold uppercase tracking-wider mb-3">Account</h3>
+        <h3 className="text-white/30 text-xs font-bold uppercase tracking-wider mb-3">{copy.account}</h3>
         <div className="flex items-center justify-between flex-wrap gap-3">
           <p className="text-white/50 text-sm">{user.email}</p>
           <a
             href="/sign-out"
             className="text-white/30 text-sm hover:text-red-400 transition-colors font-semibold"
           >
-            Sign out
+            {copy.signOut}
           </a>
         </div>
       </motion.div>

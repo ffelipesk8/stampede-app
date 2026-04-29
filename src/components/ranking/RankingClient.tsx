@@ -80,10 +80,29 @@ export default function RankingClient({
   currentUser,
   recentMembers,
 }: RankingClientProps) {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const [tab, setTab] = useState<Tab>("global");
   const [search, setSearch] = useState("");
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const copy = locale === "es"
+    ? {
+        search: "Buscar fan o equipo...",
+        countrySoon: "Muy pronto podras competir contra fans de tu pais.",
+        communityEarly: "La comunidad apenas esta arrancando. Llegaste temprano.",
+        founderIntro: "Los primeros 1000 fans reciben el ",
+        you: "TU",
+        stickers: "estampas",
+        noFans: (value: string) => `No encontramos fans para "${value}"`,
+      }
+    : {
+        search: "Search fan or team...",
+        countrySoon: "Coming soon — compete against fans from your country!",
+        communityEarly: "Be an early adopter — the community is just getting started!",
+        founderIntro: "First 1000 fans get the ",
+        you: "YOU",
+        stickers: "stickers",
+        noFans: (value: string) => `No fans found for "${value}"`,
+      };
 
   const filtered = initialLeaderboard.filter(
     (u) =>
@@ -158,7 +177,7 @@ export default function RankingClient({
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">🔍</span>
           <input
             type="text"
-            placeholder="Search fan or team…"
+            placeholder={copy.search}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FF5E00]/50 transition-colors"
@@ -198,7 +217,7 @@ export default function RankingClient({
             <div className="text-5xl mb-4">🌍</div>
             <h3 className="text-white font-black text-xl mb-2">{t("ranking.country")}</h3>
             <p className="text-white/40 text-sm max-w-xs">
-              Coming soon — compete against fans from your country!
+              {copy.countrySoon}
             </p>
           </div>
         )}
@@ -321,10 +340,10 @@ export default function RankingClient({
             {/* Gamification nudge footer */}
             <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-center">
               <p className="text-white/60 text-xs">
-                🏆 Be an early adopter — the community is just getting started!
+                🏆 {copy.communityEarly}
               </p>
               <p className="text-white/30 text-[10px] mt-1">
-                First 1000 fans get the <span className="text-[#FFB800] font-black">Founder Badge</span>
+                {copy.founderIntro}<span className="text-[#FFB800] font-black">Founder Badge</span>
               </p>
             </div>
           </div>
@@ -400,7 +419,7 @@ export default function RankingClient({
                     </span>
                     {entry.isMe && (
                       <span className="text-[10px] bg-[#FF5E00]/20 text-[#FF5E00] rounded-full px-1.5 py-0.5 font-bold flex-shrink-0">
-                        YOU
+                        {copy.you}
                       </span>
                     )}
                     {entry.favoriteTeam && (
@@ -410,7 +429,7 @@ export default function RankingClient({
                     )}
                   </div>
                   <p className="text-white/40 text-xs truncate">
-                    {getFanTitle(entry.level)} · Lv.{entry.level} · {entry.stickerCount} stickers
+                    {getFanTitle(entry.level)} · Lv.{entry.level} · {entry.stickerCount} {copy.stickers}
                   </p>
                 </div>
 
@@ -426,7 +445,7 @@ export default function RankingClient({
 
             {filtered.length === 0 && search && (
               <div className="text-center py-12">
-                <p className="text-white/30 text-sm">No fans found for &quot;{search}&quot;</p>
+                <p className="text-white/30 text-sm">{copy.noFans(search)}</p>
               </div>
             )}
           </div>

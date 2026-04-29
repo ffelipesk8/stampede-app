@@ -17,6 +17,7 @@ export function TopBar({ xp, coins = 0, notificationCount = 0 }: TopBarProps) {
   const { locale, setLocale, currentLocaleInfo, t } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const footerCopy = locale === "es" ? "Mundial 2026 · 6 idiomas" : "World Cup 2026 · 6 languages";
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -118,7 +119,7 @@ export function TopBar({ xp, coins = 0, notificationCount = 0 }: TopBarProps) {
             {/* Footer */}
             <div className="px-4 py-2.5 border-t border-border bg-card2/40 flex items-center gap-1.5">
               <span className="text-sm">⚽</span>
-              <p className="text-t3 text-[10px] font-medium">World Cup 2026 · 6 languages</p>
+              <p className="text-t3 text-[10px] font-medium">{footerCopy}</p>
             </div>
           </div>
         )}
