@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { TranslationKey } from "@/lib/i18n/translations";
 import {
   LayoutDashboard, BookOpen, Package, Trophy,
-  CalendarDays, Bot, ShoppingCart, User, Zap
+  CalendarDays, Bot, ShoppingCart, User, Zap, Shield
 } from "lucide-react";
 
 // Navigation uses translation keys
@@ -37,6 +37,7 @@ interface AppSidebarProps {
     isPro?: boolean;
     avatarUrl?: string | null;
     favoriteTeam?: string | null;
+    isAdmin?: boolean;
   };
   xpProgress: { current: number; needed: number; pct: number };
 }
@@ -118,6 +119,23 @@ export function AppSidebar({ user, xpProgress }: AppSidebarProps) {
             </Link>
           );
         })}
+        {user.isAdmin && (
+          <Link
+            href={"/admin/users" as never}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+              pathname.startsWith("/admin")
+                ? "bg-card2 text-t1"
+                : "text-t2 hover:bg-card2 hover:text-t1"
+            )}
+          >
+            <Shield className="w-4 h-4 shrink-0 text-cyan-300" />
+            <span className="flex-1">Admin</span>
+            <span className="text-[9px] font-bold bg-cyan-400/15 text-cyan-200 border border-cyan-400/30 px-1.5 py-0.5 rounded">
+              PRIVATE
+            </span>
+          </Link>
+        )}
       </nav>
 
       {/* PRO upsell footer */}

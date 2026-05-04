@@ -7,6 +7,7 @@ import { TopBar } from "@/components/layout/TopBar";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { AppSceneTransition } from "@/components/shared/AppSceneTransition";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { isAdminEmail } from "@/lib/admin";
 
 function generateReferralCode() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -18,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   let user = await db.user.findUnique({
     where: { clerkId },
-    select: { id: true, username: true, level: true, xp: true, coins: true, avatarUrl: true, favoriteTeam: true, onboardingStep: true, isPro: true },
+    select: { id: true, username: true, email: true, level: true, xp: true, coins: true, avatarUrl: true, favoriteTeam: true, onboardingStep: true, isPro: true },
   });
 
   // Auto-crear usuario si no existe (para desarrollo local sin webhook)
@@ -38,7 +39,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         avatarUrl: clerkUser.imageUrl ?? "",
         referralCode: generateReferralCode(),
       },
-      select: { id: true, username: true, level: true, xp: true, coins: true, avatarUrl: true, favoriteTeam: true, onboardingStep: true, isPro: true },
+      select: { id: true, username: true, email: true, level: true, xp: true, coins: true, avatarUrl: true, favoriteTeam: true, onboardingStep: true, isPro: true },
     });
   }
 
@@ -52,6 +53,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     current: xpInLevel,
     needed: xpForCurrentLevel,
     pct: Math.round((xpInLevel / xpForCurrentLevel) * 100),
+  };
+  const sidebarUser = {
+    ...user,
+    isAdmin: isAdminEmail(user.email),
   };
 
   return (
@@ -73,7 +78,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
 
           {/* ── Sidebar (desktop) ── */}
-          <AppSidebar user={user} xpProgress={xpProgress} />
+          <AppSidebar user={sidebarUser} xpProgress={xpProgress} />
 
           {/* ── Main content column ── */}
           <div className="flex min-w-0 flex-1 flex-col">

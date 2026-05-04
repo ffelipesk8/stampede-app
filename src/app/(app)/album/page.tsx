@@ -15,7 +15,14 @@ export default async function AlbumPage() {
   if (!user) redirect("/sign-in");
 
   const userStickers = await db.userSticker.findMany({
-    where: { userId: user.id, isCustom: false },
+    where: {
+      userId: user.id,
+      isCustom: false,
+      sticker: {
+        season: "WC2026",
+        isActive: true,
+      },
+    },
     include: { sticker: true },
     orderBy: [{ sticker: { team: "asc" } }, { sticker: { rarity: "asc" } }],
   });
@@ -28,7 +35,7 @@ export default async function AlbumPage() {
 
   // All stickers in the game (for showing empty slots)
   const allStickers = await db.sticker.findMany({
-    where: { isActive: true, season: { not: "KZ_USER" } },
+    where: { isActive: true, season: "WC2026" },
     orderBy: [{ team: "asc" }, { rarity: "asc" }],
   });
 

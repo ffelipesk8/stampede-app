@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { redis, REDIS_KEYS } from "@/lib/redis";
+import { isIP } from "node:net";
 
 const createCustomCardSchema = z.object({
   title: z.string().trim().min(2).max(60),
@@ -16,6 +17,7 @@ const createCustomCardSchema = z.object({
 function isUnsafeImageHost(hostname: string) {
   const host = hostname.toLowerCase();
   return (
+    isIP(host) !== 0 ||
     host === "localhost" ||
     host === "127.0.0.1" ||
     host === "::1" ||
@@ -56,8 +58,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
   }
 
-  if (!["https:", "http:"].includes(parsedImageUrl.protocol)) {
-    return NextResponse.json({ error: "Only HTTP and HTTPS URLs are supported" }, { status: 400 });
+  if (parsedImageUrl.protocol !== "https:") {
+    return NextResponse.json({ error: "Only HTTPS image URLs are supported" }, { status: 400 });
   }
 
   if (isUnsafeImageHost(parsedImageUrl.hostname)) {

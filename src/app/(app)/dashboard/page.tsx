@@ -30,7 +30,11 @@ export default async function DashboardPage({
 
   const recentActivity = await db.userSticker.findMany({
     where: {
-      sticker: { rarity: { in: ["EPIC", "LEGENDARY"] } },
+      sticker: {
+        season: "WC2026",
+        isActive: true,
+        rarity: { in: ["EPIC", "LEGENDARY"] },
+      },
     },
     include: {
       user: { select: { username: true } },
@@ -44,6 +48,10 @@ export default async function DashboardPage({
     where: {
       userId: user.id,
       isCustom: false,
+      sticker: {
+        season: "WC2026",
+        isActive: true,
+      },
     },
   });
 

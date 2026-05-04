@@ -49,12 +49,19 @@ export default async function ProfilePage() {
 
   // Sticker completion stats
   const totalStickers = await db.sticker.count({
-    where: { season: { not: "KZ_USER" } },
+    where: {
+      season: "WC2026",
+      isActive: true,
+    },
   });
   const ownedStickers = await db.userSticker.count({
     where: {
       userId: user.id,
       isCustom: false,
+      sticker: {
+        season: "WC2026",
+        isActive: true,
+      },
     },
   });
   const completionPct = totalStickers > 0

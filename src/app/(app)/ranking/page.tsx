@@ -62,14 +62,18 @@ export default async function RankingPage() {
 
   const userIds = [...new Set([...topUsers, ...recentUsers].map((entry) => entry.id))];
   const officialStickerCounts = userIds.length
-    ? await db.userSticker.groupBy({
-        by: ["userId"],
-        where: {
-          userId: { in: userIds },
-          isCustom: false,
-        },
-        _sum: {
-          quantity: true,
+      ? await db.userSticker.groupBy({
+          by: ["userId"],
+          where: {
+            userId: { in: userIds },
+            isCustom: false,
+            sticker: {
+              season: "WC2026",
+              isActive: true,
+            },
+          },
+          _sum: {
+            quantity: true,
         },
       })
     : [];

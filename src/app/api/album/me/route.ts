@@ -16,7 +16,14 @@ export async function GET() {
   if (cached) return NextResponse.json(cached);
 
   const userStickers = await db.userSticker.findMany({
-    where: { userId: user.id, isCustom: false },
+    where: {
+      userId: user.id,
+      isCustom: false,
+      sticker: {
+        season: "WC2026",
+        isActive: true,
+      },
+    },
     include: { sticker: true },
     orderBy: [{ sticker: { team: "asc" } }, { sticker: { name: "asc" } }],
   });

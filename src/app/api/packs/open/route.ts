@@ -85,7 +85,13 @@ export async function POST(req: NextRequest) {
 
   // Si el pack no tiene contenido configurado, usa todos los stickers de la DB
   if (contents.length === 0) {
-    const allStickers = await db.sticker.findMany({ take: 200 });
+    const allStickers = await db.sticker.findMany({
+      where: {
+        season: "WC2026",
+        isActive: true,
+      },
+      take: 200,
+    });
     contents = allStickers.map((s) => ({ sticker: s, weight: 10 })) as typeof contents;
   }
 

@@ -84,6 +84,10 @@ export async function POST(req: NextRequest) {
       where: {
         userId: user.id,
         isCustom: false,
+        sticker: {
+          season: "WC2026",
+          isActive: true,
+        },
       },
     }),
   ]);
