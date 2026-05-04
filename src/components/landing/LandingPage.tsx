@@ -5,6 +5,11 @@ import Link from "next/link";
 import { LandingStickerPreview } from "@/components/landing/LandingStickerPreview";
 import { LanguageSwitcher } from "@/components/landing/LanguageSwitcher";
 import { T, LANGUAGES, type LangCode } from "@/i18n/landing";
+import {
+  OFFICIAL_STICKER_COUNT,
+  WORLD_CUP_2026_TEAM_COUNT,
+  WORLD_CUP_2026_TOURNAMENT_DAYS,
+} from "@/lib/world-cup";
 
 const LANG_STORAGE_KEY = "kartazo_locale";
 
@@ -182,10 +187,10 @@ export function LandingPage() {
         <div className="relative z-10 flex flex-wrap justify-center gap-8 md:gap-16">
           {[
             { val: "5B+",  lbl: t.statsLabels.viewers,   icon: "📺" },
-            { val: "48",   lbl: t.statsLabels.matchDays,  icon: "📅" },
-            { val: "32",   lbl: t.statsLabels.nations,    icon: "🌍" },
-      { val: "1200+", lbl: t.statsLabels.stickers,   icon: "🃏" },
-            { val: "FREE", lbl: t.statsLabels.toStart,    icon: "🎁" },
+            { val: String(WORLD_CUP_2026_TOURNAMENT_DAYS), lbl: t.statsLabels.matchDays, icon: "📅" },
+            { val: String(WORLD_CUP_2026_TEAM_COUNT), lbl: t.statsLabels.nations, icon: "🌍" },
+      { val: `${OFFICIAL_STICKER_COUNT}+`, lbl: t.statsLabels.stickers, icon: "🃏" },
+            { val: "$0", lbl: t.statsLabels.toStart, icon: "🎁" },
           ].map(({ val, lbl, icon }) => (
             <div key={val} className="text-center">
               <div className="text-xl mb-0.5">{icon}</div>
