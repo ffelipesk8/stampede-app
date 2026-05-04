@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { redis, REDIS_KEYS } from "@/lib/redis";
-
-const TOTAL_STICKERS = 800;
+import { OFFICIAL_STICKER_COUNT } from "@/lib/world-cup";
 
 export async function GET() {
   const { userId } = auth();
@@ -37,11 +36,11 @@ export async function GET() {
   }, {});
 
   const totalOwned = userStickers.length;
-  const progressPct = Math.round((totalOwned / TOTAL_STICKERS) * 100);
+  const progressPct = Math.round((totalOwned / OFFICIAL_STICKER_COUNT) * 100);
 
   const result = {
     totalOwned,
-    totalStickers: TOTAL_STICKERS,
+    totalStickers: OFFICIAL_STICKER_COUNT,
     progressPct,
     byTeam,
     rarityCounts,

@@ -184,7 +184,7 @@ export function LandingPage() {
             { val: "5B+",  lbl: t.statsLabels.viewers,   icon: "📺" },
             { val: "48",   lbl: t.statsLabels.matchDays,  icon: "📅" },
             { val: "32",   lbl: t.statsLabels.nations,    icon: "🌍" },
-            { val: "800+", lbl: t.statsLabels.stickers,   icon: "🃏" },
+      { val: "1200+", lbl: t.statsLabels.stickers,   icon: "🃏" },
             { val: "FREE", lbl: t.statsLabels.toStart,    icon: "🎁" },
           ].map(({ val, lbl, icon }) => (
             <div key={val} className="text-center">

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { redis, REDIS_KEYS } from "@/lib/redis";
+import { OFFICIAL_STICKER_COUNT, WORLD_CUP_2026_TEAM_COUNT } from "@/lib/world-cup";
 import OpenAI from "openai";
 import { z } from "zod";
 
@@ -176,13 +177,13 @@ USER CONTEXT:
 - Username: ${user.username}
 - Favorite team: ${user.favoriteTeam ?? "not set yet"}
 - Level: ${user.level} | XP: ${user.xp}
-- Stickers owned: ${stickerCount} / 800 (${Math.round((stickerCount / 800) * 100)}% complete)
+- Stickers owned: ${stickerCount} / ${OFFICIAL_STICKER_COUNT} (${Math.round((stickerCount / OFFICIAL_STICKER_COUNT) * 100)}% complete)
 - Active missions: ${missionList || "none active"}
 - Streak: ${user.streakDays} days
 - PRO user: ${user.isPro}
 
 WORLD CUP 2026 FACTS:
-- 48 teams, 104 matches, 16 host cities across USA, Mexico, Canada
+- ${WORLD_CUP_2026_TEAM_COUNT} teams, 104 matches, 16 host cities across USA, Mexico, Canada
 - Kickoff: June 11, 2026. Final: July 19, 2026
 - Groups stage, Round of 32, QF, SF, Final format
 

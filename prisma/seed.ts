@@ -3,7 +3,7 @@
  * Run: npm run db:seed
  *
  * Creates:
- *  - ~800 stickers across 32 World Cup 2026 teams
+ *  - ~1200 stickers across 48 World Cup 2026 teams
  *  - 8 pack definitions
  *  - 15 badge definitions
  *  - 12 mission templates
@@ -50,6 +50,57 @@ const TEAMS = [
   { code: "NZL", name: "New Zealand",   flag: "🇳🇿", tier: 3 as const },
 ];
 
+const OFFICIAL_2026_TEAMS = [
+  { code: "USA", name: "United States",          flag: "🇺🇸", tier: 2 as const },
+  { code: "MEX", name: "Mexico",                 flag: "🇲🇽", tier: 2 as const },
+  { code: "CAN", name: "Canada",                 flag: "🇨🇦", tier: 2 as const },
+  { code: "ARG", name: "Argentina",              flag: "🇦🇷", tier: 1 as const },
+  { code: "BRA", name: "Brazil",                 flag: "🇧🇷", tier: 1 as const },
+  { code: "COL", name: "Colombia",               flag: "🇨🇴", tier: 2 as const },
+  { code: "ECU", name: "Ecuador",                flag: "🇪🇨", tier: 2 as const },
+  { code: "PAR", name: "Paraguay",               flag: "🇵🇾", tier: 2 as const },
+  { code: "URU", name: "Uruguay",                flag: "🇺🇾", tier: 2 as const },
+  { code: "AUS", name: "Australia",              flag: "🇦🇺", tier: 2 as const },
+  { code: "IRN", name: "IR Iran",                flag: "🇮🇷", tier: 2 as const },
+  { code: "JPN", name: "Japan",                  flag: "🇯🇵", tier: 2 as const },
+  { code: "JOR", name: "Jordan",                 flag: "🇯🇴", tier: 3 as const },
+  { code: "KOR", name: "Korea Republic",         flag: "🇰🇷", tier: 2 as const },
+  { code: "QAT", name: "Qatar",                  flag: "🇶🇦", tier: 2 as const },
+  { code: "SAU", name: "Saudi Arabia",           flag: "🇸🇦", tier: 2 as const },
+  { code: "UZB", name: "Uzbekistan",             flag: "🇺🇿", tier: 3 as const },
+  { code: "IRQ", name: "Iraq",                   flag: "🇮🇶", tier: 3 as const },
+  { code: "ALG", name: "Algeria",                flag: "🇩🇿", tier: 2 as const },
+  { code: "CPV", name: "Cabo Verde",             flag: "🇨🇻", tier: 3 as const },
+  { code: "CIV", name: "Cote d'Ivoire",          flag: "🇨🇮", tier: 2 as const },
+  { code: "EGY", name: "Egypt",                  flag: "🇪🇬", tier: 2 as const },
+  { code: "GHA", name: "Ghana",                  flag: "🇬🇭", tier: 2 as const },
+  { code: "MAR", name: "Morocco",                flag: "🇲🇦", tier: 2 as const },
+  { code: "SEN", name: "Senegal",                flag: "🇸🇳", tier: 2 as const },
+  { code: "ZAF", name: "South Africa",           flag: "🇿🇦", tier: 3 as const },
+  { code: "TUN", name: "Tunisia",                flag: "🇹🇳", tier: 3 as const },
+  { code: "COD", name: "DR Congo",               flag: "🇨🇩", tier: 3 as const },
+  { code: "CUW", name: "Curacao",                flag: "🇨🇼", tier: 3 as const },
+  { code: "HTI", name: "Haiti",                  flag: "🇭🇹", tier: 3 as const },
+  { code: "PAN", name: "Panama",                 flag: "🇵🇦", tier: 3 as const },
+  { code: "NZL", name: "New Zealand",            flag: "🇳🇿", tier: 3 as const },
+  { code: "AUT", name: "Austria",                flag: "🇦🇹", tier: 2 as const },
+  { code: "BEL", name: "Belgium",                flag: "🇧🇪", tier: 2 as const },
+  { code: "CRO", name: "Croatia",                flag: "🇭🇷", tier: 2 as const },
+  { code: "ENG", name: "England",                flag: "🏴", tier: 1 as const },
+  { code: "FRA", name: "France",                 flag: "🇫🇷", tier: 1 as const },
+  { code: "GER", name: "Germany",                flag: "🇩🇪", tier: 1 as const },
+  { code: "NED", name: "Netherlands",            flag: "🇳🇱", tier: 2 as const },
+  { code: "NOR", name: "Norway",                 flag: "🇳🇴", tier: 2 as const },
+  { code: "POR", name: "Portugal",               flag: "🇵🇹", tier: 1 as const },
+  { code: "SCO", name: "Scotland",               flag: "🏴", tier: 3 as const },
+  { code: "ESP", name: "Spain",                  flag: "🇪🇸", tier: 1 as const },
+  { code: "SUI", name: "Switzerland",            flag: "🇨🇭", tier: 2 as const },
+  { code: "SWE", name: "Sweden",                 flag: "🇸🇪", tier: 2 as const },
+  { code: "TUR", name: "Türkiye",                flag: "🇹🇷", tier: 2 as const },
+  { code: "BIH", name: "Bosnia and Herzegovina", flag: "🇧🇦", tier: 3 as const },
+  { code: "CZE", name: "Czechia",                flag: "🇨🇿", tier: 2 as const },
+];
+
 // Famous player names per team (index 0 = star player)
 const TEAM_PLAYERS: Record<string, string[]> = {
   ARG: ["Lionel Messi","Julián Álvarez","Rodrigo De Paul","Lautaro Martínez","Enzo Fernández","Alexis Mac Allister","Nahuel Molina","Nicolás Otamendi","Germán Pezzella","Emiliano Martínez","Paulo Dybala","Leandro Paredes","Cristian Romero","Marcos Acuña","Nicolás Tagliafico","Thiago Almada","Valentin Carboni","Nicolás González","Walter Kannemann","Guido Rodríguez","Franco Armani","Gonzalo Montiel","Juan Musso"],
@@ -84,6 +135,25 @@ const TEAM_PLAYERS: Record<string, string[]> = {
   QAT: ["Akram Afif","Almoez Ali","Hassan Al-Haydos","Bassam Al-Rawi","Boualem Khoukhi","Abdelkarim Hassan","Assim Madibo","Karim Boudiaf","Pedro Miguel","Ismaeel Mohammad","Salem Al-Hajri","Musab Kheder","Tarek Salman","Jassem Gaber","Mohamed Waad","Khoukhi Bualem","Yusuf Abdurisag","Tariq Salman","Abdullah Al-Ahrak","Mohammed Waad","Homam Ahmed","Meshaal Barsham","Saad Al-Sheeb"],
   GHA: ["Thomas Partey","Jordan Ayew","André Ayew","Mohammed Salisu","Alexander Djiku","Daniel Amartey","Inaki Williams","Osman Bukari","Joseph Paintsil","Emmanuel Gyasi","Abdul Fatawu Issahaku","Mohammed Kudus","Salis Abdul Samed","Antoine Semenyo","Tariq Lamptey","Edwin Gyasi","Lawrence Ati-Zigi","Joe Wollacott","Joseph Aidoo","Gideon Mensah","Ibrahim Dramani","Benjamin Asare","Jonathan Mensah"],
   NZL: ["Chris Wood","Liberato Cacace","Tommy Smith","Bill Tuilagi","Ryan Thomas","Stefan Marinovic","Joe Bell","Tim Payne","Callum McCowatt","Bozhidar Kraev","Sarpreet Singh","Elijah Just","Michael Boxall","Matt Garbett","Alex Greive","Myer Bevan","Marko Stamenic","Louis Fenton","Clayton Lewis","Callan Elliot","Nando Pijnaker","Max Mata","Logan Rogerson"],
+  PAR: ["Miguel Almiron","Julio Enciso","Gustavo Gomez","Mathias Villasanti","Antonio Sanabria","Kaku Romero","Omar Alderete","Andres Cubas","Ramon Sosa","Adam Bareiro","Carlos Coronel","Matias Espinoza","Fabian Balbuena","Diego Gomez","Hector Villalba","Gabriel Avalos","Richard Sanchez","Blas Riveros","Matias Rojas","Junior Alonso","Robert Rojas","Juan Espinola","Alex Arce"],
+  JOR: ["Mousa Al-Tamari","Yazan Al-Naimat","Ihsan Haddad","Mahmoud Al-Mardi","Nizar Al-Rashdan","Yazan Abu Arab","Abdallah Nasib","Yousef Abul Jazar","Alaa Olwan","Noor Al-Rawabdeh","Anas Bani Yaseen","Amer Jamous","Mohannad Abu Taha","Ibrahim Sadeh","Hamza Al-Dardour","Saleh Ratib","Mohammad Abu Zraiq","Yazeed Abulaila","Abdallah Al-Fakhouri","Ahmad Ersan","Salem Al-Ajalin","Mardi Matar","Oday Al-Saify"],
+  UZB: ["Eldor Shomurodov","Abbosbek Fayzullaev","Jaloliddin Masharipov","Otabek Shukurov","Rustam Ashurmatov","Utkir Yusupov","Odiljon Hamrobekov","Khojimat Erkinov","Azizbek Turgunboev","Bobir Abdukholikov","Abdukodir Khusanov","Sherzod Nasrullaev","Farrukh Sayfiev","Jamshid Iskanderov","Igor Sergeev","Husniddin Aliqulov","Oybek Bozorov","Akmal Mozgovoy","Dostonbek Khamdamov","Abbos Otakhonov","Sanjar Tursunov","Jasurbek Jaloliddinov","Sardor Sobirkhodjaev"],
+  IRQ: ["Aymen Hussein","Ali Jasim","Osama Rashid","Zidane Iqbal","Jalal Hassan","Frans Putros","Rebin Sulaka","Mohanad Ali","Amir Al-Ammari","Youssef Amyn","Bashar Resan","Ali Adnan","Saad Natiq","Mustafa Saadoon","Ahmed Ibrahim","Manaf Younis","Merchas Doski","Ibrahim Bayesh","Danilo Al-Saed","Ahmed Al-Hajjaj","Fahad Talib","Hussein Ali","Mestafa Nadhim"],
+  ALG: ["Riyad Mahrez","Ismael Bennacer","Said Benrahma","Ramiz Zerrouki","Youcef Atal","Aissa Mandi","Baghdad Bounedjah","Farid Boulaya","Nabil Bentaleb","Houssem Aouar","Amine Gouiri","Mohamed El Amine Amoura","Anthony Mandrea","Raouf Guitane","Ramy Bensebaini","Ahmed Touba","Yacine Adli","Hicham Boudaoui","Adam Ounas","Yasser Larouci","M'Barek Boussoufa","Kevin Guitoun","Haris Belkebla"],
+  CPV: ["Ryan Mendes","Bebe","Julio Tavares","Jamiro Monteiro","Stopira","Kenny Rocha Santos","Dylan Tavares","Logan Costa","Kevin Pina","Cuca","Patrick Andrade","Vozinha","Diney Borges","Deroy Duarte","Jovane Cabral","Wagner Pina","Joao Paulo","Roberto Lopes","Heldon Ramos","Lisandro Semedo","David Tavares","Gilson Tavares","Marco Soares"],
+  CIV: ["Sebastien Haller","Simon Adingra","Franck Kessie","Seko Fofana","Evan Ndicka","Odilon Kossounou","Wilfried Singo","Yahia Fofana","Nicolas Pepe","Jean Michael Seri","Oumar Diakite","Christian Kouame","Maxwel Cornet","Ghislain Konan","Serge Aurier","Jonathan Bamba","Badra Ali Sangare","Koffi Kouao","Karim Konate","Mohamed Diomande","Lazare Amani","Willy Boly","Ismael Diallo"],
+  ZAF: ["Percy Tau","Teboho Mokoena","Ronwen Williams","Lyle Foster","Evidence Makgopa","Mothobi Mvala","Sphephelo Sithole","Mihlali Mayambela","Nkosinathi Sibisi","Siyanda Xulu","Grant Kekana","Khuliso Mudau","Aubrey Modiba","Thapelo Morena","Zakhele Lepasa","Oswin Appollis","Jayden Adams","Teboho Maseko","Veli Mothwa","Sipho Mbule","Terrence Mashego","Nkosinathi Makhubela","Mosa Lebusa"],
+  TUN: ["Youssef Msakni","Elias Achouri","Hannibal Mejbri","Montassar Talbi","Dylan Bronn","Naim Sliti","Ali Maaloul","Aissa Laidouni","Ellyes Skhiri","Seifeddine Jaziri","Taha Yassine Khenissi","Hamza Rafia","Bechir Ben Said","Moez Ben Cherifia","Wajdi Kechrida","Ferjani Sassi","Yan Valery","Bilel Ifa","Mohamed Drager","Ghaylen Chaalali","Aymen Dahmen","Anis Ben Slimane","Sayfallah Ltaief"],
+  COD: ["Cedric Bakambu","Chancel Mbemba","Yoane Wissa","Simon Banza","Arthur Masuaku","Meschack Elia","Silas Katompa Mvumpa","Gael Kakuta","Ngalayel Mukau","Axel Tuanzebe","Dimitri Bertaud","Gedeon Kalulu","Theo Bongonda","Samuel Moutoussamy","Joris Kayembe","Charles Pickel","Noe Dussenne","Rock Munsy","Jordan Botaka","Edo Kayembe","Fiston Mayele","Merveille Bokadi","Grady Diangana"],
+  CUW: ["Leandro Bacuna","Juninho Bacuna","Jearl Margaritha","Eloy Room","Cuco Martina","Kenji Gorre","Gervane Kastaneer","Jeremy Antonisse","Brandley Kuwas","Vurnon Anita","Xandro Schenk","Jurien Gaari","Trevor Doornbusch","Kevin Felida","Roshon van Eijma","Livano Comenencia","Richairo Zivkovic","Mikos Gouka","Leroy Fer","Rangelo Janga","Joshua Brenet","Daryl van Mieghem","Nathangelo Markelo"],
+  HTI: ["Duckens Nazon","Frantzdy Pierrot","Danley Jean Jacques","Ricardo Ade","Alexandre Pierre","Johny Placide","Leverton Pierre","Carnejy Antoine","Dany Jean","Derrick Etienne Jr","Bryan Alceus","Mondy Prunier","Jeppe Simonsen","Christopher Attys","Steven Saba","Alex Christian Jr","Carlens Arcus","Wilde Donald Guerrier","Jean Kevin Duverne","Fafa Picault","Roselord Borgella","Steeven Saba","Ruben Providence"],
+  PAN: ["Adalberto Carrasquilla","Jose Fajardo","Cesar Blackman","Anibal Godoy","Fidel Escobar","Michael Murillo","Ismael Diaz","Jose Luis Rodriguez","Tomas Rodriguez","Eric Davis","Harold Cummings","Abdiel Ayarza","Cecilio Waterman","Cristian Martinez","Freddy Gondola","Luis Mejia","Andres Andrade","Roderick Miller","Carlos Harvey","Kahiser Lenis","Eduardo Guerrero","Jiovany Ramos","Orlando Mosquera"],
+  NOR: ["Erling Haaland","Martin Odegaard","Alexander Sorloth","Kristian Thorstvedt","Julian Ryerson","Antonio Nusa","Jorgen Strand Larsen","Sander Berge","Andreas Hanche-Olsen","Leo Skiri Ostigard","Fredrik Aursnes","Kristoffer Ajer","Patrick Berg","Ola Solbakken","Morten Thorsby","Orjan Nyland","Mathias Normann","Stian Gregersen","Hugo Vetlesen","Oscar Bobb","David Wolfe","Marcus Holmgren Pedersen","Mats Moller Daehli"],
+  SCO: ["Andrew Robertson","Scott McTominay","John McGinn","Billy Gilmour","Kieran Tierney","Lyndon Dykes","Angus Gunn","Ryan Christie","Callum McGregor","Che Adams","Kenny McLean","Grant Hanley","Jack Hendry","Lawrence Shankland","Ryan Porteous","Nathan Patterson","Liam Cooper","Tommy Conway","Stuart Armstrong","Lewis Ferguson","Ben Doak","James Forrest","Ross McCrorie"],
+  SWE: ["Alexander Isak","Viktor Gyokeres","Dejan Kulusevski","Emil Forsberg","Jesper Karlstrom","Viktor Lindelof","Robin Olsen","Carl Starfelt","Hjalmar Ekdal","Ludwig Augustinsson","Yasin Ayari","Lucas Bergvall","Anthony Elanga","Ken Sema","Hugo Larsson","Emil Krafth","Jesper Karlsson","Samuel Dahl","Jordan Larsson","Sebastian Nanasi","Gabriel Gudmundsson","Gustaf Nilsson","Robin Quaison"],
+  TUR: ["Hakan Calhanoglu","Arda Guler","Kenan Yildiz","Orkun Kokcu","Kaan Ayhan","Merih Demiral","Abdulkerim Bardakci","Mert Gunok","Ferdi Kadioglu","Baris Alper Yilmaz","Yunus Akgun","Cenk Tosun","Irfan Can Kahveci","Salih Ozcan","Ismail Yuksek","Can Uzun","Semih Kilicsoy","Samet Akaydin","Ugurcan Cakir","Zeki Celik","Okay Yokuslu","Ozan Kabak","Bertug Yildirim"],
+  BIH: ["Edin Dzeko","Amar Dedic","Ermedin Demirovic","Rade Krunic","Benjamin Tahirovic","Sead Kolasinac","Anel Ahmedhodzic","Ibrahim Sehic","Amir Hadziahmetovic","Haris Hajradinovic","Jusuf Gazibegovic","Denis Huseinbasic","Luka Menalo","Smail Prevljak","Miroslav Stevanovic","Adrian Leon Barisic","Nikola Vasilj","Stjepan Radeljic","Dario Saric","Tarik Muharemovic","Ajdin Hasic","Haris Tabakovic","Nihad Mujakic"],
+  CZE: ["Patrik Schick","Tomas Soucek","Vladimir Coufal","Adam Hlozek","Lukas Provod","Vaclav Cerny","Antonin Barak","Mojmir Chytil","David Jurasek","Ladislav Krejci","Tomas Holes","Jindrich Stanek","Ales Mateju","Matej Jurasek","Robin Hranac","Vaclav Jemelka","Jan Kuchta","Lukas Kalvach","Michal Sadilek","Tomas Cvancara","David Zima","Martin Vitik","Pavel Sulc"],
 };
 
 const POSITIONS = ["GK","CB","LB","RB","CDM","CM","CAM","LW","RW","ST","SS"];
@@ -165,43 +235,49 @@ async function main() {
   console.log("🌱  Starting STAMPEDE seed...\n");
 
   // ── Stickers ──────────────────────────────────────────────────────────────
-  console.log("⚽  Seeding stickers (32 teams × 25 each)...");
+  console.log(`⚽  Seeding stickers (${OFFICIAL_2026_TEAMS.length} teams × 25 each)...`);
   let stickerNum = 1;
 
-  for (const team of TEAMS) {
+  for (const team of OFFICIAL_2026_TEAMS) {
     const players = TEAM_PLAYERS[team.code] ?? [];
 
     // Crest sticker
+    const crestPayload = {
+      slug: `${team.code.toLowerCase()}-crest-wc2026`,
+      name: `${team.name} Crest`,
+      team: team.code,
+      teamFlag: team.flag,
+      position: "CREST",
+      category: "crest",
+      rarity: team.tier === 1 ? Rarity.RARE : Rarity.UNCOMMON,
+      xpValue: team.tier === 1 ? 20 : 15,
+    };
     await db.sticker.upsert({
       where:  { number: stickerNum },
-      update: {},
+      update: crestPayload,
       create: {
         number:   stickerNum++,
-        slug:     `${team.code.toLowerCase()}-crest-wc2026`,
-        name:     `${team.name} Crest`,
-        team:     team.code,
-        teamFlag: team.flag,
-        position: "CREST",
-        category: "crest",
-        rarity:   team.tier === 1 ? Rarity.RARE : Rarity.UNCOMMON,
-        xpValue:  team.tier === 1 ? 20 : 15,
+        ...crestPayload,
       },
     });
 
     // Coach sticker
+    const coachPayload = {
+      slug: `${team.code.toLowerCase()}-coach-wc2026`,
+      name: `${team.name} Coach`,
+      team: team.code,
+      teamFlag: team.flag,
+      position: "COACH",
+      category: "coach",
+      rarity: Rarity.UNCOMMON,
+      xpValue: 15,
+    };
     await db.sticker.upsert({
       where:  { number: stickerNum },
-      update: {},
+      update: coachPayload,
       create: {
         number:   stickerNum++,
-        slug:     `${team.code.toLowerCase()}-coach-wc2026`,
-        name:     `${team.name} Coach`,
-        team:     team.code,
-        teamFlag: team.flag,
-        position: "COACH",
-        category: "coach",
-        rarity:   Rarity.UNCOMMON,
-        xpValue:  15,
+        ...coachPayload,
       },
     });
 
@@ -212,19 +288,22 @@ async function main() {
       const xpValues: Record<Rarity, number> = {
         COMMON: 10, UNCOMMON: 15, RARE: 25, EPIC: 50, LEGENDARY: 100
       };
+      const playerPayload = {
+        slug: `${slugify(playerName)}-${team.code.toLowerCase()}-wc2026-${i}`,
+        name: playerName,
+        team: team.code,
+        teamFlag: team.flag,
+        position: getPosition(i),
+        category: "player",
+        rarity,
+        xpValue: xpValues[rarity],
+      };
       await db.sticker.upsert({
         where:  { number: stickerNum },
-        update: {},
+        update: playerPayload,
         create: {
           number:   stickerNum++,
-          slug:     `${slugify(playerName)}-${team.code.toLowerCase()}-wc2026-${i}`,
-          name:     playerName,
-          team:     team.code,
-          teamFlag: team.flag,
-          position: getPosition(i),
-          category: "player",
-          rarity,
-          xpValue:  xpValues[rarity],
+          ...playerPayload,
         },
       });
     }

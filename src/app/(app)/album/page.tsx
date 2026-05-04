@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { AlbumClient } from "@/components/album/AlbumClient";
 import { normalizeStickerDisplay, REFEREE_DISPLAY_STICKERS } from "@/lib/sticker-display";
+import { OFFICIAL_STICKER_COUNT } from "@/lib/world-cup";
 
 export const metadata = { title: "My Album — KARTAZO" };
 
@@ -58,7 +59,7 @@ export default async function AlbumPage() {
   });
 
   const totalOwned = ownedIds.size;
-  const totalStickers = normalizedAllStickers.length || 800;
+  const totalStickers = normalizedAllStickers.length || OFFICIAL_STICKER_COUNT;
   const customCards = customStickers.map((entry) => ({
     ...normalizeStickerDisplay(entry.sticker),
     rarity: entry.sticker.rarity as string,

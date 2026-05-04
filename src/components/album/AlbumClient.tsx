@@ -71,12 +71,16 @@ const RARITY_META: Record<string, {
 // ---------------------------------------------------------------------------
 
 const FLAG: Record<string, string> = {
-  ARG:"🇦🇷", AUS:"🇦🇺", BEL:"🇧🇪", BRA:"🇧🇷", CAN:"🇨🇦", CHE:"🇨🇭",
-  CMR:"🇨🇲", COL:"🇨🇴", CRI:"🇨🇷", DEU:"🇩🇪", DNK:"🇩🇰", ECU:"🇪🇨",
-  EGY:"🇪🇬", ENG:"🏴", ESP:"🇪🇸", FRA:"🇫🇷", GHA:"🇬🇭", HRV:"🇭🇷",
-  IRN:"🇮🇷", ITA:"🇮🇹", JPN:"🇯🇵", KOR:"🇰🇷", MAR:"🇲🇦", MEX:"🇲🇽",
-  NGA:"🇳🇬", NLD:"🇳🇱", PAN:"🇵🇦", POR:"🇵🇹", QAT:"🇶🇦", SAU:"🇸🇦",
-  SEN:"🇸🇳", USA:"🇺🇸", URY:"🇺🇾",
+  ALG:"🇩🇿", ARG:"🇦🇷", AUS:"🇦🇺", AUT:"🇦🇹", BEL:"🇧🇪", BIH:"🇧🇦",
+  BRA:"🇧🇷", CAN:"🇨🇦", CHE:"🇨🇭", CIV:"🇨🇮", COD:"🇨🇩", COL:"🇨🇴",
+  CPV:"🇨🇻", CRO:"🇭🇷", CRI:"🇨🇷", CUW:"🇨🇼", CZE:"🇨🇿", DEU:"🇩🇪",
+  DNK:"🇩🇰", ECU:"🇪🇨", EGY:"🇪🇬", ENG:"🏴", ESP:"🇪🇸", FRA:"🇫🇷",
+  GER:"🇩🇪", GHA:"🇬🇭", HRV:"🇭🇷", HTI:"🇭🇹", IRN:"🇮🇷", IRQ:"🇮🇶",
+  ITA:"🇮🇹", JOR:"🇯🇴", JPN:"🇯🇵", KOR:"🇰🇷", MAR:"🇲🇦", MEX:"🇲🇽",
+  NED:"🇳🇱", NGA:"🇳🇬", NLD:"🇳🇱", NOR:"🇳🇴", NZL:"🇳🇿", PAN:"🇵🇦",
+  PAR:"🇵🇾", POR:"🇵🇹", QAT:"🇶🇦", SAU:"🇸🇦", SCO:"🏴", SEN:"🇸🇳",
+  SUI:"🇨🇭", SWE:"🇸🇪", TUN:"🇹🇳", TUR:"🇹🇷", URU:"🇺🇾", URY:"🇺🇾",
+  USA:"🇺🇸", UZB:"🇺🇿", ZAF:"🇿🇦",
 };
 
 const CAT_BADGE: Record<string, string> = {

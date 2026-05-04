@@ -38,7 +38,7 @@ const COPY = {
           "This is where all your stickers live. Each World Cup team has its own section with players and staff.",
         icon: "📖",
         action: "Got it",
-        highlight: "800+ stickers to collect",
+    highlight: "1200+ stickers to collect",
       },
       {
         id: 2,
@@ -92,7 +92,7 @@ const COPY = {
           "Aqui viven todas tus estampas. Cada seleccion del Mundial tiene su propia seccion con jugadores y staff.",
         icon: "📖",
         action: "Entendido",
-        highlight: "Mas de 800 estampas por coleccionar",
+    highlight: "Mas de 1200 estampas por coleccionar",
       },
       {
         id: 2,
