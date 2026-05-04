@@ -164,6 +164,57 @@ function getPosition(index: number): string {
   return pos;
 }
 
+async function syncSticker(
+  number: number,
+  payload: {
+    slug: string;
+    name: string;
+    team: string;
+    teamFlag: string;
+    position: string;
+    category: string;
+    rarity: Rarity;
+    xpValue: number;
+  }
+) {
+  const existingBySlug = await db.sticker.findUnique({
+    where: { slug: payload.slug },
+    select: { id: true, number: true },
+  });
+
+  const existingByNumber = await db.sticker.findUnique({
+    where: { number },
+    select: { id: true, slug: true },
+  });
+
+  if (existingBySlug) {
+    if (existingByNumber && existingByNumber.id !== existingBySlug.id) {
+      await db.sticker.update({
+        where: { id: existingByNumber.id },
+        data: { number: 100000 + number },
+      });
+    }
+
+    await db.sticker.update({
+      where: { id: existingBySlug.id },
+      data: { number, ...payload },
+    });
+    return;
+  }
+
+  if (existingByNumber) {
+    await db.sticker.update({
+      where: { id: existingByNumber.id },
+      data: payload,
+    });
+    return;
+  }
+
+  await db.sticker.create({
+    data: { number, ...payload },
+  });
+}
+
 function getRarity(playerIndex: number, tier: 1 | 2 | 3): Rarity {
   if (playerIndex === 0 && tier === 1) return "LEGENDARY";
   if (playerIndex === 0 && tier === 2) return "EPIC";
@@ -252,14 +303,8 @@ async function main() {
       rarity: team.tier === 1 ? Rarity.RARE : Rarity.UNCOMMON,
       xpValue: team.tier === 1 ? 20 : 15,
     };
-    await db.sticker.upsert({
-      where:  { number: stickerNum },
-      update: crestPayload,
-      create: {
-        number:   stickerNum++,
-        ...crestPayload,
-      },
-    });
+    await syncSticker(stickerNum, crestPayload);
+    stickerNum++;
 
     // Coach sticker
     const coachPayload = {
@@ -272,14 +317,8 @@ async function main() {
       rarity: Rarity.UNCOMMON,
       xpValue: 15,
     };
-    await db.sticker.upsert({
-      where:  { number: stickerNum },
-      update: coachPayload,
-      create: {
-        number:   stickerNum++,
-        ...coachPayload,
-      },
-    });
+    await syncSticker(stickerNum, coachPayload);
+    stickerNum++;
 
     // Players (23)
     for (let i = 0; i < 23; i++) {
@@ -298,14 +337,8 @@ async function main() {
         rarity,
         xpValue: xpValues[rarity],
       };
-      await db.sticker.upsert({
-        where:  { number: stickerNum },
-        update: playerPayload,
-        create: {
-          number:   stickerNum++,
-          ...playerPayload,
-        },
-      });
+      await syncSticker(stickerNum, playerPayload);
+      stickerNum++;
     }
   }
   console.log(`   ✓ ${stickerNum - 1} stickers created\n`);
