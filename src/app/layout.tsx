@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim() || "https://www.kartazo.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://kartazo.com"
-  ),
+  metadataBase: new URL(appUrl),
   title: "KARTAZO | Plataforma Fan del Mundial 2026",
   description:
     "La plataforma fan del Mundial 2026. Album digital, eventos, coach IA y experiencia premium para coleccionistas.",
