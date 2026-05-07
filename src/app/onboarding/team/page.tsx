@@ -6,38 +6,38 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const TEAMS = [
-  { code: "USA", name: "United States", flag: "🇺🇸", confederation: "CONCACAF" },
-  { code: "MEX", name: "Mexico", flag: "🇲🇽", confederation: "CONCACAF" },
-  { code: "CAN", name: "Canada", flag: "🇨🇦", confederation: "CONCACAF" },
-  { code: "URU", name: "Uruguay", flag: "🇺🇾", confederation: "CONMEBOL" },
-  { code: "ARG", name: "Argentina", flag: "🇦🇷", confederation: "CONMEBOL" },
-  { code: "BRA", name: "Brazil", flag: "🇧🇷", confederation: "CONMEBOL" },
-  { code: "COL", name: "Colombia", flag: "🇨🇴", confederation: "CONMEBOL" },
-  { code: "ECU", name: "Ecuador", flag: "🇪🇨", confederation: "CONMEBOL" },
-  { code: "FRA", name: "France", flag: "🇫🇷", confederation: "UEFA" },
-  { code: "ENG", name: "England", flag: "🏴", confederation: "UEFA" },
-  { code: "ESP", name: "Spain", flag: "🇪🇸", confederation: "UEFA" },
-  { code: "GER", name: "Germany", flag: "🇩🇪", confederation: "UEFA" },
-  { code: "POR", name: "Portugal", flag: "🇵🇹", confederation: "UEFA" },
-  { code: "NED", name: "Netherlands", flag: "🇳🇱", confederation: "UEFA" },
-  { code: "BEL", name: "Belgium", flag: "🇧🇪", confederation: "UEFA" },
-  { code: "ITA", name: "Italy", flag: "🇮🇹", confederation: "UEFA" },
-  { code: "CRO", name: "Croatia", flag: "🇭🇷", confederation: "UEFA" },
-  { code: "DEN", name: "Denmark", flag: "🇩🇰", confederation: "UEFA" },
-  { code: "SUI", name: "Switzerland", flag: "🇨🇭", confederation: "UEFA" },
-  { code: "AUT", name: "Austria", flag: "🇦🇹", confederation: "UEFA" },
-  { code: "MAR", name: "Morocco", flag: "🇲🇦", confederation: "CAF" },
-  { code: "SEN", name: "Senegal", flag: "🇸🇳", confederation: "CAF" },
-  { code: "NGA", name: "Nigeria", flag: "🇳🇬", confederation: "CAF" },
-  { code: "EGY", name: "Egypt", flag: "🇪🇬", confederation: "CAF" },
-  { code: "JPN", name: "Japan", flag: "🇯🇵", confederation: "AFC" },
-  { code: "KOR", name: "South Korea", flag: "🇰🇷", confederation: "AFC" },
-  { code: "AUS", name: "Australia", flag: "🇦🇺", confederation: "AFC" },
-  { code: "IRN", name: "Iran", flag: "🇮🇷", confederation: "AFC" },
-  { code: "SAU", name: "Saudi Arabia", flag: "🇸🇦", confederation: "AFC" },
-  { code: "QAT", name: "Qatar", flag: "🇶🇦", confederation: "AFC" },
-  { code: "NZL", name: "New Zealand", flag: "🇳🇿", confederation: "OFC" },
-  { code: "GHA", name: "Ghana", flag: "🇬🇭", confederation: "CAF" },
+  { code: "USA", name: "United States", flag: "US", confederation: "CONCACAF" },
+  { code: "MEX", name: "Mexico", flag: "MX", confederation: "CONCACAF" },
+  { code: "CAN", name: "Canada", flag: "CA", confederation: "CONCACAF" },
+  { code: "URU", name: "Uruguay", flag: "UY", confederation: "CONMEBOL" },
+  { code: "ARG", name: "Argentina", flag: "AR", confederation: "CONMEBOL" },
+  { code: "BRA", name: "Brazil", flag: "BR", confederation: "CONMEBOL" },
+  { code: "COL", name: "Colombia", flag: "CO", confederation: "CONMEBOL" },
+  { code: "ECU", name: "Ecuador", flag: "EC", confederation: "CONMEBOL" },
+  { code: "FRA", name: "France", flag: "FR", confederation: "UEFA" },
+  { code: "ENG", name: "England", flag: "EN", confederation: "UEFA" },
+  { code: "ESP", name: "Spain", flag: "ES", confederation: "UEFA" },
+  { code: "GER", name: "Germany", flag: "DE", confederation: "UEFA" },
+  { code: "POR", name: "Portugal", flag: "PT", confederation: "UEFA" },
+  { code: "NED", name: "Netherlands", flag: "NL", confederation: "UEFA" },
+  { code: "BEL", name: "Belgium", flag: "BE", confederation: "UEFA" },
+  { code: "ITA", name: "Italy", flag: "IT", confederation: "UEFA" },
+  { code: "CRO", name: "Croatia", flag: "HR", confederation: "UEFA" },
+  { code: "DEN", name: "Denmark", flag: "DK", confederation: "UEFA" },
+  { code: "SUI", name: "Switzerland", flag: "CH", confederation: "UEFA" },
+  { code: "AUT", name: "Austria", flag: "AT", confederation: "UEFA" },
+  { code: "MAR", name: "Morocco", flag: "MA", confederation: "CAF" },
+  { code: "SEN", name: "Senegal", flag: "SN", confederation: "CAF" },
+  { code: "NGA", name: "Nigeria", flag: "NG", confederation: "CAF" },
+  { code: "EGY", name: "Egypt", flag: "EG", confederation: "CAF" },
+  { code: "JPN", name: "Japan", flag: "JP", confederation: "AFC" },
+  { code: "KOR", name: "South Korea", flag: "KR", confederation: "AFC" },
+  { code: "AUS", name: "Australia", flag: "AU", confederation: "AFC" },
+  { code: "IRN", name: "Iran", flag: "IR", confederation: "AFC" },
+  { code: "SAU", name: "Saudi Arabia", flag: "SA", confederation: "AFC" },
+  { code: "QAT", name: "Qatar", flag: "QA", confederation: "AFC" },
+  { code: "NZL", name: "New Zealand", flag: "NZ", confederation: "OFC" },
+  { code: "GHA", name: "Ghana", flag: "GH", confederation: "CAF" },
 ] as const;
 
 const CONFEDERATION_COLORS: Record<string, string> = {
@@ -47,6 +47,41 @@ const CONFEDERATION_COLORS: Record<string, string> = {
   CAF: "#EF4444",
   AFC: "#EC4899",
   OFC: "#8B5CF6",
+};
+
+const FLAG_EMOJI: Record<(typeof TEAMS)[number]["flag"], string> = {
+  US: "🇺🇸",
+  MX: "🇲🇽",
+  CA: "🇨🇦",
+  UY: "🇺🇾",
+  AR: "🇦🇷",
+  BR: "🇧🇷",
+  CO: "🇨🇴",
+  EC: "🇪🇨",
+  FR: "🇫🇷",
+  EN: "🏴",
+  ES: "🇪🇸",
+  DE: "🇩🇪",
+  PT: "🇵🇹",
+  NL: "🇳🇱",
+  BE: "🇧🇪",
+  IT: "🇮🇹",
+  HR: "🇭🇷",
+  DK: "🇩🇰",
+  CH: "🇨🇭",
+  AT: "🇦🇹",
+  MA: "🇲🇦",
+  SN: "🇸🇳",
+  NG: "🇳🇬",
+  EG: "🇪🇬",
+  JP: "🇯🇵",
+  KR: "🇰🇷",
+  AU: "🇦🇺",
+  IR: "🇮🇷",
+  SA: "🇸🇦",
+  QA: "🇶🇦",
+  NZ: "🇳🇿",
+  GH: "🇬🇭",
 };
 
 const COPY = {
@@ -71,6 +106,17 @@ const COPY = {
     saving: "Guardando...",
     letsGo: (name: string) => `Vamos con ${name}! ->`,
     select: "Selecciona tu equipo",
+  },
+  pt: {
+    step: "Passo 1 de 5",
+    title: "Escolha sua selecao",
+    subtitle: "Escolha a selecao que voce vai apoiar durante toda a jornada rumo a Copa do Mundo 2026.",
+    all: "TODAS",
+    saveError: "Algo deu errado. Tente novamente.",
+    yourTeam: "Seu time",
+    saving: "Salvando...",
+    letsGo: (name: string) => `Vamos com ${name}! ->`,
+    select: "Selecione seu time",
   },
 } as const;
 
@@ -153,7 +199,7 @@ export default function TeamSelectionPage() {
               }`}
             >
               <div className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full" style={{ backgroundColor: CONFEDERATION_COLORS[team.confederation] }} />
-              <span className="text-2xl">{team.flag}</span>
+              <span className="text-2xl">{FLAG_EMOJI[team.flag]}</span>
               <span className="text-center text-[10px] font-bold leading-tight text-white/80">{team.code}</span>
               {selected === team.code && (
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5E00]">
@@ -173,7 +219,7 @@ export default function TeamSelectionPage() {
             exit={{ opacity: 0, y: 10 }}
             className="mb-6 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
           >
-            <span className="text-4xl">{selectedTeam.flag}</span>
+            <span className="text-4xl">{FLAG_EMOJI[selectedTeam.flag]}</span>
             <div>
               <p className="text-lg font-bold text-white">{selectedTeam.name}</p>
               <p className="text-sm text-white/40">{selectedTeam.confederation}</p>

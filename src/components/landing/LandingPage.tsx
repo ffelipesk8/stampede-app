@@ -401,9 +401,9 @@ export function LandingPage() {
         </div>
         <p className="text-[#333355] text-xs text-center">{t.footerCopy}</p>
         <div className="flex gap-6 text-[#333355] text-xs">
-          <span className="hover:text-white cursor-pointer transition-colors">{t.privacy}</span>
-          <span className="hover:text-white cursor-pointer transition-colors">{t.terms}</span>
-          <span className="hover:text-white cursor-pointer transition-colors">{t.contact}</span>
+          <Link href={"/privacy" as never} className="hover:text-white transition-colors">{t.privacy}</Link>
+          <Link href={"/terms" as never} className="hover:text-white transition-colors">{t.terms}</Link>
+          <Link href={"/contact" as never} className="hover:text-white transition-colors">{t.contact}</Link>
         </div>
       </footer>
 
