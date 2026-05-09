@@ -53,6 +53,69 @@ const SAMPLE_STICKERS = [
   { name: "Pedri",            team: "ESP", rarity: "RARE",      cat: "player",  flag: "🇪🇸", color: "#00D97E", bg1: "#AA151B", bg2: "#F1BF00", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/20220308_Pedri_vs._Osasuna_%28cropped%29.jpg/440px-20220308_Pedri_vs._Osasuna_%28cropped%29.jpg" },
 ];
 
+const DAILY_STREAK_REWARDS = [
+  { day: 1, cards: 3 },
+  { day: 2, cards: 4 },
+  { day: 3, cards: 6 },
+  { day: 4, cards: 8 },
+  { day: 5, cards: 10 },
+];
+
+const LANDING_MARKETING = {
+  es: {
+    heroSub:
+      "Colecciona cartas oficiales del Mundial 2026, abre sobres diarios con rachas, crea eventos con otros fans, comparte tus cartas sociales y compite en el ranking global.",
+    featuresTitle: "Todo lo que ya puedes hacer",
+    features: [
+      { icon: "🃏", title: "Álbum oficial de 1200+ cartas", desc: "Jugadores, entrenadores, estadios, ciudades anfitrionas y momentos del torneo en un solo álbum digital listo para coleccionar." },
+      { icon: "🔥", title: "Rachas diarias con mejores recompensas", desc: "Entra todos los días para subir tu racha: 3, 4, 6, 8, 10 y más cartas gratis mientras mantengas el ritmo." },
+      { icon: "📸", title: "Cartas sociales creadas por fans", desc: "Sube una foto tuya con un jugador desde un link externo y conviértela en una carta para presumirla y compartirla." },
+      { icon: "📍", title: "Crea eventos futboleros", desc: "Organiza watch parties, encuentros de fans, torneos y reuniones en tu ciudad para mover comunidad real alrededor del Mundial." },
+      { icon: "🏆", title: "Ranking, XP y marketplace", desc: "Abre sobres, sube de nivel, gana XP, intercambia duplicadas y haz crecer una colección que también compite." },
+      { icon: "🤖", title: "Coach AI (pronto)", desc: "Muy pronto llegará el coach inteligente para acompañar la experiencia con recomendaciones, contexto y conversación futbolera." },
+    ],
+    streakTag: "Recompensa diaria",
+    streakTitle: "Mientras más vuelves, más cartas recibes",
+    streakSub: "La racha convierte el login diario en un hábito real: más retorno, más emoción y más posibilidades de encontrar cartas raras.",
+    streakNote: "Y después del día 5 la recompensa sigue creciendo.",
+    socialTitle: "Una plataforma hecha para vivir el Mundial con otros fans",
+    statsGrid: [
+      { val: "16", lbl: "Ciudades anfitrionas" },
+      { val: "16", lbl: "Estadios" },
+      { val: "48", lbl: "Selecciones" },
+      { val: "Eventos", lbl: "Creados por fans" },
+    ],
+    finalSub: "Abre sobres gratis, mantén tu racha, crea eventos y presume tus cartas sociales desde hoy.",
+    finalNote: "Sobres diarios · rachas · eventos · cartas sociales · marketplace",
+  },
+  en: {
+    heroSub:
+      "Collect official World Cup 2026 cards, open daily streak packs, create fan events, share your social cards and compete on the global ranking.",
+    featuresTitle: "Everything you can already do",
+    features: [
+      { icon: "🃏", title: "Official album with 1200+ cards", desc: "Players, coaches, stadiums, host cities and tournament moments in one digital album built for collecting." },
+      { icon: "🔥", title: "Daily streak rewards", desc: "Come back every day to grow your streak: 3, 4, 6, 8, 10 and even more free cards as long as you keep showing up." },
+      { icon: "📸", title: "Fan-made social cards", desc: "Turn a photo with a player into a card using an external image link, then share it like part of your collection." },
+      { icon: "📍", title: "Create football events", desc: "Organize watch parties, fan meetups, tournaments and city events that bring the World Cup community together." },
+      { icon: "🏆", title: "Ranking, XP and marketplace", desc: "Open packs, level up, gain XP, trade duplicates and grow a collection that also competes." },
+      { icon: "🤖", title: "Coach AI (soon)", desc: "The intelligent coach is coming soon with recommendations, context and football conversation for the full fan journey." },
+    ],
+    streakTag: "Daily reward",
+    streakTitle: "The more you return, the more cards you get",
+    streakSub: "The streak system turns daily login into a real habit: more retention, more excitement and more chances to pull rare cards.",
+    streakNote: "And after day 5, the reward keeps growing.",
+    socialTitle: "A platform built to experience the World Cup with other fans",
+    statsGrid: [
+      { val: "16", lbl: "Host Cities" },
+      { val: "16", lbl: "Venues" },
+      { val: "48", lbl: "National Teams" },
+      { val: "Events", lbl: "Created by fans" },
+    ],
+    finalSub: "Open free packs, keep your streak alive, create events and show off your social cards starting today.",
+    finalNote: "Daily packs · streak rewards · events · social cards · marketplace",
+  },
+} as const;
+
 export function LandingPage() {
   const [lang, setLang] = useState<LangCode>("es");
 
@@ -81,6 +144,7 @@ export function LandingPage() {
   };
 
   const t = T[lang];
+  const marketing = LANDING_MARKETING[lang as "es" | "en"] ?? LANDING_MARKETING.en;
   const dir = LANGUAGES.find((l) => l.code === lang)?.dir ?? "ltr";
 
   return (
@@ -160,8 +224,8 @@ export function LandingPage() {
           </span>
         </h1>
 
-        <p className="relative z-10 text-lg md:text-xl text-[#aaaacc] max-w-xl mb-10 leading-relaxed">
-          {t.heroSub}
+        <p className="relative z-10 text-lg md:text-xl text-[#aaaacc] max-w-2xl mb-10 leading-relaxed">
+          {marketing.heroSub}
         </p>
 
         {/* CTAs */}
@@ -238,10 +302,10 @@ export function LandingPage() {
       <section id="features" className="max-w-6xl mx-auto px-6 py-24">
         <div className="text-center mb-16">
           <span className="text-xs font-black tracking-widest uppercase" style={{ color: "#E8003D" }}>{t.featuresTag}</span>
-          <h2 className="font-condensed text-4xl md:text-5xl font-black text-white mt-2">{t.featuresTitle}</h2>
+          <h2 className="font-condensed text-4xl md:text-5xl font-black text-white mt-2">{marketing.featuresTitle}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {t.features.map((f, i) => (
+          {marketing.features.map((f, i) => (
             <div
               key={i}
               className="group p-6 rounded-2xl border border-white/6 hover:border-white/15 transition-all duration-300 hover:scale-[1.02]"
@@ -257,6 +321,35 @@ export function LandingPage() {
               <p className="text-[#666888] text-sm leading-relaxed">{f.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* -- DAILY STREAKS ---------------------------------------------------- */}
+      <section className="py-24 px-6" style={{ background: "rgba(255,255,255,0.015)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-xs font-black tracking-widest uppercase" style={{ color: "#FF5E00" }}>{marketing.streakTag}</span>
+            <h2 className="font-condensed text-4xl md:text-5xl font-black text-white mt-2">{marketing.streakTitle}</h2>
+            <p className="text-[#888899] mt-3 max-w-3xl mx-auto">{marketing.streakSub}</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {DAILY_STREAK_REWARDS.map((reward) => (
+              <div
+                key={reward.day}
+                className="rounded-2xl border border-white/8 p-5 text-center"
+                style={{ background: "linear-gradient(180deg, rgba(255,94,0,0.12), rgba(255,255,255,0.03))" }}
+              >
+                <div className="text-2xl mb-2">🔥</div>
+                <div className="font-condensed font-black text-3xl text-white">{reward.day}</div>
+                <div className="text-[11px] tracking-[0.25em] uppercase text-[#FFB800] mt-1">Day</div>
+                <div className="mt-4 font-condensed font-black text-4xl" style={{ color: "#FF5E00" }}>
+                  +{reward.cards}
+                </div>
+                <div className="text-xs text-[#888899] mt-1">cards</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-[#666888] mt-6">{marketing.streakNote}</p>
         </div>
       </section>
 
@@ -318,7 +411,7 @@ export function LandingPage() {
       <section className="py-20 px-6" style={{ background: "rgba(255,255,255,0.015)" }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="font-condensed text-3xl md:text-4xl font-black text-white text-center mb-12">
-            {t.socialTitle.split("KARTAZO").map((part, i, arr) => (
+            {marketing.socialTitle.split("KARTAZO").map((part, i, arr) => (
               <span key={i}>
                 {part}
                 {i < arr.length - 1 && <span style={{ color: "#FF5E00" }}>KARTAZO</span>}
@@ -326,7 +419,7 @@ export function LandingPage() {
             ))}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-12">
-            {t.statsGrid.map(({ val, lbl }, i) => {
+            {marketing.statsGrid.map(({ val, lbl }, i) => {
               const icons = ["🏙️","🏟️","🌎","🌐"];
               return (
                 <div key={i} className="p-6 rounded-2xl border border-white/8"
@@ -378,7 +471,7 @@ export function LandingPage() {
               {t.finalLine2}
             </span>
           </h2>
-          <p className="text-[#888899] text-lg mb-10">{t.finalSub}</p>
+          <p className="text-[#888899] text-lg mb-10">{marketing.finalSub}</p>
           <Link
             href={"/sign-up" as never}
             className="inline-flex items-center gap-3 font-black text-lg px-10 py-5 rounded-2xl transition-all hover:scale-105"
@@ -387,7 +480,7 @@ export function LandingPage() {
           >
             {t.finalCta}
           </Link>
-          <p className="text-[#333355] text-xs mt-4">{t.finalNote}</p>
+          <p className="text-[#333355] text-xs mt-4">{marketing.finalNote}</p>
         </div>
       </section>
 
