@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { redis, REDIS_KEYS } from "@/lib/redis";
 import { awardXp } from "@/lib/xp";
 import { normalizeStickerDisplay } from "@/lib/sticker-display";
+import { getDailyRewardCardCount, getDailyRewardDayKey, syncUserDailyStreak } from "@/lib/auth";
 import { PackType, Rarity } from "@prisma/client";
 import { z } from "zod";
 
@@ -30,6 +31,12 @@ export async function POST(req: NextRequest) {
 
   const user = await db.user.findUnique({ where: { clerkId } });
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+  const syncedUser = await syncUserDailyStreak(user.id);
+  const effectiveUser = {
+    ...user,
+    streakDays: syncedUser?.streakDays ?? user.streakDays,
+    lastActiveAt: syncedUser?.lastActiveAt ?? user.lastActiveAt,
+  };
 
   const pack = packId
     ? await db.pack.findUnique({
@@ -47,7 +54,7 @@ export async function POST(req: NextRequest) {
   // -- Welcome pack: can only open once ------------------
   if (pack.type === "WELCOME") {
     const alreadyOpened = await db.packLog.findFirst({
-      where: { userId: user.id, packId: pack.id },
+      where: { userId: effectiveUser.id, packId: pack.id },
     });
     if (alreadyOpened) {
       return NextResponse.json({ error: "Welcome pack already opened" }, { status: 409 });
@@ -56,23 +63,22 @@ export async function POST(req: NextRequest) {
 
   // -- Free daily pack: rate limit via DB (Redis es opcional) ------------
   if (pack.type === "FREE_DAILY") {
-    const today = new Date().toISOString().split("T")[0];
+    const today = getDailyRewardDayKey();
 
     // Primero intenta Redis, si falla usa DB
     let alreadyOpened = false;
     try {
-      const key = REDIS_KEYS.freePack(user.id);
+      const key = REDIS_KEYS.freePack(effectiveUser.id);
       const lastFree = await redis.get<string>(key);
       if (lastFree === today) alreadyOpened = true;
       else await redis.set(key, today, { ex: 86400 });
     } catch {
       // Redis no disponible — verificar via DB
-      const startOfDay = new Date(today + "T00:00:00.000Z");
-      const endOfDay = new Date(today + "T23:59:59.999Z");
       const existingLog = await db.packLog.findFirst({
-        where: { userId: user.id, packId: pack.id, openedAt: { gte: startOfDay, lte: endOfDay } },
+        where: { userId: effectiveUser.id, packId: pack.id },
+        orderBy: { openedAt: "desc" },
       });
-      if (existingLog) alreadyOpened = true;
+      if (existingLog && getDailyRewardDayKey(existingLog.openedAt) === today) alreadyOpened = true;
     }
 
     if (alreadyOpened) {
@@ -99,17 +105,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No stickers available" }, { status: 500 });
   }
 
+  const cardCount =
+    pack.type === "FREE_DAILY" ? getDailyRewardCardCount(effectiveUser.streakDays) : pack.cardCount;
+
   const drawnStickers = drawFromPack(
     contents,
-    pack.cardCount,
+    cardCount,
     pack.guaranteedMin as Rarity | null
   );
 
   // -- Welcome pack: guarantee team sticker --------------
   let finalStickers = drawnStickers;
-  if (pack.type === "WELCOME" && user.favoriteTeam) {
+  if (pack.type === "WELCOME" && effectiveUser.favoriteTeam) {
     const teamSticker = contents.find(
-      (c) => c.sticker.team === user.favoriteTeam && c.sticker.rarity === "RARE"
+      (c) => c.sticker.team === effectiveUser.favoriteTeam && c.sticker.rarity === "RARE"
     );
     if (teamSticker) {
       finalStickers[0] = teamSticker.sticker; // Slot 0 = guaranteed team rare
@@ -122,9 +131,9 @@ export async function POST(req: NextRequest) {
   await db.$transaction(
     finalStickers.map((sticker) =>
       db.userSticker.upsert({
-        where: { userId_stickerId: { userId: user.id, stickerId: sticker.id } },
+        where: { userId_stickerId: { userId: effectiveUser.id, stickerId: sticker.id } },
         update: { quantity: { increment: 1 } },
-        create: { userId: user.id, stickerId: sticker.id, source: "PACK" },
+        create: { userId: effectiveUser.id, stickerId: sticker.id, source: "PACK" },
       })
     )
   );
@@ -132,7 +141,7 @@ export async function POST(req: NextRequest) {
   // -- Log the pack open ----------------------------------
   await db.packLog.create({
     data: {
-      userId: user.id,
+      userId: effectiveUser.id,
       packId: pack.id,
       stickersWon: finalStickers.map((s) => ({ id: s.id, rarity: s.rarity, name: s.name })),
       xpEarned: pack.xpBonus,
@@ -140,19 +149,21 @@ export async function POST(req: NextRequest) {
   });
 
   // -- Award XP -------------------------------------------
-  const xpResult = await awardXp(user.id, "PACK_OPEN");
+  const xpResult = await awardXp(effectiveUser.id, "PACK_OPEN");
   if (pack.xpBonus > 0) {
     await db.user.update({
-      where: { id: user.id },
+      where: { id: effectiveUser.id },
       data: { xp: { increment: pack.xpBonus } },
     });
   }
 
   // -- Invalidate album cache -----------------------------
-  try { await redis.del(REDIS_KEYS.albumProgress(user.id)); } catch { /* Redis opcional */ }
+  try { await redis.del(REDIS_KEYS.albumProgress(effectiveUser.id)); } catch { /* Redis opcional */ }
 
   return NextResponse.json({
     stickers: finalStickers,
+    cardCount,
+    streakDays: effectiveUser.streakDays,
     xpEarned: xpResult.xpEarned + pack.xpBonus,
     newXp: xpResult.newXp,
     newLevel: xpResult.newLevel,

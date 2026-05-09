@@ -10,6 +10,7 @@ import { PremiumCardShell, type CardRarity } from "@/components/shared/PremiumCa
 import { getStickerFrameStyles } from "@/lib/sticker-frame";
 import { PremiumCard } from "@/components/shared/PremiumCard";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { Locale } from "@/lib/i18n/translations";
 
 // -- Shared team data -----------------------------------------------------------
 const TEAM_FLAGS: Record<string, string> = {
@@ -333,6 +334,8 @@ interface PacksClientProps {
   packs: Pack[];
   recentOpens: RecentOpen[];
   isPro: boolean;
+  streakDays: number;
+  dailyRewardCardCount: number;
 }
 
 const PACK_VISUALS: Record<string, { gradient: string; glow: string; label: string; emoji: string }> = {
@@ -343,9 +346,41 @@ const PACK_VISUALS: Record<string, { gradient: string; glow: string; label: stri
   LEGENDARY:  { gradient: "from-red/30 to-card1",  glow: "#FFB800", label: "LEGENDARY", emoji: "🔥" },
 };
 
+const DAILY_STREAK_COPY: Record<Locale, { streak: string; today: string; next: string }> = {
+  en: { streak: "day streak", today: "Today you get", next: "Keep the streak and tomorrow you unlock" },
+  es: { streak: "días de racha", today: "Hoy recibes", next: "Si mantienes la racha, mañana desbloqueas" },
+  pt: { streak: "dias de sequência", today: "Hoje você recebe", next: "Se mantiver a sequência, amanhã desbloqueia" },
+  fr: { streak: "jours de série", today: "Aujourd'hui tu reçois", next: "Garde ta série et demain tu débloques" },
+  de: { streak: "Tage in Folge", today: "Heute bekommst du", next: "Halte die Serie und morgen schaltest du frei" },
+  ar: { streak: "أيام متتالية", today: "اليوم تحصل على", next: "إذا حافظت على السلسلة فغدًا ستحصل على" },
+};
+
+const DAILY_STREAK_TIERS = [
+  { minDays: 1, cards: 3 },
+  { minDays: 2, cards: 4 },
+  { minDays: 3, cards: 6 },
+  { minDays: 4, cards: 8 },
+  { minDays: 5, cards: 10 },
+  { minDays: 7, cards: 12 },
+  { minDays: 10, cards: 14 },
+  { minDays: 14, cards: 16 },
+  { minDays: 21, cards: 18 },
+  { minDays: 30, cards: 20 },
+] as const;
+
+function getNextDailyTier(streakDays: number) {
+  return DAILY_STREAK_TIERS.find((tier) => tier.minDays > Math.max(1, streakDays)) ?? null;
+}
+
 // -- Main component -------------------------------------------------------------
-export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
-  const { t } = useLanguage();
+export function PacksClient({
+  packs,
+  recentOpens,
+  isPro,
+  streakDays,
+  dailyRewardCardCount,
+}: PacksClientProps) {
+  const { t, locale } = useLanguage();
   const [openingPack, setOpeningPack]  = useState<Pack | null>(null);
   const [openResult, setOpenResult]    = useState<{
     stickers: Array<{ id: string; name: string; rarity: Rarity; team: string; imageUrl: string; category?: string }>;
@@ -366,8 +401,10 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
   // Guards against stale async closures — null means no active open
   const activePackIdRef = useRef<string | null>(null);
 
-  const freePack   = packs.find((p) => p.type === "FREE_DAILY");
+  const freePack = packs.find((p) => p.type === "FREE_DAILY");
   const storePacks = packs.filter((p) => p.type !== "FREE_DAILY");
+  const nextDailyTier = getNextDailyTier(streakDays);
+  const streakCopy = DAILY_STREAK_COPY[locale] ?? DAILY_STREAK_COPY.es;
 
   const closeModal = useCallback(() => {
     activePackIdRef.current = null;
@@ -496,7 +533,22 @@ export function PacksClient({ packs, recentOpens, isPro }: PacksClientProps) {
               <span className="text-orange font-condensed text-xl font-black tracking-wide">{t("packs.freeDailyPack")}</span>
               <span className="bg-orange text-bg text-[10px] font-black px-1.5 py-0.5 rounded">{t("common.free")}</span>
             </div>
-            <p className="text-t2 text-sm">{freePack.cardCount} {t("packs.freeDailyDesc")}</p>
+            <p className="text-t2 text-sm">
+              {dailyRewardCardCount} {t("packs.freeDailyDesc")}
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-gold/30 bg-gold/10 px-2.5 py-1 text-[11px] font-bold text-gold">
+                🔥 {streakDays} {streakCopy.streak}
+              </span>
+              <span className="text-[11px] font-semibold text-white/90">
+                {streakCopy.today} {dailyRewardCardCount}
+              </span>
+            </div>
+            {nextDailyTier && (
+              <p className="mt-1 text-xs text-t3">
+                {streakCopy.next} {nextDailyTier.cards} ({nextDailyTier.minDays}d)
+              </p>
+            )}
             <div className="flex items-center gap-1 mt-1">
               <Zap className="w-3 h-3 text-gold" />
               <span className="text-gold text-xs font-bold">+{freePack.xpBonus || 50} {t("packs.xpBonus")}</span>

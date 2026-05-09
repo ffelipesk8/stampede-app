@@ -9,6 +9,36 @@ type ClerkSeedData = {
   avatarUrl?: string | null;
 };
 
+const LOGIN_STREAK_TIME_ZONE = "America/Bogota";
+
+const DAILY_REWARD_TIERS = [
+  { minDays: 1, cards: 3 },
+  { minDays: 2, cards: 4 },
+  { minDays: 3, cards: 6 },
+  { minDays: 4, cards: 8 },
+  { minDays: 5, cards: 10 },
+  { minDays: 7, cards: 12 },
+  { minDays: 10, cards: 14 },
+  { minDays: 14, cards: 16 },
+  { minDays: 21, cards: 18 },
+  { minDays: 30, cards: 20 },
+] as const;
+
+function getDayKey(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: LOGIN_STREAK_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const year = parts.find((part) => part.type === "year")?.value ?? "0000";
+  const month = parts.find((part) => part.type === "month")?.value ?? "00";
+  const day = parts.find((part) => part.type === "day")?.value ?? "00";
+
+  return `${year}-${month}-${day}`;
+}
+
 async function createUniqueUsername(baseValue: string) {
   const base =
     baseValue
@@ -61,6 +91,67 @@ export async function upsertUserFromClerkData(data: ClerkSeedData) {
       avatarUrl: data.avatarUrl ?? "",
       referralCode: generateReferralCode(),
     },
+  });
+}
+
+export function getDailyRewardCardCount(streakDays: number) {
+  const safeStreak = Math.max(1, streakDays);
+  let cardCount: number = DAILY_REWARD_TIERS[0].cards;
+
+  for (const tier of DAILY_REWARD_TIERS) {
+    if (safeStreak >= tier.minDays) {
+      cardCount = tier.cards;
+    } else {
+      break;
+    }
+  }
+
+  return cardCount;
+}
+
+export function getNextDailyRewardTier(streakDays: number) {
+  const safeStreak = Math.max(1, streakDays);
+  return DAILY_REWARD_TIERS.find((tier) => tier.minDays > safeStreak) ?? null;
+}
+
+export function getDailyRewardDayKey(date: Date = new Date()) {
+  return getDayKey(date);
+}
+
+export async function syncUserDailyStreak(userId: string) {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { id: true, streakDays: true, lastActiveAt: true },
+  });
+
+  if (!user) return null;
+
+  const now = new Date();
+  const todayKey = getDayKey(now);
+  const lastActiveKey = getDayKey(user.lastActiveAt);
+
+  if (todayKey === lastActiveKey) {
+    if (user.streakDays <= 0) {
+      return db.user.update({
+        where: { id: user.id },
+        data: { streakDays: 1 },
+        select: { id: true, streakDays: true, lastActiveAt: true },
+      });
+    }
+
+    return user;
+  }
+
+  const yesterdayKey = getDayKey(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  const nextStreakDays = lastActiveKey === yesterdayKey ? Math.max(1, user.streakDays) + 1 : 1;
+
+  return db.user.update({
+    where: { id: user.id },
+    data: {
+      streakDays: nextStreakDays,
+      lastActiveAt: now,
+    },
+    select: { id: true, streakDays: true, lastActiveAt: true },
   });
 }
 

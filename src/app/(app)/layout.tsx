@@ -8,7 +8,7 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import { AppSceneTransition } from "@/components/shared/AppSceneTransition";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { isAdminEmail } from "@/lib/admin";
-import { upsertUserFromClerkData } from "@/lib/auth";
+import { syncUserDailyStreak, upsertUserFromClerkData } from "@/lib/auth";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { userId: clerkId } = await auth();
@@ -37,6 +37,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     });
     if (!user) redirect("/sign-in");
   }
+
+  await syncUserDailyStreak(user.id);
 
   // Redirect to onboarding if not complete (desactiva en local poniendo SKIP_ONBOARDING=true en .env)
   if (user.onboardingStep < 5 && process.env.SKIP_ONBOARDING !== "true") redirect("/onboarding");
