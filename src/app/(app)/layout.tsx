@@ -8,10 +8,7 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import { AppSceneTransition } from "@/components/shared/AppSceneTransition";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { isAdminEmail } from "@/lib/admin";
-
-function generateReferralCode() {
-  return Math.random().toString(36).substring(2, 10).toUpperCase();
-}
+import { upsertUserFromClerkData } from "@/lib/auth";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { userId: clerkId } = await auth();
@@ -27,20 +24,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     const clerkUser = await currentUser();
     if (!clerkUser) redirect("/sign-in");
 
-    const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
-    const baseUsername = clerkUser.username ?? email.split("@")[0];
-    const username = baseUsername + Math.floor(Math.random() * 1000);
+    await upsertUserFromClerkData({
+      clerkId,
+      email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+      username: clerkUser.username,
+      avatarUrl: clerkUser.imageUrl ?? "",
+    });
 
-    user = await db.user.create({
-      data: {
-        clerkId,
-        email,
-        username,
-        avatarUrl: clerkUser.imageUrl ?? "",
-        referralCode: generateReferralCode(),
-      },
+    user = await db.user.findUnique({
+      where: { clerkId },
       select: { id: true, username: true, email: true, level: true, xp: true, coins: true, avatarUrl: true, favoriteTeam: true, onboardingStep: true, isPro: true },
     });
+    if (!user) redirect("/sign-in");
   }
 
   // Redirect to onboarding if not complete (desactiva en local poniendo SKIP_ONBOARDING=true en .env)

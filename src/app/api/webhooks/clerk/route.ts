@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { generateReferralCode } from "@/lib/auth";
+import { upsertUserFromClerkData } from "@/lib/auth";
 import { redis, REDIS_KEYS } from "@/lib/redis";
 
 export async function POST(req: Request) {
@@ -37,38 +37,50 @@ export async function POST(req: Request) {
 
   if (evt.type === "user.created") {
     const { id, email_addresses, username, image_url } = evt.data;
-    const email = email_addresses[0]?.email_address;
-    const uname = username ?? email.split("@")[0] + Math.floor(Math.random() * 1000);
+    const email = email_addresses[0]?.email_address ?? "";
 
-    const user = await db.user.create({
-      data: {
-        clerkId: id,
-        email,
-        username: uname,
-        avatarUrl: image_url,
-        referralCode: generateReferralCode(),
-      },
+    const existingByClerkId = await db.user.findUnique({
+      where: { clerkId: id },
+      select: { id: true },
     });
+
+    const existingByEmail = email
+      ? await db.user.findUnique({
+          where: { email: email.toLowerCase() },
+          select: { id: true },
+        })
+      : null;
+
+    const user = await upsertUserFromClerkData({
+      clerkId: id,
+      email,
+      username,
+      avatarUrl: image_url,
+    });
+
+    const wasExistingUser = Boolean(existingByClerkId || existingByEmail);
 
     // Grant welcome pack entitlement (flag in Redis)
     await redis.set(`welcome_pack:${user.id}`, "pending", { ex: 60 * 60 * 24 * 7 });
 
     // Seed 3 default daily missions
-    const dailyMissions = await db.mission.findMany({
-      where: { type: "DAILY", isActive: true, isRecurring: true },
-      take: 3,
-      orderBy: { sortOrder: "asc" },
-    });
-
-    if (dailyMissions.length > 0) {
-      await db.userMission.createMany({
-        data: dailyMissions.map((m) => ({
-          userId: user.id,
-          missionId: m.id,
-          target: (m.criteria as { count?: number }).count ?? 1,
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        })),
+    if (!wasExistingUser) {
+      const dailyMissions = await db.mission.findMany({
+        where: { type: "DAILY", isActive: true, isRecurring: true },
+        take: 3,
+        orderBy: { sortOrder: "asc" },
       });
+
+      if (dailyMissions.length > 0) {
+        await db.userMission.createMany({
+          data: dailyMissions.map((m) => ({
+            userId: user.id,
+            missionId: m.id,
+            target: (m.criteria as { count?: number }).count ?? 1,
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          })),
+        });
+      }
     }
 
     console.log(`✅ User created: ${user.username} (${user.id})`);
