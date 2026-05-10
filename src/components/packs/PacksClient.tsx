@@ -68,6 +68,7 @@ function StickerCard({ sticker, delay = 0 }: {
               {showPhoto ? (
                 <img src={photoUrl!} alt={sticker.name}
                      className="w-full h-full object-cover object-top"
+                     loading="lazy" decoding="async" draggable={false}
                      onLoad={() => setLoaded(true)}
                      onError={() => setError(true)} />
               ) : (
@@ -219,6 +220,9 @@ function FifaCard({
                     src={photoUrl!}
                     alt={sticker.name}
                     className="w-full h-full object-cover object-top"
+                    loading="eager"
+                    decoding="async"
+                    draggable={false}
                     onLoad={() => setLoaded(true)}
                     onError={() => setError(true)}
                   />

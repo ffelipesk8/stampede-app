@@ -845,6 +845,9 @@ function FifaCard({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => 
               <img
                 src={photoUrl!} alt={sticker.name}
                 className="w-full h-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
+                draggable={false}
                 onLoad={() => setLoaded(true)} onError={() => setError(true)}
               />
             ) : (
@@ -946,6 +949,7 @@ function ListRow({ sticker, onClick }: { sticker: AlbumSticker; onClick: () => v
              style={sticker.owned ? frame.imagePanel : { background: "#111120" }}>
           {sticker.owned && showPhoto
             ? <img src={photoUrl!} alt={sticker.name} className="w-full h-full object-cover object-top"
+                   loading="lazy" decoding="async" draggable={false}
                    onLoad={() => setLoaded(true)} onError={() => setError(true)} />
             : <div className="w-full h-full flex items-center justify-center">
                 <span className="text-sm">{sticker.owned ? (FLAG[sticker.team] ?? "⚽") : "?"}</span>
@@ -1122,6 +1126,7 @@ function StickerModal({ sticker, onClose }: { sticker: AlbumSticker; onClose: ()
                     showPhoto
                       ? <img src={photoUrl!} alt={sticker.name}
                              className="w-full h-full object-cover object-top"
+                             loading="eager" decoding="async" draggable={false}
                              onLoad={() => setLoaded(true)} onError={() => setError(true)} />
                       : <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
                           <div style={{ fontSize: 28 }}>{flagEmoji}</div>

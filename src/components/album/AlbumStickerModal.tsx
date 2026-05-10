@@ -188,6 +188,9 @@ export function AlbumStickerModal({ sticker, onClose }: { sticker: AlbumSticker;
                       src={photoUrl ?? ""}
                       alt={sticker.name}
                       className="h-full w-full object-cover object-top"
+                      loading="eager"
+                      decoding="async"
+                      draggable={false}
                       onLoad={() => setLoaded(true)}
                       onError={() => setError(true)}
                     />

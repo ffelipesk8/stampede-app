@@ -51,6 +51,9 @@ export function LandingStickerPreview({
                 src={imageUrl!}
                 alt={name}
                 className="w-full h-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
+                draggable={false}
                 onLoad={() => setLoaded(true)}
                 onError={() => {
                   if (staticUrl) { setStaticFailed(true); return; }

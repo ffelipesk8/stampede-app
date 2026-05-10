@@ -340,6 +340,9 @@ function OwnedCard({
             <img
               src={photoUrl!} alt={sticker.name}
               className="w-full h-full object-cover object-top"
+              loading={size === "lg" ? "eager" : "lazy"}
+              decoding="async"
+              draggable={false}
               onLoad={() => setLoaded(true)} onError={() => setError(true)}
             />
           ) : (
