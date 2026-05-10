@@ -67,7 +67,7 @@ const LANDING_MARKETING = {
       "Colecciona cartas oficiales del Mundial 2026, abre sobres diarios con rachas, crea eventos con otros fans, comparte tus cartas sociales y compite en el ranking global.",
     featuresTitle: "Todo lo que ya puedes hacer",
     features: [
-      { icon: "🃏", title: "Un álbum brutal de 1200+ cartas", desc: "Jugadores, entrenadores, estadios, ciudades anfitrionas y momentos del torneo en una colección digital hecha para fans que quieren vivirlo todo." },
+      { icon: "🃏", title: "Un álbum épico de 1200+ cartas", desc: "Jugadores, entrenadores, estadios, ciudades anfitrionas y momentos del torneo en una colección digital hecha para fans que quieren vivirlo todo." },
       { icon: "🔥", title: "Rachas diarias con mejores recompensas", desc: "Entra todos los días para subir tu racha: 3, 4, 6, 8, 10 y más cartas gratis mientras mantengas el ritmo." },
       { icon: "📸", title: "Cartas sociales creadas por fans", desc: "Sube una foto tuya con un jugador desde un link externo y conviértela en una carta para presumirla y compartirla." },
       { icon: "📍", title: "Crea eventos futboleros", desc: "Organiza watch parties, encuentros de fans, torneos y reuniones en tu ciudad para mover comunidad real alrededor del Mundial." },
@@ -93,7 +93,7 @@ const LANDING_MARKETING = {
       "Collect official World Cup 2026 cards, open daily streak packs, create fan events, share your social cards and compete on the global ranking.",
     featuresTitle: "Everything you can already do",
     features: [
-      { icon: "🃏", title: "A massive 1200+ card album", desc: "Players, coaches, stadiums, host cities and tournament moments in a digital collection built for fans who want to experience the whole ride." },
+      { icon: "🃏", title: "An epic 1200+ card album", desc: "Players, coaches, stadiums, host cities and tournament moments in a digital collection built for fans who want to experience the whole ride." },
       { icon: "🔥", title: "Daily streak rewards", desc: "Come back every day to grow your streak: 3, 4, 6, 8, 10 and even more free cards as long as you keep showing up." },
       { icon: "📸", title: "Fan-made social cards", desc: "Turn a photo with a player into a card using an external image link, then share it like part of your collection." },
       { icon: "📍", title: "Create football events", desc: "Organize watch parties, fan meetups, tournaments and city events that bring the World Cup community together." },
