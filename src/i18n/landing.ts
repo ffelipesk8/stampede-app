@@ -70,7 +70,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- ENGLISH ---------------------------------------------------------------
   en: {
     nav: { signIn: "Sign In", joinFree: "Join Free →" },
-    heroBadge: "FIFA World Cup 2026 · USA · Canada · México",
+    heroBadge: "World Cup 2026 · USA · Canada · México",
     heroLine1: "DON'T JUST",
     heroLine2: "WATCH IT.",
     heroLine3: "PLAY IT.",
@@ -85,7 +85,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "More Than a Game",
     features: [
   { icon: "🃏", title: "Digital Sticker Album", desc: "1200+ cards across players, coaches, stadiums, host cities and iconic moments. Collect, trade and complete your World Cup 2026 album." },
-      { icon: "📦", title: "Pack Opening", desc: "Open free daily packs with a FIFA-style reveal animation. Feel the rush of discovering a Legendary sticker." },
+      { icon: "📦", title: "Pack Opening", desc: "Open free daily packs with a premium reveal animation. Feel the rush of discovering a Legendary sticker." },
       { icon: "🤖", title: "AI Fan Coach", desc: "Your personal football AI. Ask about tactics, players, match predictions — it knows everything about World Cup 2026." },
       { icon: "🏆", title: "Fan Ranking", desc: "Compete with fans worldwide. Earn XP, climb the global leaderboard and show off your collection progress." },
       { icon: "🛒", title: "Marketplace", desc: "Buy, sell and trade duplicate stickers with other fans. The more you play, the more valuable your collection becomes." },
@@ -129,7 +129,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- ESPAÑOL ---------------------------------------------------------------
   es: {
     nav: { signIn: "Iniciar sesión", joinFree: "Únete gratis →" },
-    heroBadge: "Copa Mundial FIFA 2026 · USA · Canadá · México",
+    heroBadge: "Copa Mundial 2026 · USA · Canadá · México",
     heroLine1: "NO SOLO LO",
     heroLine2: "VES.",
     heroLine3: "VÍVELO.",
@@ -144,7 +144,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "Más que un juego",
     features: [
   { icon: "🃏", title: "Álbum Digital de Stickers", desc: "1200+ cartas entre jugadores, entrenadores, estadios, ciudades anfitrionas y momentos icónicos. Colecciona, tradea y completa tu álbum." },
-      { icon: "📦", title: "Apertura de Sobres", desc: "Abre sobres gratuitos diarios con animación estilo FIFA. Siente la emoción de descubrir una carta Legendaria." },
+      { icon: "📦", title: "Apertura de Sobres", desc: "Abre sobres gratuitos diarios con animación premium. Siente la emoción de descubrir una carta Legendaria." },
       { icon: "🤖", title: "Entrenador IA Fan", desc: "Tu IA personal de fútbol. Pregunta sobre tácticas, jugadores, predicciones — sabe todo sobre el Mundial 2026." },
       { icon: "🏆", title: "Ranking de Fans", desc: "Compite con fans del mundo entero. Gana XP, sube al ranking global y muestra tu progreso de colección." },
       { icon: "🛒", title: "Mercado", desc: "Compra, vende y tradea stickers duplicados con otros fans. Cuanto más juegas, más valiosa se vuelve tu colección." },
@@ -188,7 +188,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- PORTUGUÊS -------------------------------------------------------------
   pt: {
     nav: { signIn: "Entrar", joinFree: "Entrar grátis →" },
-    heroBadge: "Copa do Mundo FIFA 2026 · USA · Canadá · México",
+    heroBadge: "Copa do Mundo 2026 · USA · Canadá · México",
     heroLine1: "NÃO APENAS",
     heroLine2: "ASSISTA.",
     heroLine3: "JOGUE.",
@@ -203,7 +203,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "Mais que um jogo",
     features: [
   { icon: "🃏", title: "Álbum Digital de Figurinhas", desc: "1200+ cartas entre jogadores, técnicos, estádios, cidades-sede e momentos icônicos. Colecione, troque e complete seu álbum." },
-      { icon: "📦", title: "Abertura de Pacotes", desc: "Abra pacotes gratuitos diários com animação estilo FIFA. Sinta a emoção de descobrir uma figurinha Lendária." },
+      { icon: "📦", title: "Abertura de Pacotes", desc: "Abra pacotes gratuitos diários com animação premium. Sinta a emoção de descobrir uma figurinha Lendária." },
       { icon: "🤖", title: "Treinador IA Fan", desc: "Sua IA pessoal de futebol. Pergunte sobre táticas, jogadores, previsões — sabe tudo sobre a Copa 2026." },
       { icon: "🏆", title: "Ranking de Fãs", desc: "Compita com fãs do mundo todo. Ganhe XP, suba no ranking global e mostre seu progresso de coleção." },
       { icon: "🛒", title: "Mercado", desc: "Compre, venda e troque figurinhas duplicadas com outros fãs. Quanto mais você joga, mais valiosa se torna sua coleção." },
@@ -247,7 +247,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- FRANÇAIS --------------------------------------------------------------
   fr: {
     nav: { signIn: "Se connecter", joinFree: "Rejoindre gratis →" },
-    heroBadge: "Coupe du Monde FIFA 2026 · USA · Canada · Mexique",
+    heroBadge: "Coupe du Monde 2026 · USA · Canada · Mexique",
     heroLine1: "NE FAIS PAS",
     heroLine2: "QUE REGARDER.",
     heroLine3: "VIS-LE.",
@@ -262,7 +262,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "Plus qu'un jeu",
     features: [
   { icon: "🃏", title: "Album Digital de Stickers", desc: "1200+ cartes : joueurs, entraîneurs, stades, villes hôtes et moments iconiques. Collecte, échange et complète ton album." },
-      { icon: "📦", title: "Ouverture de Packs", desc: "Ouvre des packs gratuits quotidiens avec une animation style FIFA. Ressens le frisson de découvrir un sticker Légendaire." },
+      { icon: "📦", title: "Ouverture de Packs", desc: "Ouvre des packs gratuits quotidiens avec une animation premium. Ressens le frisson de découvrir un sticker Légendaire." },
       { icon: "🤖", title: "Coach IA Fan", desc: "Ton IA football personnelle. Pose des questions sur les tactiques, les joueurs, les prédictions — elle sait tout sur le Mondial 2026." },
       { icon: "🏆", title: "Classement des Fans", desc: "Affronte des fans du monde entier. Gagne de l'XP, monte dans le classement mondial et montre ta collection." },
       { icon: "🛒", title: "Marché", desc: "Achète, vends et échange des stickers en double avec d'autres fans. Plus tu joues, plus ta collection prend de la valeur." },
@@ -306,7 +306,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- DEUTSCH ---------------------------------------------------------------
   de: {
     nav: { signIn: "Anmelden", joinFree: "Kostenlos beitreten →" },
-    heroBadge: "FIFA Weltmeisterschaft 2026 · USA · Kanada · Mexiko",
+    heroBadge: "Weltmeisterschaft 2026 · USA · Kanada · Mexiko",
     heroLine1: "NICHT NUR",
     heroLine2: "ZUSCHAUEN.",
     heroLine3: "MITSPIELEN.",
@@ -321,7 +321,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "Mehr als ein Spiel",
     features: [
   { icon: "🃏", title: "Digitales Sticker-Album", desc: "1200+ Karten mit Spielern, Trainern, Stadien, Gastgeberstädten und ikonischen Momenten. Sammle, tausche und vervollständige dein Album." },
-      { icon: "📦", title: "Packöffnung", desc: "Öffne täglich kostenlose Packs mit FIFA-Stil-Animation. Spüre den Adrenalinstoß, eine Legendäre Karte zu entdecken." },
+      { icon: "📦", title: "Packöffnung", desc: "Öffne täglich kostenlose Packs mit Premium-Animation. Spüre den Adrenalinstoß, eine Legendäre Karte zu entdecken." },
       { icon: "🤖", title: "KI Fan-Trainer", desc: "Dein persönlicher Fußball-KI. Frag nach Taktiken, Spielern, Prognosen — er weiß alles über die WM 2026." },
       { icon: "🏆", title: "Fan-Rangliste", desc: "Tritt gegen Fans weltweit an. Verdiene XP, kletter in der globalen Rangliste und zeige deine Sammlung." },
       { icon: "🛒", title: "Marktplatz", desc: "Kaufe, verkaufe und tausche doppelte Sticker mit anderen Fans. Je mehr du spielst, desto wertvoller wird deine Sammlung." },
@@ -365,7 +365,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- ITALIANO --------------------------------------------------------------
   it: {
     nav: { signIn: "Accedi", joinFree: "Unisciti gratis →" },
-    heroBadge: "Coppa del Mondo FIFA 2026 · USA · Canada · Messico",
+    heroBadge: "Coppa del Mondo 2026 · USA · Canada · Messico",
     heroLine1: "NON SOLO",
     heroLine2: "GUARDARE.",
     heroLine3: "VIVERLA.",
@@ -380,7 +380,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "Più di un gioco",
     features: [
   { icon: "🃏", title: "Album Digitale di Figurine", desc: "1200+ carte tra giocatori, allenatori, stadi, città ospitanti e momenti iconici. Colleziona, scambia e completa il tuo album." },
-      { icon: "📦", title: "Apertura Pacchetti", desc: "Apri pacchetti gratuiti giornalieri con animazione stile FIFA. Prova il brivido di scoprire una figurina Leggendaria." },
+      { icon: "📦", title: "Apertura Pacchetti", desc: "Apri pacchetti gratuiti giornalieri con animazione premium. Prova il brivido di scoprire una figurina Leggendaria." },
       { icon: "🤖", title: "Allenatore IA Fan", desc: "La tua IA calcistica personale. Chiedi di tattiche, giocatori, previsioni — sa tutto sul Mondiale 2026." },
       { icon: "🏆", title: "Classifica Fan", desc: "Sfida i tifosi di tutto il mondo. Guadagna XP, scala la classifica globale e mostra la tua collezione." },
       { icon: "🛒", title: "Mercato", desc: "Compra, vendi e scambia figurine doppie con altri tifosi. Più giochi, più preziosa diventa la tua collezione." },
@@ -424,7 +424,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- العربية ---------------------------------------------------------------
   ar: {
     nav: { signIn: "تسجيل الدخول", joinFree: "← انضم مجاناً" },
-    heroBadge: "كأس العالم FIFA 2026 · الولايات المتحدة · كندا · المكسيك",
+    heroBadge: "كأس العالم 2026 · الولايات المتحدة · كندا · المكسيك",
     heroLine1: "لا تكتفِ",
     heroLine2: "بالمشاهدة.",
     heroLine3: "عِشها.",
@@ -439,7 +439,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "أكثر من مجرد لعبة",
     features: [
   { icon: "🃏", title: "ألبوم الملصقات الرقمي", desc: "أكثر من 1200 بطاقة بين اللاعبين والمدربين والملاعب والمدن المضيفة واللحظات الأيقونية. اجمع وتداول وأكمل ألبومك." },
-      { icon: "📦", title: "فتح الأكياس", desc: "افتح أكياساً مجانية يومية بأنيميشن على طراز FIFA. اشعر بإثارة اكتشاف ملصق أسطوري." },
+      { icon: "📦", title: "فتح الأكياس", desc: "افتح أكياساً مجانية يومية بأنيميشن مميّز. اشعر بإثارة اكتشاف ملصق أسطوري." },
       { icon: "🤖", title: "مدرب الذكاء الاصطناعي", desc: "ذكاؤك الاصطناعي لكرة القدم. اسأل عن التكتيكات واللاعبين والتوقعات — يعرف كل شيء عن كأس العالم 2026." },
       { icon: "🏆", title: "ترتيب المشجعين", desc: "تنافس مع المشجعين في جميع أنحاء العالم. اكسب XP وتسلق قائمة المتصدرين العالمية." },
       { icon: "🛒", title: "السوق", desc: "اشترِ وبِع وتداول الملصقات المكررة مع المشجعين الآخرين. كلما لعبت أكثر، كلما أصبحت مجموعتك أكثر قيمة." },
@@ -483,7 +483,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- 中文 ------------------------------------------------------------------
   zh: {
     nav: { signIn: "登录", joinFree: "免费加入 →" },
-    heroBadge: "2026 FIFA 世界杯 · 美国 · 加拿大 · 墨西哥",
+    heroBadge: "2026 世界杯 · 美国 · 加拿大 · 墨西哥",
     heroLine1: "不只是",
     heroLine2: "看球。",
     heroLine3: "参与其中。",
@@ -498,7 +498,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "不止是游戏",
     features: [
   { icon: "🃏", title: "数字贴纸专辑", desc: "1200+张卡牌，涵盖球员、教练、球场、举办城市和标志性时刻。收集、交易并完成你的专辑。" },
-      { icon: "📦", title: "开包", desc: "每日开免费包，FIFA风格揭晓动画。感受发现传奇贴纸的激动时刻。" },
+      { icon: "📦", title: "开包", desc: "每日开免费包，高级揭晓动画。感受发现传奇贴纸的激动时刻。" },
       { icon: "🤖", title: "AI球迷教练", desc: "你的专属足球AI。询问战术、球员、比赛预测——了解2026世界杯的一切。" },
       { icon: "🏆", title: "球迷排行榜", desc: "与全球球迷竞争。获得XP，攀登全球排行榜，展示你的收藏进度。" },
       { icon: "🛒", title: "市场", desc: "与其他球迷买卖交易重复贴纸。玩得越多，收藏越有价值。" },
@@ -542,7 +542,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- РУССКИЙ ---------------------------------------------------------------
   ru: {
     nav: { signIn: "Войти", joinFree: "Присоединиться бесплатно →" },
-    heroBadge: "Чемпионат мира FIFA 2026 · США · Канада · Мексика",
+    heroBadge: "Чемпионат мира 2026 · США · Канада · Мексика",
     heroLine1: "НЕ ПРОСТО",
     heroLine2: "СМОТРИ.",
     heroLine3: "ИГРАЙ.",
@@ -557,7 +557,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "Больше чем игра",
     features: [
   { icon: "🃏", title: "Цифровой Альбом Стикеров", desc: "1200+ карточек с игроками, тренерами, стадионами, городами-организаторами и культовыми моментами." },
-      { icon: "📦", title: "Открытие Пакетов", desc: "Открывай бесплатные пакеты каждый день с анимацией в стиле FIFA. Почувствуй азарт от находки Легендарного стикера." },
+      { icon: "📦", title: "Открытие Пакетов", desc: "Открывай бесплатные пакеты каждый день с премиальной анимацией. Почувствуй азарт от находки Легендарного стикера." },
       { icon: "🤖", title: "ИИ Фан-Тренер", desc: "Твой личный футбольный ИИ. Спрашивай о тактике, игроках, прогнозах — знает всё о ЧМ-2026." },
       { icon: "🏆", title: "Рейтинг болельщиков", desc: "Соревнуйся с болельщиками по всему миру. Зарабатывай XP и покоряй глобальный рейтинг." },
       { icon: "🛒", title: "Маркетплейс", desc: "Покупай, продавай и обменивай дублирующиеся стикеры с другими болельщиками." },
@@ -601,7 +601,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- 日本語 -----------------------------------------------------------------
   ja: {
     nav: { signIn: "ログイン", joinFree: "無料で参加 →" },
-    heroBadge: "FIFA ワールドカップ 2026 · アメリカ · カナダ · メキシコ",
+    heroBadge: "ワールドカップ 2026 · アメリカ · カナダ · メキシコ",
     heroLine1: "ただ見るだけじゃ",
     heroLine2: "もったいない。",
     heroLine3: "体験しよう。",
@@ -616,7 +616,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "ゲーム以上のもの",
     features: [
   { icon: "🃏", title: "デジタルステッカーアルバム", desc: "選手、監督、スタジアム、開催都市、伝説的瞬間を含む1200枚以上のカード。集めて、交換して、アルバムを完成させよう。" },
-      { icon: "📦", title: "パック開封", desc: "毎日FIFA風アニメーションで無料パックを開封。レジェンダリーカードを見つけた時のスリルを感じよう。" },
+      { icon: "📦", title: "パック開封", desc: "毎日プレミアムアニメーションで無料パックを開封。レジェンダリーカードを見つけた時のスリルを感じよう。" },
       { icon: "🤖", title: "AIファンコーチ", desc: "あなた専属のサッカーAI。戦術、選手、試合予想を何でも聞いて — ワールドカップ2026のすべてを知っている。" },
       { icon: "🏆", title: "ファンランキング", desc: "世界中のファンと競おう。XPを獲得し、グローバルリーダーボードを駆け上がれ。" },
       { icon: "🛒", title: "マーケットプレイス", desc: "他のファンと重複ステッカーを売買・交換しよう。プレイするほどコレクションの価値が上がる。" },
@@ -660,7 +660,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- 한국어 -----------------------------------------------------------------
   ko: {
     nav: { signIn: "로그인", joinFree: "무료 가입 →" },
-    heroBadge: "FIFA 월드컵 2026 · 미국 · 캐나다 · 멕시코",
+    heroBadge: "월드컵 2026 · 미국 · 캐나다 · 멕시코",
     heroLine1: "그냥 보는 것에",
     heroLine2: "만족하지 마라.",
     heroLine3: "즐겨라.",
@@ -675,7 +675,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "게임 그 이상",
     features: [
   { icon: "🃏", title: "디지털 스티커 앨범", desc: "선수, 감독, 경기장, 개최 도시, 역사적 순간을 담은 1200장 이상의 카드. 모으고, 거래하고, 앨범을 완성하세요." },
-      { icon: "📦", title: "팩 개봉", desc: "FIFA 스타일 애니메이션으로 매일 무료 팩을 개봉하세요. 전설 카드를 발견하는 짜릿함을 느껴보세요." },
+      { icon: "📦", title: "팩 개봉", desc: "프리미엄 애니메이션으로 매일 무료 팩을 개봉하세요. 전설 카드를 발견하는 짜릿함을 느껴보세요." },
       { icon: "🤖", title: "AI 팬 코치", desc: "나만의 축구 AI. 전술, 선수, 경기 예측에 대해 물어보세요 — 월드컵 2026의 모든 것을 알고 있어요." },
       { icon: "🏆", title: "팬 랭킹", desc: "전 세계 팬들과 경쟁하세요. XP를 획득하고, 글로벌 리더보드를 정복하세요." },
       { icon: "🛒", title: "마켓플레이스", desc: "다른 팬들과 중복 스티커를 사고, 팔고, 교환하세요. 많이 플레이할수록 컬렉션의 가치가 높아집니다." },
@@ -719,7 +719,7 @@ export const T: Record<LangCode, LandingStrings> = {
   // -- हिन्दी -----------------------------------------------------------------
   hi: {
     nav: { signIn: "साइन इन", joinFree: "मुफ़्त जुड़ें →" },
-    heroBadge: "FIFA विश्व कप 2026 · USA · कनाडा · मेक्सिको",
+    heroBadge: "विश्व कप 2026 · USA · कनाडा · मेक्सिको",
     heroLine1: "सिर्फ़",
     heroLine2: "देखो मत।",
     heroLine3: "जियो इसे।",
@@ -734,7 +734,7 @@ export const T: Record<LangCode, LandingStrings> = {
     featuresTitle: "एक खेल से बढ़कर",
     features: [
   { icon: "🃏", title: "डिजिटल स्टिकर एल्बम", desc: "खिलाड़ी, कोच, स्टेडियम, मेज़बान शहर और यादगार पलों के 1200+ कार्ड। इकट्ठा करें, ट्रेड करें और एल्बम पूरा करें।" },
-      { icon: "📦", title: "पैक खोलना", desc: "FIFA-स्टाइल एनिमेशन के साथ हर दिन मुफ़्त पैक खोलें। लेजेंडरी स्टिकर खोजने का रोमांच महसूस करें।" },
+      { icon: "📦", title: "पैक खोलना", desc: "प्रीमियम एनिमेशन के साथ हर दिन मुफ़्त पैक खोलें। लेजेंडरी स्टिकर खोजने का रोमांच महसूस करें।" },
       { icon: "🤖", title: "AI फैन कोच", desc: "आपका निजी फुटबॉल AI। टैक्टिक्स, खिलाड़ी, मैच भविष्यवाणी के बारे में पूछें — विश्व कप 2026 का सब जानता है।" },
       { icon: "🏆", title: "फैन रैंकिंग", desc: "दुनिया भर के फैन्स से प्रतिस्पर्धा करें। XP कमाएं, ग्लोबल लीडरबोर्ड पर चढ़ें।" },
       { icon: "🛒", title: "मार्केटप्लेस", desc: "दूसरे फैन्स के साथ डुप्लीकेट स्टिकर खरीदें, बेचें और ट्रेड करें।" },

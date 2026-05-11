@@ -87,6 +87,18 @@ const LANDING_MARKETING = {
     ],
     finalSub: "Abre sobres gratis, mantén tu racha, crea eventos y presume tus cartas sociales desde hoy.",
     finalNote: "Sobres diarios · rachas · eventos · cartas sociales · marketplace",
+    faqTag: "Preguntas frecuentes",
+    faqTitle: "Lo que todo el mundo pregunta antes de empezar",
+    faq: [
+      { q: "¿Es gratis de verdad?", a: "Sí. Te registras sin tarjeta de crédito, recibes tu primer sobre gratis al instante y vuelves cada día por más sin pagar nada. Más adelante habrá opciones premium opcionales, pero la base del juego es 100% gratis." },
+      { q: "¿KARTAZO es un producto oficial de FIFA?", a: "No. KARTAZO es una plataforma hecha por fans para fans. No estamos afiliados con FIFA ni con ninguna federación. Somos hinchas armando la mejor experiencia para vivir el Mundial 2026 juntos." },
+      { q: "¿Qué pasa si pierdo un día? ¿Se me cae la racha?", a: "Sí, la racha se reinicia si no entras en 24 horas. Pero no pierdes ninguna carta que ya tengas — solo el bono escalonado. Empiezas de nuevo en día 1 con 3 cartas y vuelves a subir." },
+      { q: "¿Cómo funciona el marketplace?", a: "Cuando tienes cartas duplicadas, puedes ponerlas a la venta o intercambiarlas por otras que te faltan. Negocias con otros coleccionistas dentro de la plataforma." },
+      { q: "¿Hay app móvil?", a: "Por ahora KARTAZO funciona perfecto en cualquier navegador móvil — abre kartazo.com en tu celular y la experiencia es fluida. App nativa iOS/Android viene pronto." },
+      { q: "¿Mi álbum desaparece después del Mundial?", a: "No. Tu álbum del Mundial 2026 queda contigo permanentemente. Después del torneo seguirá habiendo eventos, ranking histórico y nuevas colecciones." },
+      { q: "¿Por qué tengo que registrarme?", a: "Para guardar tu álbum, tu racha y tu progreso en cualquier dispositivo. No mandamos spam y no compartimos tu email con nadie. Puedes revisar nuestra política de privacidad en el footer." },
+      { q: "¿Cuándo empieza el Mundial?", a: "El Mundial 2026 arranca el 11 de junio en USA, México y Canadá. Lo ideal es empezar ya — los packs diarios se acumulan y la racha es mucho más fuerte si llegas al kickoff con varios días encima." },
+    ],
   },
   en: {
     heroSub:
@@ -113,6 +125,18 @@ const LANDING_MARKETING = {
     ],
     finalSub: "Open free packs, keep your streak alive, create events and show off your social cards starting today.",
     finalNote: "Daily packs · streak rewards · events · social cards · marketplace",
+    faqTag: "Frequently asked",
+    faqTitle: "What everyone asks before getting started",
+    faq: [
+      { q: "Is it really free?", a: "Yes. No credit card to sign up, free welcome pack, and a free daily pack every time you come back. Optional premium features will come later, but the core game is 100% free." },
+      { q: "Is KARTAZO an official FIFA product?", a: "No. KARTAZO is built by fans for fans. We are not affiliated with FIFA or any federation. We are football fans building the best way to experience the 2026 World Cup together." },
+      { q: "What happens if I miss a day? Do I lose my streak?", a: "Yes, your streak resets after 24 hours of inactivity — but you keep every card you have already collected. You just restart on day 1 with 3 cards and build up again." },
+      { q: "How does the marketplace work?", a: "When you get duplicate cards, you can list them for sale or trade them for cards you are missing. You negotiate with other collectors inside the platform." },
+      { q: "Do you have a mobile app?", a: "For now KARTAZO works great in any mobile browser — open kartazo.com on your phone and the experience is smooth. Native iOS and Android apps are coming soon." },
+      { q: "Does my album disappear after the World Cup?", a: "No. Your World Cup 2026 album stays with you permanently. After the tournament we will keep running events, historical rankings and new collections." },
+      { q: "Why do I need to sign up?", a: "To save your album, your streak and your progress across devices. We do not spam and we do not share your email. Our privacy policy is linked in the footer." },
+      { q: "When does the World Cup start?", a: "The 2026 World Cup kicks off on June 11 in the USA, Mexico and Canada. Best to start now — daily packs add up and the streak is much stronger if you arrive at kickoff with a head start." },
+    ],
   },
 } as const;
 
@@ -450,6 +474,43 @@ export function LandingPage() {
                   {l.name}
                 </span>
               </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* -- FAQ --------------------------------------------------------------- */}
+      <section className="py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-black tracking-widest uppercase" style={{ color: "#FF5E00" }}>
+              {marketing.faqTag}
+            </span>
+            <h2 className="font-condensed text-3xl md:text-4xl font-black text-white mt-2">
+              {marketing.faqTitle}
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {marketing.faq.map((item, i) => (
+              <details
+                key={i}
+                className="group rounded-2xl border border-white/8 overflow-hidden transition-colors hover:border-white/15"
+                style={{ background: "rgba(255,255,255,0.025)" }}
+              >
+                <summary className="cursor-pointer list-none px-5 py-4 flex items-center justify-between gap-4 text-white font-semibold text-base md:text-lg">
+                  <span>{item.q}</span>
+                  <span
+                    className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm transition-transform group-open:rotate-45"
+                    style={{ background: "rgba(255,94,0,0.12)", color: "#FF5E00", border: "1px solid rgba(255,94,0,0.25)" }}
+                    aria-hidden="true"
+                  >
+                    +
+                  </span>
+                </summary>
+                <div className="px-5 pb-5 -mt-1 text-[#aaaabb] text-sm md:text-base leading-relaxed">
+                  {item.a}
+                </div>
+              </details>
             ))}
           </div>
         </div>

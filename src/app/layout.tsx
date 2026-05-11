@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "KARTAZO | Plataforma Fan del Mundial 2026",
   description:
     "La plataforma fan del Mundial 2026. Album digital, eventos, coach IA y experiencia premium para coleccionistas.",
-  keywords: ["Mundial 2026", "FIFA", "album de estampas", "futbol", "plataforma fan"],
+  keywords: ["Mundial 2026", "album de estampas", "futbol", "plataforma fan"],
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },

@@ -438,7 +438,7 @@ function EventCard({
           </h3>
           {event.isVerified && (
             <span className="text-[9px] font-black text-blue bg-blue/10 border border-blue/20 px-1.5 py-0.5 rounded">
-              OFFICIAL
+              VERIFIED
             </span>
           )}
           {isSoon && (
