@@ -64,7 +64,7 @@ const DAILY_STREAK_REWARDS = [
 const LANDING_MARKETING = {
   es: {
     heroSub:
-      "Colecciona cartas oficiales del Mundial 2026, abre sobres diarios con rachas, crea eventos con otros fans, comparte tus cartas sociales y compite en el ranking global.",
+      "Colecciona tu álbum del Mundial 2026, abre sobres diarios con rachas, crea eventos con otros fans, comparte tus cartas sociales y compite en el ranking global.",
     featuresTitle: "Todo lo que ya puedes hacer",
     features: [
       { icon: "🃏", title: "Un álbum épico de 1200+ cartas", desc: "Jugadores, entrenadores, estadios, ciudades anfitrionas y momentos del torneo en una colección digital hecha para fans que quieren vivirlo todo." },
@@ -90,7 +90,7 @@ const LANDING_MARKETING = {
   },
   en: {
     heroSub:
-      "Collect official World Cup 2026 cards, open daily streak packs, create fan events, share your social cards and compete on the global ranking.",
+      "Build your World Cup 2026 album, open daily streak packs, create fan events, share your social cards and compete on the global ranking.",
     featuresTitle: "Everything you can already do",
     features: [
       { icon: "🃏", title: "An epic 1200+ card album", desc: "Players, coaches, stadiums, host cities and tournament moments in a digital collection built for fans who want to experience the whole ride." },
