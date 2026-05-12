@@ -6,7 +6,7 @@
  * The single unified sticker card for the whole app.
  *
  * Modes:
- *   • `owned` true  → Panini WC2026 full card (photo, flag bar, holographic foil, position/number)
+ *   • `owned` true  → KARTAZO digital collectible card
  *   • `owned` false → Locked mystery card (greyed out, lock icon)
  *   • `flipMode`    → Pack reveal: card starts face-down, flips on tap
  *
@@ -87,6 +87,18 @@ const SIZE_DIMENSIONS: Record<string, string> = {
 };
 const SIZE_ASPECT = "3/4.2";
 
+const CATEGORY_META: Record<string, { tag: string; icon: string; accent: string }> = {
+  player: { tag: "PLAYER", icon: "01", accent: "#FF5E00" },
+  coach: { tag: "COACH", icon: "CT", accent: "#F97316" },
+  crest: { tag: "CREST", icon: "CR", accent: "#14B8A6" },
+  city: { tag: "CITY", icon: "CT", accent: "#4CC9F0" },
+  stadium: { tag: "VENUE", icon: "VN", accent: "#7C3AED" },
+  moment: { tag: "MOMENT", icon: "MM", accent: "#F43F5E" },
+  trophy: { tag: "TROPHY", icon: "TR", accent: "#F59E0B" },
+  referee: { tag: "REF", icon: "RF", accent: "#38BDF8" },
+  special: { tag: "SPECIAL", icon: "SP", accent: "#A855F7" },
+};
+
 function getTierLabel(locale: string, rarity: string) {
   const tiers: Record<string, Record<string, string>> = {
     en: {
@@ -161,6 +173,7 @@ function LockedCard({ sticker }: { sticker: PremiumCardSticker }) {
   const posLabel  = POSITION_LABEL[sticker.position] ?? sticker.position;
   const flagEmoji = sticker.teamFlag || FLAG[sticker.team] || "⚽";
   const meta      = RARITY_META[sticker.rarity] ?? RARITY_META.COMMON;
+  const category = CATEGORY_META[sticker.category] ?? CATEGORY_META.player;
   // Subtle team-tinted hue for the mystery effect
   const hint = meta.color;
 
@@ -198,22 +211,33 @@ function LockedCard({ sticker }: { sticker: PremiumCardSticker }) {
         style={{ background: `linear-gradient(to right, transparent, ${hint}08, transparent)` }}
       />
 
-      {/* Top row: team + position/number */}
-      <div className="flex items-start justify-between px-2 pt-2 pb-0.5 shrink-0 relative z-10">
-        <div>
-          <span className="text-[7px] font-black tracking-widest leading-none"
-                style={{ color: `${hint}55` }}>
-            {sticker.team}
-          </span>
-          <br />
-          <span className="text-[6px] text-white/10 font-bold">· 2026</span>
+      {/* Top row: KARTAZO rail + category */}
+      <div className="flex items-start justify-between px-2 pt-2 pb-1 shrink-0 relative z-10">
+        <div className="flex items-center gap-1.5">
+          <div
+            className="rounded-md px-1.5 py-1 flex items-center justify-center font-black tracking-[0.18em]"
+            style={{
+              fontSize: "6px",
+              color: "#07070F",
+              background: "linear-gradient(135deg,#E8003D,#FF5E00,#FFB800)",
+              boxShadow: "0 0 10px rgba(255,94,0,0.2)",
+            }}
+          >
+            KZ
+          </div>
+          <div>
+            <p className="text-[7px] font-black tracking-[0.18em] leading-none text-white/35">KARTAZO</p>
+            <p className="text-[6px] font-bold leading-none mt-0.5" style={{ color: `${category.accent}99` }}>
+              {category.tag}
+            </p>
+          </div>
         </div>
         <div className="text-right">
-          <p className="text-[7px] font-bold leading-none mb-0.5" style={{ color: "rgba(255,255,255,0.1)" }}>
+          <p className="text-[7px] font-bold leading-none mb-0.5" style={{ color: "rgba(255,255,255,0.14)" }}>
             {posLabel}
           </p>
           <p className="font-condensed text-xl font-black leading-none" style={{ color: `${hint}20` }}>
-            {sticker.number}
+            {String(sticker.number).padStart(3, "0")}
           </p>
         </div>
       </div>
@@ -243,12 +267,17 @@ function LockedCard({ sticker }: { sticker: PremiumCardSticker }) {
         className="px-2 pb-2 pt-1.5 shrink-0 flex items-center justify-between relative z-10"
         style={{ borderTop: `1px solid ${hint}12` }}
       >
-        <p
-          className="text-[8px] font-black truncate flex-1 leading-tight uppercase"
-          style={{ color: "rgba(255,255,255,0.16)" }}
-        >
-          {sticker.name}
-        </p>
+        <div className="min-w-0 flex-1">
+          <p
+            className="text-[8px] font-black truncate leading-tight uppercase"
+            style={{ color: "rgba(255,255,255,0.16)" }}
+          >
+            {sticker.name}
+          </p>
+          <p className="text-[6px] font-bold tracking-[0.18em] uppercase mt-0.5 text-white/10">
+            {sticker.team} · {category.tag}
+          </p>
+        </div>
         <span className="text-sm ml-1 shrink-0" style={{ opacity: 0.1 }}>{flagEmoji}</span>
       </div>
     </div>
@@ -272,6 +301,7 @@ function OwnedCard({
   const posLabel = POSITION_LABEL[sticker.position] ?? sticker.position;
   const flagEmoji = sticker.teamFlag || FLAG[sticker.team] || "⚽";
   const initials  = sticker.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const category  = CATEGORY_META[sticker.category] ?? CATEGORY_META.player;
 
   const { photoUrl, showPhoto, setLoaded, setError } = useStickerImage(
     sticker.playerName ?? sticker.name,
@@ -281,6 +311,8 @@ function OwnedCard({
 
   const [p, s] = getTeamPalette(sticker.team);
   const isLg = size === "lg";
+  const numberLabel = String(sticker.number).padStart(3, "0");
+  const topMetaLabel = sticker.category === "player" ? posLabel : category.tag;
 
   return (
     <div className="w-full h-full rounded-xl p-[2.5px]" style={frame.shell}>
@@ -294,48 +326,70 @@ function OwnedCard({
           ].join(", "),
         }}
       >
-        {/* Flag bar */}
-        <div className="w-full shrink-0 z-20" style={{ ...frame.flagBar }} />
-
-        {/* Top row: WC26 badge left + position/number right */}
-        <div className="flex items-start justify-between px-2 pt-1.5 pb-0.5 z-10 shrink-0">
-          <div className="flex flex-col gap-0.5">
-            <span
-              className="font-black px-1 py-0.5 rounded leading-none"
+        {/* KARTAZO top rail */}
+        <div
+          className="w-full shrink-0 z-20 px-2.5 py-1.5 flex items-center justify-between"
+          style={{
+            background: "linear-gradient(90deg, rgba(7,7,15,0.96) 0%, rgba(7,7,15,0.72) 75%, rgba(7,7,15,0.4) 100%)",
+            borderBottom: `1px solid ${color}24`,
+          }}
+        >
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div
+              className="rounded-md px-1.5 py-1 flex items-center justify-center font-black tracking-[0.18em] shrink-0"
               style={{
-                fontSize: isLg ? "8px" : "7px",
-                background: `${color}30`, color,
-                border: `0.5px solid ${color}50`,
+                fontSize: isLg ? "7px" : "6px",
+                color: "#07070F",
+                background: "linear-gradient(135deg,#E8003D,#FF5E00,#FFB800)",
+                boxShadow: "0 0 12px rgba(255,94,0,0.22)",
               }}
             >
-              WC26
-            </span>
-            <p className="font-black text-white/70 tracking-wider" style={{ fontSize: isLg ? "9px" : "8px" }}>
-              {sticker.team}
-            </p>
+              KZ
+            </div>
+            <div className="min-w-0">
+              <p className="font-black tracking-[0.16em] leading-none text-white/80 truncate" style={{ fontSize: isLg ? "8px" : "7px" }}>
+                KARTAZO
+              </p>
+              <p className="font-bold leading-none mt-0.5 truncate" style={{ fontSize: isLg ? "7px" : "6px", color: `${category.accent}CC` }}>
+                {category.tag} · {sticker.team}
+              </p>
+            </div>
           </div>
-          <div className="text-right flex flex-col items-end">
+          <div className="text-right shrink-0 pl-2">
             <p
-              className="font-black uppercase tracking-widest leading-none mb-0.5"
+              className="font-black uppercase tracking-[0.16em] leading-none mb-0.5"
               style={{ fontSize: isLg ? "8px" : "7px", color: `${color}CC` }}
             >
-              {posLabel}
+              {topMetaLabel}
             </p>
             <p
               className="font-condensed font-black leading-none"
               style={{
-                fontSize: isLg ? "28px" : "22px",
+                fontSize: isLg ? "24px" : "20px",
                 color: "#fff",
-                textShadow: `0 0 8px ${color}80`,
+                textShadow: `0 0 8px ${color}70`,
               }}
             >
-              {sticker.number}
+              {numberLabel}
             </p>
           </div>
         </div>
 
         {/* Photo area */}
         <div className="flex-1 relative overflow-hidden">
+          <div
+            className="absolute left-0 top-0 bottom-0 z-10 w-3.5"
+            style={{
+              background: "linear-gradient(180deg,#E8003D 0%,#FF5E00 55%,#FFB800 100%)",
+              boxShadow: "0 0 20px rgba(255,94,0,0.2)",
+            }}
+          />
+          <div
+            className="absolute left-1 top-3 z-20 rotate-180 [writing-mode:vertical-rl] font-black tracking-[0.2em] uppercase"
+            style={{ fontSize: isLg ? "7px" : "6px", color: "rgba(7,7,15,0.88)" }}
+          >
+            {category.tag}
+          </div>
           {showPhoto ? (
             <img
               src={photoUrl!} alt={sticker.name}
@@ -365,6 +419,31 @@ function OwnedCard({
               </div>
             </div>
           )}
+          {/* Digital overlays */}
+          <div
+            className="absolute top-3 right-2.5 z-20 rounded-full px-1.5 py-1 font-black tracking-[0.18em]"
+            style={{
+              fontSize: isLg ? "7px" : "6px",
+              color: "#fff",
+              background: "rgba(7,7,15,0.58)",
+              border: `1px solid ${color}28`,
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {flagEmoji}
+          </div>
+          <div
+            className="absolute bottom-11 right-2 z-20 font-black uppercase rounded-md px-1.5 py-1"
+            style={{
+              fontSize: isLg ? "7px" : "6px",
+              color: color,
+              background: "rgba(7,7,15,0.52)",
+              border: `1px solid ${color}24`,
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {meta.label}
+          </div>
           {/* Gradient fade to name strip */}
           <div
             className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
@@ -374,33 +453,43 @@ function OwnedCard({
 
         {/* Name strip */}
         <div
-          className="shrink-0 px-2 pb-2 pt-1"
+          className="shrink-0 px-2.5 pb-2.5 pt-2"
           style={{
-            background: `linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.75) 100%)`,
-            borderTop: `1.5px solid ${color}25`,
+            background: `linear-gradient(180deg, rgba(7,7,15,0.92) 0%, rgba(9,9,18,0.98) 100%)`,
+            borderTop: `1.5px solid ${color}22`,
           }}
         >
-          <div className="flex items-end justify-between gap-1">
-            <p
-              className="font-condensed font-black text-white leading-tight truncate uppercase"
-              style={{ fontSize: isLg ? "13px" : "10px", textShadow: "0 1px 4px rgba(0,0,0,0.9)" }}
-            >
-              {sticker.name}
-            </p>
-            <span className="shrink-0 leading-none mb-0.5" style={{ fontSize: isLg ? 16 : 12 }}>{flagEmoji}</span>
+          <div className="flex items-start justify-between gap-1.5">
+            <div className="min-w-0 flex-1">
+              <p
+                className="font-condensed font-black text-white leading-tight truncate uppercase"
+                style={{ fontSize: isLg ? "13px" : "10px", textShadow: "0 1px 4px rgba(0,0,0,0.9)" }}
+              >
+                {sticker.name}
+              </p>
+              <p className="font-bold tracking-[0.14em] uppercase mt-0.5 truncate" style={{ fontSize: isLg ? "7px" : "6px", color: "rgba(255,255,255,0.36)" }}>
+                {sticker.team} · {category.tag} · 2026
+              </p>
+            </div>
+            <div className="shrink-0 text-right">
+              <div className="leading-none mb-1" style={{ fontSize: isLg ? 14 : 11 }}>{flagEmoji}</div>
+              {(sticker.quantity ?? 0) > 1 && (
+                <span
+                  className="font-black px-1 py-0.5 rounded inline-block"
+                  style={{ fontSize: "7px", background: `${color}25`, color }}
+                >
+                  x{sticker.quantity}
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center justify-between mt-0.5">
             <span className="font-black leading-none" style={{ fontSize: isLg ? "9px" : "7px", color }}>
               {getTierLabel(locale, sticker.rarity)}
             </span>
-            {(sticker.quantity ?? 0) > 1 && (
-              <span
-                className="font-black px-1 py-0.5 rounded"
-                style={{ fontSize: "7px", background: `${color}25`, color }}
-              >
-                x{sticker.quantity}
-              </span>
-            )}
+            <span className="font-bold tracking-[0.16em] uppercase" style={{ fontSize: isLg ? "7px" : "6px", color: "rgba(255,255,255,0.3)" }}>
+              DROP {numberLabel}
+            </span>
           </div>
         </div>
       </div>
